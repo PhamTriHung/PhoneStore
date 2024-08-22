@@ -4,6 +4,7 @@ import { User } from './users.entity';
 import { Repository } from 'typeorm';
 import CreateUserDto from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -19,10 +20,15 @@ export class UsersService {
     );
 
     const newUser = this.userRepository.create(createUserDto);
+
     return this.userRepository.save(newUser);
   }
 
   findOneByEmail(email: string): Promise<User> {
     return this.userRepository.findOne({ where: { email } });
+  }
+
+  update({ email, password }: UpdateUserDto) {
+    return this.userRepository.update({ email }, { password });
   }
 }

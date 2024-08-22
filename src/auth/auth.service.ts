@@ -5,6 +5,9 @@ import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcrypt';
 import { User } from 'src/users/users.entity';
 import { JwtService } from '@nestjs/jwt';
+import { ChangePasswordDto } from './dto/change-password.dto';
+import passport from 'passport';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Injectable()
 export class AuthService {
@@ -36,5 +39,18 @@ export class AuthService {
     return {
       access_token: this.jwtService.sign(payload),
     };
+  }
+
+  async changePassword(changePasswordDto: ChangePasswordDto) {
+    const { email, oldPassword, newPassword } = changePasswordDto;
+    const user = await this.usersService.findOneByEmail(email);
+
+    if (bcrypt.compareSync(oldPassword, user.password)) {
+      this.usersService.update({ email, password: newPassword });
+    }
+  }
+
+  async resetPassword(resetPasswordDto: ResetPasswordDto) {
+    this.usersService.update(resetPasswordDto);
   }
 }
