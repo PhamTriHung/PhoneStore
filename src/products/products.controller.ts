@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Query,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -18,7 +19,9 @@ export class ProductsController {
   constructor(private productService: ProductsService) {}
 
   @Post()
-  create(@Body() createProductDto: CreateProductDto): Promise<Product> {
+  create(
+    @Body(ValidationPipe) createProductDto: CreateProductDto,
+  ): Promise<Product> {
     return this.productService.create(createProductDto);
   }
 
