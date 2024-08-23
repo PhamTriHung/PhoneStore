@@ -9,6 +9,9 @@ import EnvironmentVariables from './types/EnvironmentVariables';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { ProductsModule } from './products/products.module';
+import { CartsModule } from './carts/carts.module';
+import { ProductTypeModule } from './product-type/product-types.module';
+import { BrandsModule } from './brands/brands.module';
 
 @Module({
   imports: [
@@ -35,6 +38,9 @@ import { ProductsModule } from './products/products.module';
     UsersModule,
     AuthModule,
     ProductsModule,
+    CartsModule,
+    ProductTypeModule,
+    BrandsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
