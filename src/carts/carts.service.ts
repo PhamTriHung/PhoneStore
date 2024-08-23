@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cart } from 'src/users/cart.entity';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { AddToCartDto } from './dto/add-to-cart.dto';
 import { DeleteFromCartDto } from './dto/delete-from-card.dto';
 import { UpdateCartDto } from './dto/update-cart.dto';
@@ -17,16 +17,16 @@ export class CartsService {
     return this.cartRepository.save(newCartItem);
   }
 
-  deleteFromCart(deleteFromCartDto: DeleteFromCartDto) {
+  deleteFromCart(deleteFromCartDto: DeleteFromCartDto): Promise<DeleteResult> {
     return this.cartRepository.delete(deleteFromCartDto);
   }
 
-  updateCart(updateCartDto: UpdateCartDto) {
+  updateCart(updateCartDto: UpdateCartDto): Promise<UpdateResult> {
     const { userId, productId, quantity } = updateCartDto;
     return this.cartRepository.update({ userId, productId }, { quantity });
   }
 
-  findCartItemByUserId(userId: string) {
+  findCartItemByUserId(userId: string): Promise<Cart[]> {
     return this.cartRepository.find({ where: { userId } });
   }
 }
