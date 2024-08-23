@@ -1,4 +1,14 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Product } from 'src/products/products.entity';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Cart } from './cart.entity';
 
 @Entity()
 export class User {
@@ -10,4 +20,16 @@ export class User {
 
   @Column()
   password: string;
+
+  @Column()
+  isAdmin: boolean;
+
+  @Column()
+  address: string;
+
+  @Column()
+  phone: string;
+
+  @OneToMany(() => Cart, (cart) => cart.user)
+  carts: Cart[];
 }
