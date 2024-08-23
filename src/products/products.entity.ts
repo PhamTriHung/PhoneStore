@@ -1,5 +1,13 @@
+import { validate } from 'class-validator';
+import { Brand } from 'src/brands/brand.entity';
 import { Cart } from 'src/users/cart.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Product {
@@ -23,4 +31,7 @@ export class Product {
 
   @OneToMany(() => Cart, (cart) => cart.product)
   carts: Cart[];
+
+  @ManyToOne(() => Brand, (brand) => brand.products)
+  brand: Brand;
 }

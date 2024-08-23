@@ -12,11 +12,13 @@ import {
 } from 'typeorm';
 import { Product } from './products.entity';
 import { FilterProductDto } from './dto/filter-product.dto';
+import { Brand } from 'src/brands/brand.entity';
 
 @Injectable()
 export class ProductsService {
   constructor(
     @InjectRepository(Product) private productRepository: Repository<Product>,
+    @InjectRepository(Brand) private brandRepository: Repository<Brand>,
   ) {}
 
   create(createProductDto: CreateProductDto): Promise<Product> {
@@ -24,8 +26,8 @@ export class ProductsService {
     return this.productRepository.save(newProduct);
   }
 
-  find(filterProductDto: FilterProductDto): Promise<Product[]> {
-    const { lowestPrice, highestPrice } = filterProductDto;
+  async find(filterProductDto: FilterProductDto): Promise<Product[]> {
+    const { lowestPrice, highestPrice, brandId } = filterProductDto;
     const findProductOptionsWhere: FindOptionsWhere<Product | Product[]> = {};
 
     if (lowestPrice && highestPrice) {
@@ -34,6 +36,10 @@ export class ProductsService {
       findProductOptionsWhere.price = MoreThan(lowestPrice);
     } else if (highestPrice) {
       findProductOptionsWhere.price = LessThan(highestPrice);
+    } else if (brandId) {
+      findProductOptionsWhere.brand = await this.brandRepository.findOne({
+        where: { id: brandId },
+      });
     }
 
     return Object.keys(findProductOptionsWhere).length > 0
