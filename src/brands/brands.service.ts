@@ -1,7 +1,7 @@
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { DeleteResult, In, Repository, UpdateResult } from 'typeorm';
 import { Brand } from './brand.entity';
 import { UpdateBrandDto } from './dto/update-brand.dto';
 
@@ -16,20 +16,21 @@ export class BrandsService {
     return this.brandRepository.save(newBrand);
   }
 
-  find() {
+  find(): Promise<Brand[]> {
     return this.brandRepository.find();
   }
 
-  update(updateBrandDto: UpdateBrandDto) {
+  update(updateBrandDto: UpdateBrandDto): Promise<UpdateResult> {
     const { id, ...updateField } = updateBrandDto;
-    return this.brandRepository.update({ id }, { ...updateField });
+
+    return this.brandRepository.update({ id }, updateField);
   }
 
-  deleteById(id: string) {
+  deleteById(id: string): Promise<DeleteResult> {
     return this.brandRepository.delete(id);
   }
 
-  deleteManyByIds(ids: string[]) {
+  deleteManyByIds(ids: string[]): Promise<DeleteResult> {
     return this.brandRepository.delete({ id: In(ids) });
   }
 }

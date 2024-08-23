@@ -1,9 +1,13 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { Brand } from '../brand.entity';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsString, Matches, MaxLength, MinLength } from 'class-validator';
 
 export class CreateBrandDto extends PartialType(Brand) {
   @IsString()
-  @IsNotEmpty()
+  @MinLength(3)
+  @MaxLength(30)
+  @Matches(/^[a-zA-Z0-9\s]+$/, {
+    message: 'Brand name can only contain letters, numbers, and spaces.',
+  })
   brandName: string;
 }
