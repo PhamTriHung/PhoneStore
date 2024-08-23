@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  ValidationPipe,
 } from '@nestjs/common';
 import { BrandsService } from './brands.service';
 import { CreateBrandDto } from './dto/create-brand.dto';
@@ -16,7 +17,7 @@ export class BrandsController {
   constructor(private brandService: BrandsService) {}
 
   @Post()
-  create(@Body() createBrandDto: CreateBrandDto) {
+  create(@Body(ValidationPipe) createBrandDto: CreateBrandDto) {
     return this.brandService.create(createBrandDto);
   }
 
@@ -26,9 +27,12 @@ export class BrandsController {
   }
 
   @Patch(':id')
-  update(@Param() id: string, @Body() updateBrandDto: UpdateBrandDto) {
+  update(
+    @Param('id') id: string,
+    @Body(ValidationPipe) updateBrandDto: UpdateBrandDto,
+  ) {
     updateBrandDto.id = id;
-    this.brandService.update(updateBrandDto);
+    return this.brandService.update(updateBrandDto);
   }
 
   @Delete(':id')
