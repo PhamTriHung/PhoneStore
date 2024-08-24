@@ -4,11 +4,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, In, Repository, UpdateResult } from 'typeorm';
 import { Brand } from './brand.entity';
 import { UpdateBrandDto } from './dto/update-brand.dto';
+import { ProductType } from 'src/product-type/product-type.entity';
 
 @Injectable()
 export class BrandsService {
   constructor(
     @InjectRepository(Brand) private brandRepository: Repository<Brand>,
+    @InjectRepository(ProductType)
+    private productTypeRepository: Repository<ProductType>,
   ) {}
 
   create(createBrandDto: CreateBrandDto): Promise<Brand> {
@@ -20,10 +23,18 @@ export class BrandsService {
     return this.brandRepository.find();
   }
 
-  update(updateBrandDto: UpdateBrandDto): Promise<UpdateResult> {
-    const { id, ...updateField } = updateBrandDto;
+  async update(updateBrandDto: UpdateBrandDto): Promise<UpdateResult> {
+    const { id, productTypeIds, ...brand } = updateBrandDto;
 
-    return this.brandRepository.update({ id }, updateField);
+    if (productTypeIds && productTypeIds.length > 0) {
+      const productTypes = await this.productTypeRepository.find({
+        where: { id: In(productTypeIds) },
+      });
+
+      brand.productTypes = productTypes;
+    }
+
+    return this.brandRepository.update({ id }, brand);
   }
 
   deleteById(id: string): Promise<DeleteResult> {
