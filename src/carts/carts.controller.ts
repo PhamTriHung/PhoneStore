@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  ParseUUIDPipe,
   Patch,
   Post,
   Query,
@@ -39,7 +40,9 @@ export class CartsController {
   }
 
   @Get()
-  findCartItemByUserId(@Query('userId') userId: string): Promise<Cart[]> {
+  findCartItemByUserId(
+    @Query('userId', new ParseUUIDPipe({ version: '4' })) userId: string,
+  ): Promise<Cart[]> {
     return this.cartServcie.findCartItemByUserId(userId);
   }
 }

@@ -57,7 +57,7 @@ export class ProductsService {
     return this.productRepository.delete({ id });
   }
 
-  deleteManyByIds(ids: string[]) {
+  deleteManyByIds(ids: string[]): Promise<DeleteResult> {
     return this.productRepository.delete({ id: In(ids) });
   }
 

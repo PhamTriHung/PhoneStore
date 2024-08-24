@@ -22,8 +22,8 @@ export class CartsService {
   }
 
   updateCart(updateCartDto: UpdateCartDto): Promise<UpdateResult> {
-    const { userId, productId, quantity } = updateCartDto;
-    return this.cartRepository.update({ userId, productId }, { quantity });
+    const { userId, productId, ...updateField } = updateCartDto;
+    return this.cartRepository.update({ userId, productId }, updateField);
   }
 
   findCartItemByUserId(userId: string): Promise<Cart[]> {

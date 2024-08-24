@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseUUIDPipe,
   Patch,
   Post,
   ValidationPipe,
@@ -13,6 +14,7 @@ import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
 import { Brand } from './brand.entity';
 import { DeleteResult, UpdateResult } from 'typeorm';
+import { DeleteManyBrandDto } from './dto/delete-many-brand.dto';
 
 @Controller('brands')
 export class BrandsController {
@@ -30,7 +32,7 @@ export class BrandsController {
 
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body(ValidationPipe) updateBrandDto: UpdateBrandDto,
   ): Promise<UpdateResult> {
     updateBrandDto.id = id;
@@ -38,12 +40,16 @@ export class BrandsController {
   }
 
   @Delete(':id')
-  deleteById(@Param('id') id: string): Promise<DeleteResult> {
+  deleteById(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+  ): Promise<DeleteResult> {
     return this.brandService.deleteById(id);
   }
 
   @Delete()
-  deleteManyByIds(@Body('ids') ids: string[]): Promise<DeleteResult> {
-    return this.brandService.deleteManyByIds(ids);
+  deleteManyByIds(
+    @Body(ValidationPipe) deleteManyBrandDto: DeleteManyBrandDto,
+  ): Promise<DeleteResult> {
+    return this.brandService.deleteManyByIds(deleteManyBrandDto.ids);
   }
 }

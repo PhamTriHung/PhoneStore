@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { DeleteResult, In, Repository, UpdateResult } from 'typeorm';
 import { ProductType } from './product-type.entity';
 import { CreateProductTypeDto } from './dto/create-product-type.dto';
 import { UpdateProductTypeDto } from './dto/update-product-type.dto';
@@ -19,26 +19,28 @@ export class ProductTypesService {
     return this.productTypeRepository.save(newProductType);
   }
 
-  find() {
+  find(): Promise<ProductType[]> {
     return this.productTypeRepository.find();
   }
 
-  findOneById(id: string) {
+  findOneById(id: string): Promise<ProductType> {
     return this.productTypeRepository.findOne({ where: { id } });
   }
 
   // hes loo
   // holaaaaaaaaaaaa
 
-  deleteById(id: string) {
+  deleteById(id: string): Promise<DeleteResult> {
     return this.productTypeRepository.delete(id);
   }
 
-  deleteManyByIds(ids: string[]) {
+  deleteManyByIds(ids: string[]): Promise<DeleteResult> {
     return this.productTypeRepository.delete({ id: In(ids) });
   }
 
-  updateById(updateProductTypeDto: UpdateProductTypeDto) {
+  updateById(
+    updateProductTypeDto: UpdateProductTypeDto,
+  ): Promise<UpdateResult> {
     const { id, value } = updateProductTypeDto;
     return this.productTypeRepository.update({ id }, { value });
   }

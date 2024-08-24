@@ -12,7 +12,7 @@ import {
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { Product } from './products.entity';
-import { DeleteResult } from 'typeorm';
+import { DeleteResult, UpdateResult } from 'typeorm';
 import { FilterProductDto } from './dto/filter-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 
@@ -51,7 +51,7 @@ export class ProductsController {
   updateProductById(
     @Param('id') id: string,
     @Body(ValidationPipe) updateProductDto: UpdateProductDto,
-  ) {
+  ): Promise<UpdateResult> {
     updateProductDto.id = id;
     return this.productService.updateProductById(updateProductDto);
   }
