@@ -29,4 +29,8 @@ export class CartsService {
   findCartItemByUserId(userId: string): Promise<Cart[]> {
     return this.cartRepository.find({ where: { userId } });
   }
+
+  find() {
+    return this.cartRepository.find();
+  }
 }

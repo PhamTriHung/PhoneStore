@@ -40,8 +40,13 @@ export class CartsController {
   }
 
   @Get()
+  findAllCartItem() {
+    return this.cartServcie.find();
+  }
+
+  @Get('search')
   findCartItemByUserId(
-    @Query('userId', new ParseUUIDPipe({ version: '4' })) userId: string,
+    @Query('userId', new ParseUUIDPipe({ version: '4' })) userId?: string,
   ): Promise<Cart[]> {
     return this.cartServcie.findCartItemByUserId(userId);
   }
