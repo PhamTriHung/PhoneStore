@@ -1,4 +1,5 @@
 import { Brand } from 'src/brands/brand.entity';
+import { ProductStore } from 'src/product-store/product-store.entity';
 import { ProductType } from 'src/product-type/product-type.entity';
 import { Cart } from 'src/users/cart.entity';
 import {
@@ -34,6 +35,9 @@ export class Product {
 
   @OneToMany(() => Cart, (cart) => cart.product)
   carts: Cart[];
+
+  @OneToMany(() => ProductStore, (productStore) => productStore.product)
+  productStores: ProductStore[];
 
   @ManyToOne(() => Brand, (brand) => brand.products)
   brand: Brand;
