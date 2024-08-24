@@ -1,4 +1,3 @@
-import { validate } from 'class-validator';
 import { Brand } from 'src/brands/brand.entity';
 import { ProductType } from 'src/product-type/product-type.entity';
 import { Cart } from 'src/users/cart.entity';
@@ -16,10 +15,10 @@ export class Product {
   id: string;
 
   @Column({ type: 'varchar', length: 50 })
-  description: string;
+  name: string;
 
   @Column({ type: 'varchar', length: 50 })
-  name: string;
+  description: string;
 
   @Column({ type: 'double' })
   price: number;

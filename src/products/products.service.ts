@@ -9,10 +9,12 @@ import {
   LessThan,
   MoreThan,
   Repository,
+  UpdateResult,
 } from 'typeorm';
 import { Product } from './products.entity';
 import { FilterProductDto } from './dto/filter-product.dto';
 import { Brand } from 'src/brands/brand.entity';
+import { UpdateProductDto } from './dto/update-product.dto';
 
 @Injectable()
 export class ProductsService {
@@ -57,5 +59,10 @@ export class ProductsService {
 
   deleteManyByIds(ids: string[]) {
     return this.productRepository.delete({ id: In(ids) });
+  }
+
+  updateProductById(updateProductDto: UpdateProductDto): Promise<UpdateResult> {
+    const { id, ...updateField } = updateProductDto;
+    return this.productRepository.update({ id }, updateField);
   }
 }

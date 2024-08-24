@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Query,
   ValidationPipe,
@@ -13,6 +14,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { Product } from './products.entity';
 import { DeleteResult } from 'typeorm';
 import { FilterProductDto } from './dto/filter-product.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -43,5 +45,14 @@ export class ProductsController {
   @Delete()
   deleteMany(@Body('ids') ids: string[]): Promise<DeleteResult> {
     return this.productService.deleteManyByIds(ids);
+  }
+
+  @Patch(':id')
+  updateProductById(
+    @Param('id') id: string,
+    @Body(ValidationPipe) updateProductDto: UpdateProductDto,
+  ) {
+    updateProductDto.id = id;
+    return this.productService.updateProductById(updateProductDto);
   }
 }
