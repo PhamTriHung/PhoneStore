@@ -4,6 +4,7 @@ import {
   IsNumber,
   IsPositive,
   IsString,
+  IsUUID,
   Matches,
   Max,
   MaxLength,
@@ -11,6 +12,7 @@ import {
   MinLength,
 } from 'class-validator';
 import { Product } from '../products.entity';
+import { version } from 'os';
 
 export class CreateProductDto extends PartialType(Product) {
   @IsString()
@@ -30,4 +32,7 @@ export class CreateProductDto extends PartialType(Product) {
 
   @IsBoolean()
   isInStock: boolean;
+
+  @IsUUID(4)
+  brandId: string;
 }

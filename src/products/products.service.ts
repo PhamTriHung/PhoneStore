@@ -1,3 +1,4 @@
+import { Product } from 'src/products/products.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateProductDto } from './dto/create-product.dto';
 import { Injectable } from '@nestjs/common';
@@ -11,10 +12,10 @@ import {
   Repository,
   UpdateResult,
 } from 'typeorm';
-import { Product } from './products.entity';
 import { FilterProductDto } from './dto/filter-product.dto';
 import { Brand } from 'src/brands/brand.entity';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { log } from 'console';
 
 @Injectable()
 export class ProductsService {
@@ -23,8 +24,17 @@ export class ProductsService {
     @InjectRepository(Brand) private brandRepository: Repository<Brand>,
   ) {}
 
-  create(createProductDto: CreateProductDto): Promise<Product> {
+  async create(createProductDto: CreateProductDto): Promise<Product> {
+    const { brandId, ...product } = createProductDto;
+
     const newProduct = this.productRepository.create(createProductDto);
+
+    if (brandId) {
+      newProduct.brand = await this.brandRepository.findOne({
+        where: { id: brandId },
+      });
+    }
+
     return this.productRepository.save(newProduct);
   }
 
@@ -61,8 +71,17 @@ export class ProductsService {
     return this.productRepository.delete({ id: In(ids) });
   }
 
-  updateProductById(updateProductDto: UpdateProductDto): Promise<UpdateResult> {
-    const { id, ...updateField } = updateProductDto;
-    return this.productRepository.update({ id }, updateField);
+  async updateProductById(
+    updateProductDto: UpdateProductDto,
+  ): Promise<UpdateResult> {
+    const { id, brandId, ...product } = updateProductDto;
+
+    if (brandId) {
+      product.brand = await this.brandRepository.findOne({
+        where: { id: brandId },
+      });
+    }
+
+    return this.productRepository.update({ id }, product);
   }
 }
