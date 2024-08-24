@@ -4,12 +4,14 @@ import { DeleteResult, In, Repository, UpdateResult } from 'typeorm';
 import { ProductType } from './product-type.entity';
 import { CreateProductTypeDto } from './dto/create-product-type.dto';
 import { UpdateProductTypeDto } from './dto/update-product-type.dto';
+import { Brand } from 'src/brands/brand.entity';
 
 @Injectable()
 export class ProductTypesService {
   constructor(
     @InjectRepository(ProductType)
     private productTypeRepository: Repository<ProductType>,
+    @InjectRepository(Brand) private brandRepository: Repository<Brand>,
   ) {}
 
   create(createProductTypeDto: CreateProductTypeDto): Promise<ProductType> {
@@ -21,6 +23,14 @@ export class ProductTypesService {
 
   find(): Promise<ProductType[]> {
     return this.productTypeRepository.find();
+  }
+
+  async findByBrandId(brandId: string): Promise<ProductType[]> {
+    const brand = await this.brandRepository.findOne({
+      where: { id: brandId },
+    });
+
+    return this.productTypeRepository.find({ where: { brands: brand } });
   }
 
   findOneById(id: string): Promise<ProductType> {

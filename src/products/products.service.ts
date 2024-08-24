@@ -15,17 +15,19 @@ import {
 import { FilterProductDto } from './dto/filter-product.dto';
 import { Brand } from 'src/brands/brand.entity';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { log } from 'console';
+import { ProductType } from 'src/product-type/product-type.entity';
 
 @Injectable()
 export class ProductsService {
   constructor(
     @InjectRepository(Product) private productRepository: Repository<Product>,
     @InjectRepository(Brand) private brandRepository: Repository<Brand>,
+    @InjectRepository(ProductType)
+    private productTypeRepository: Repository<ProductType>,
   ) {}
 
   async create(createProductDto: CreateProductDto): Promise<Product> {
-    const { brandId, ...product } = createProductDto;
+    const { brandId, productTypeId, ...product } = createProductDto;
 
     const newProduct = this.productRepository.create(createProductDto);
 
@@ -35,11 +37,18 @@ export class ProductsService {
       });
     }
 
+    if (productTypeId) {
+      newProduct.productType = await this.productTypeRepository.findOne({
+        where: { id: productTypeId },
+      });
+    }
+
     return this.productRepository.save(newProduct);
   }
 
   async find(filterProductDto: FilterProductDto): Promise<Product[]> {
-    const { lowestPrice, highestPrice, brandId } = filterProductDto;
+    const { lowestPrice, highestPrice, brandId, productTypeId } =
+      filterProductDto;
     const findProductOptionsWhere: FindOptionsWhere<Product | Product[]> = {};
 
     if (lowestPrice && highestPrice) {
@@ -52,6 +61,11 @@ export class ProductsService {
       findProductOptionsWhere.brand = await this.brandRepository.findOne({
         where: { id: brandId },
       });
+    } else if (productTypeId) {
+      findProductOptionsWhere.productType =
+        await this.productTypeRepository.findOne({
+          where: { id: productTypeId },
+        });
     }
 
     return Object.keys(findProductOptionsWhere).length > 0
@@ -74,11 +88,17 @@ export class ProductsService {
   async updateProductById(
     updateProductDto: UpdateProductDto,
   ): Promise<UpdateResult> {
-    const { id, brandId, ...product } = updateProductDto;
+    const { id, brandId, productTypeId, ...product } = updateProductDto;
 
     if (brandId) {
       product.brand = await this.brandRepository.findOne({
         where: { id: brandId },
+      });
+    }
+
+    if (productTypeId) {
+      product.productType = await this.productTypeRepository.findOne({
+        where: { id: productTypeId },
       });
     }
 

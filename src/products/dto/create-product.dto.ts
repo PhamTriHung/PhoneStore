@@ -2,6 +2,7 @@ import { PartialType } from '@nestjs/mapped-types';
 import {
   IsBoolean,
   IsNumber,
+  IsOptional,
   IsPositive,
   IsString,
   IsUUID,
@@ -12,7 +13,6 @@ import {
   MinLength,
 } from 'class-validator';
 import { Product } from '../products.entity';
-import { version } from 'os';
 
 export class CreateProductDto extends PartialType(Product) {
   @IsString()
@@ -33,6 +33,11 @@ export class CreateProductDto extends PartialType(Product) {
   @IsBoolean()
   isInStock: boolean;
 
+  @IsOptional()
   @IsUUID(4)
-  brandId: string;
+  brandId?: string;
+
+  @IsOptional()
+  @IsUUID(4)
+  productTypeId?: string;
 }
