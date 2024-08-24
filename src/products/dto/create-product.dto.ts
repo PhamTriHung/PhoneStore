@@ -2,7 +2,6 @@ import { PartialType } from '@nestjs/mapped-types';
 import {
   IsBoolean,
   IsNumber,
-  IsOptional,
   IsPositive,
   IsString,
   Matches,
