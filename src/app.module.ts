@@ -12,6 +12,9 @@ import { ProductsModule } from './products/products.module';
 import { CartsModule } from './carts/carts.module';
 import { ProductTypeModule } from './product-type/product-types.module';
 import { BrandsModule } from './brands/brands.module';
+import { StoresModule } from './stores/stores.module';
+import { StoresService } from './stores/stores.service';
+import { ProductStoreModule } from './product-store/product-store.module';
 
 @Module({
   imports: [
@@ -41,6 +44,8 @@ import { BrandsModule } from './brands/brands.module';
     CartsModule,
     ProductTypeModule,
     BrandsModule,
+    StoresModule,
+    ProductStoreModule,
   ],
   controllers: [AppController],
   providers: [AppService],

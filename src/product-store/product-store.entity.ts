@@ -1,6 +1,6 @@
 import { Product } from 'src/products/products.entity';
 import { Store } from 'src/stores/store.entity';
-import { Entity, ManyToMany, ManyToOne, PrimaryColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
 
 @Entity()
 export class ProductStore {
@@ -9,6 +9,9 @@ export class ProductStore {
 
   @PrimaryColumn()
   storeId: string;
+
+  @Column({ type: 'int' })
+  quantity: number;
 
   @ManyToOne(() => Product, (product) => product.productStores)
   product: Product;
