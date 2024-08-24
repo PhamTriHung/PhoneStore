@@ -1,5 +1,6 @@
 import { validate } from 'class-validator';
 import { Brand } from 'src/brands/brand.entity';
+import { ProductType } from 'src/product-type/product-type.entity';
 import { Cart } from 'src/users/cart.entity';
 import {
   Column,
@@ -13,6 +14,9 @@ import {
 export class Product {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column({ type: 'varchar', length: 50 })
+  description: string;
 
   @Column({ type: 'varchar', length: 50 })
   name: string;
@@ -34,4 +38,7 @@ export class Product {
 
   @ManyToOne(() => Brand, (brand) => brand.products)
   brand: Brand;
+
+  @ManyToOne(() => ProductType, (productType) => productType.products)
+  productType: ProductType;
 }
