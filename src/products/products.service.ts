@@ -15,15 +15,15 @@ import {
 import { FilterProductDto } from './dto/filter-product.dto';
 import { Brand } from 'src/brands/brand.entity';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { ProductType } from 'src/product-type/product-type.entity';
+import { Category } from 'src/categories/category.entity';
 
 @Injectable()
 export class ProductsService {
   constructor(
     @InjectRepository(Product) private productRepository: Repository<Product>,
     @InjectRepository(Brand) private brandRepository: Repository<Brand>,
-    @InjectRepository(ProductType)
-    private productTypeRepository: Repository<ProductType>,
+    @InjectRepository(Category)
+    private categoryRepository: Repository<Category>,
   ) {}
 
   async create(createProductDto: CreateProductDto): Promise<Product> {
@@ -38,7 +38,7 @@ export class ProductsService {
     }
 
     if (productTypeId) {
-      newProduct.productType = await this.productTypeRepository.findOne({
+      newProduct.category = await this.categoryRepository.findOne({
         where: { id: productTypeId },
       });
     }
@@ -62,10 +62,9 @@ export class ProductsService {
         where: { id: brandId },
       });
     } else if (productTypeId) {
-      findProductOptionsWhere.productType =
-        await this.productTypeRepository.findOne({
-          where: { id: productTypeId },
-        });
+      findProductOptionsWhere.category = await this.categoryRepository.findOne({
+        where: { id: productTypeId },
+      });
     }
 
     return Object.keys(findProductOptionsWhere).length > 0
@@ -97,7 +96,7 @@ export class ProductsService {
     }
 
     if (productTypeId) {
-      product.productType = await this.productTypeRepository.findOne({
+      product.category = await this.categoryRepository.findOne({
         where: { id: productTypeId },
       });
     }

@@ -1,4 +1,4 @@
-import { ProductType } from 'src/product-type/product-type.entity';
+import { Category } from 'src/categories/category.entity';
 import { Product } from 'src/products/products.entity';
 import {
   Column,
@@ -19,6 +19,6 @@ export class Brand {
   @OneToMany(() => Product, (product) => product.brand)
   products: Product[];
 
-  @ManyToMany(() => ProductType, (productType) => productType.brands)
-  productTypes: ProductType[];
+  @ManyToMany(() => Category, (category) => category.brands)
+  productTypes: Category[];
 }

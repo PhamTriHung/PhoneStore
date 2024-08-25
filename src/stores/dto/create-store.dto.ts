@@ -1,5 +1,11 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { IsString, Matches, MaxLength, MinLength } from 'class-validator';
+import {
+  IsOptional,
+  IsString,
+  Matches,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 import { Store } from '../store.entity';
 
 export class CreateStoreDto extends PartialType(Store) {
@@ -12,6 +18,7 @@ export class CreateStoreDto extends PartialType(Store) {
   })
   name: string;
 
+  @IsOptional()
   @IsString()
   @MinLength(5)
   @MaxLength(50)

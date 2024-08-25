@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class ProductType {
+export class Category {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -21,6 +21,6 @@ export class ProductType {
   @JoinTable()
   brands: Brand[];
 
-  @OneToMany(() => Product, (product) => product.productType)
+  @OneToMany(() => Product, (product) => product.category)
   products: Product[];
 }

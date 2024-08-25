@@ -1,6 +1,6 @@
 import { Brand } from 'src/brands/brand.entity';
+import { Category } from 'src/categories/category.entity';
 import { ProductStore } from 'src/product-store/product-store.entity';
-import { ProductType } from 'src/product-type/product-type.entity';
 import { Cart } from 'src/users/cart.entity';
 import {
   Column,
@@ -24,14 +24,29 @@ export class Product {
   @Column({ type: 'double' })
   price: number;
 
-  @Column({ type: 'boolean' })
-  isInStock: boolean;
-
   @Column()
   variant: string;
 
+  @Column({ type: 'date', nullable: true })
+  releaseDate: Date;
+
   @Column({ type: 'varchar', length: 50 })
   type: string;
+
+  @Column({ type: 'int' })
+  batteryCapacity: number;
+
+  @Column({ type: 'int' })
+  storageCapacity: number;
+
+  @Column({ type: 'int' })
+  ramCapacity: number;
+
+  @Column({ type: 'boolean' })
+  isMonopoly: boolean;
+
+  @Column({ type: 'int' })
+  refreshRate: number;
 
   @OneToMany(() => Cart, (cart) => cart.product)
   carts: Cart[];
@@ -42,6 +57,6 @@ export class Product {
   @ManyToOne(() => Brand, (brand) => brand.products)
   brand: Brand;
 
-  @ManyToOne(() => ProductType, (productType) => productType.products)
-  productType: ProductType;
+  @ManyToOne(() => Category, (category) => category.products)
+  category: Category;
 }

@@ -1,6 +1,6 @@
 import { IsUUID } from 'class-validator';
 
-export class DeleteManyProductTypeDto {
+export class DeleteManyCategoryDto {
   @IsUUID(4, { each: true })
   ids: string[];
 }

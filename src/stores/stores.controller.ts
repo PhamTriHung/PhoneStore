@@ -12,7 +12,7 @@ import {
 import { StoresService } from './stores.service';
 import { CreateStoreDto } from './dto/create-store.dto';
 import { Store } from './store.entity';
-import { UpdateResult, UpdateStatement } from 'typeorm';
+import { UpdateResult } from 'typeorm';
 import { UpdateStoreDto } from './dto/update-store.dto';
 
 @Controller('stores')
@@ -33,7 +33,7 @@ export class StoresController {
 
   @Patch(':id')
   updateStore(
-    @Param(new ParseUUIDPipe({ version: '4' })) id: string,
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body(ValidationPipe) updateStoreDto: UpdateStoreDto,
   ): Promise<UpdateResult> {
     updateStoreDto.id = id;
@@ -41,7 +41,7 @@ export class StoresController {
   }
 
   @Delete(':id')
-  deleteStore(@Param(new ParseUUIDPipe({ version: '4' })) id: string) {
+  deleteStore(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     return this.storeService.delete(id);
   }
 }
