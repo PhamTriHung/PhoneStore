@@ -16,6 +16,9 @@ export class Brand {
   @Column({ type: 'varchar', length: 50 })
   brandName: string;
 
+  @Column({ type: 'varchar', length: 50 })
+  description: string;
+
   @OneToMany(() => Product, (product) => product.brand)
   products: Product[];
 

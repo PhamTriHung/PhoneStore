@@ -24,29 +24,11 @@ export class Product {
   @Column({ type: 'double' })
   price: number;
 
-  @Column()
-  variant: string;
-
   @Column({ type: 'date', nullable: true })
   releaseDate: Date;
 
-  @Column({ type: 'varchar', length: 50 })
-  type: string;
-
-  @Column({ type: 'int' })
-  batteryCapacity: number;
-
-  @Column({ type: 'int' })
-  storageCapacity: number;
-
-  @Column({ type: 'int' })
-  ramCapacity: number;
-
   @Column({ type: 'boolean' })
   isMonopoly: boolean;
-
-  @Column({ type: 'int' })
-  refreshRate: number;
 
   @OneToMany(() => Cart, (cart) => cart.product)
   carts: Cart[];
