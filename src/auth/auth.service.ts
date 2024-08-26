@@ -6,7 +6,6 @@ import * as bcrypt from 'bcrypt';
 import { User } from 'src/users/users.entity';
 import { JwtService } from '@nestjs/jwt';
 import { ChangePasswordDto } from './dto/change-password.dto';
-import passport from 'passport';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Injectable()
@@ -26,11 +25,11 @@ export class AuthService {
 
   async validateUser({ email, password }: LoginDto) {
     const user = await this.usersService.findOneByEmail(email);
-    if (bcrypt.compareSync(password, user.password)) {
+
+    if (user && bcrypt.compareSync(password, user.password)) {
       const { password, ...newUser } = user;
       return newUser;
     }
-    return null;
   }
 
   async login(user: User) {

@@ -10,11 +10,15 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { ProductsModule } from './products/products.module';
 import { CartsModule } from './carts/carts.module';
-import { ProductTypeModule } from './product-type/product-types.module';
+import { ProductTypeModule } from './categories/categories.module';
 import { BrandsModule } from './brands/brands.module';
 import { StoresModule } from './stores/stores.module';
 import { StoresService } from './stores/stores.service';
 import { ProductStoreModule } from './product-store/product-store.module';
+import { PhonesModule } from './phones/phones.module';
+import { LaptopsModule } from './laptops/laptops.module';
+import { AddressModule } from './address/address.module';
+import { AddressesModule } from './addresses/addresses.module';
 
 @Module({
   imports: [
@@ -46,6 +50,10 @@ import { ProductStoreModule } from './product-store/product-store.module';
     BrandsModule,
     StoresModule,
     ProductStoreModule,
+    PhonesModule,
+    LaptopsModule,
+    AddressModule,
+    AddressesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -9,6 +9,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Cart } from './cart.entity';
+import { Address } from 'src/addresses/address.entity';
 
 @Entity()
 export class User {
@@ -25,11 +26,11 @@ export class User {
   isAdmin: boolean;
 
   @Column()
-  address: string;
-
-  @Column()
   phone: string;
 
   @OneToMany(() => Cart, (cart) => cart.user)
   carts: Cart[];
+
+  @OneToMany(() => Address, (address) => address.user)
+  addresses: Address[];
 }
