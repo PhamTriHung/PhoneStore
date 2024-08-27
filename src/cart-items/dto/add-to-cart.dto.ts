@@ -1,8 +1,8 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { IsInt, IsUUID, Min } from 'class-validator';
-import { Cart } from 'src/users/cart.entity';
+import { CartItem } from '../cart-item.entity';
 
-export class AddToCartDto extends PartialType(Cart) {
+export class AddToCartDto extends PartialType(CartItem) {
   @IsUUID(4)
   userId: string;
 

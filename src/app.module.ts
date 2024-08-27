@@ -6,19 +6,17 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import EnvironmentVariables from './types/EnvironmentVariables';
-import { PassportModule } from '@nestjs/passport';
-import { JwtModule } from '@nestjs/jwt';
 import { ProductsModule } from './products/products.module';
-import { CartsModule } from './carts/carts.module';
 import { ProductTypeModule } from './categories/categories.module';
 import { BrandsModule } from './brands/brands.module';
 import { StoresModule } from './stores/stores.module';
-import { StoresService } from './stores/stores.service';
 import { ProductStoreModule } from './product-store/product-store.module';
 import { PhonesModule } from './phones/phones.module';
 import { LaptopsModule } from './laptops/laptops.module';
-import { AddressModule } from './address/address.module';
 import { AddressesModule } from './addresses/addresses.module';
+import { OrdersModule } from './orders/orders.module';
+import { OrderItemsModule } from './order-items/order-items.module';
+import { CartItemsModule } from './cart-items/cart-items.module';
 
 @Module({
   imports: [
@@ -45,15 +43,16 @@ import { AddressesModule } from './addresses/addresses.module';
     UsersModule,
     AuthModule,
     ProductsModule,
-    CartsModule,
+    CartItemsModule,
     ProductTypeModule,
     BrandsModule,
     StoresModule,
     ProductStoreModule,
     PhonesModule,
     LaptopsModule,
-    AddressModule,
     AddressesModule,
+    OrdersModule,
+    OrderItemsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

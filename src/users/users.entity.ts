@@ -8,8 +8,9 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Cart } from './cart.entity';
+import { CartItem } from '../cart-items/cart-item.entity';
 import { Address } from 'src/addresses/address.entity';
+import { Order } from 'src/orders/order.entity';
 
 @Entity()
 export class User {
@@ -28,9 +29,12 @@ export class User {
   @Column()
   phone: string;
 
-  @OneToMany(() => Cart, (cart) => cart.user)
-  carts: Cart[];
+  @OneToMany(() => CartItem, (cartItem) => cartItem.user)
+  cartItems: CartItem[];
 
   @OneToMany(() => Address, (address) => address.user)
   addresses: Address[];
+
+  @OneToMany(() => Order, (order) => order.user)
+  orders: Order[];
 }

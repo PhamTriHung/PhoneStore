@@ -1,7 +1,8 @@
 import { Brand } from 'src/brands/brand.entity';
+import { CartItem } from 'src/cart-items/cart-item.entity';
 import { Category } from 'src/categories/category.entity';
+import { OrderItem } from 'src/order-items/order-item.entity';
 import { ProductStore } from 'src/product-store/product-store.entity';
-import { Cart } from 'src/users/cart.entity';
 import {
   Column,
   Entity,
@@ -30,8 +31,11 @@ export class Product {
   @Column({ type: 'boolean' })
   isMonopoly: boolean;
 
-  @OneToMany(() => Cart, (cart) => cart.product)
-  carts: Cart[];
+  @OneToMany(() => CartItem, (cartItem) => cartItem.product)
+  cartItems: CartItem[];
+
+  @OneToMany(() => OrderItem, (cart) => cart.product)
+  orderItems: OrderItem[];
 
   @OneToMany(() => ProductStore, (productStore) => productStore.product)
   productStores: ProductStore[];

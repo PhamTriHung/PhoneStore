@@ -1,19 +1,19 @@
 import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
-import { User } from './users.entity';
+import { User } from '../users/users.entity';
 import { Product } from 'src/products/products.entity';
 
 @Entity()
-export class Cart {
+export class CartItem {
   @PrimaryColumn()
   userId: string;
 
   @PrimaryColumn()
   productId: string;
 
-  @ManyToOne(() => User, (user) => user.carts)
+  @ManyToOne(() => User, (user) => user.cartItems)
   user: User;
 
-  @ManyToOne(() => Product, (product) => product.carts)
+  @ManyToOne(() => Product, (product) => product.cartItems)
   product: Product;
 
   @Column({ type: 'int' })
