@@ -19,7 +19,7 @@ export class Order {
   @Column({ type: 'datetime' })
   orderDeliveredDate: Date;
 
-  @OneToMany(() => OrderItem, (orderItem) => orderItem.order)
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.order, { cascade: true })
   orderItems: OrderItem[];
 
   @ManyToOne(() => User, (user) => user.orders)
