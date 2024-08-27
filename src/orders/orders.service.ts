@@ -6,6 +6,7 @@ import { Order } from './order.entity';
 import { OrderItem } from 'src/order-items/order-item.entity';
 import { User } from 'src/users/users.entity';
 import { Product } from 'src/products/products.entity';
+import { UpdateOrderItemDto } from './dto/update-order-item.dto';
 
 @Injectable()
 export class OrdersService {
@@ -37,5 +38,47 @@ export class OrdersService {
 
       return this.orderRepository.save(order);
     }
+  }
+
+  async findOrderByUser(userId: string) {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+
+    return this.orderRepository.find({
+      where: { user },
+      relations: {
+        orderItems: {
+          product: true,
+        },
+      },
+      select: {
+        orderItems: {
+          productId: true,
+          product: { name: true, price: true },
+          quantity: true,
+        },
+      },
+    });
+  }
+
+  findOrderByOrderId(id: string) {
+    return this.orderRepository.findOne({
+      where: { id },
+      relations: {
+        orderItems: {
+          product: true,
+        },
+      },
+      select: {
+        orderItems: {
+          productId: true,
+          product: { name: true, price: true },
+          quantity: true,
+        },
+      },
+    });
+  }
+
+  deleteOrder(id: string) {
+    return this.orderRepository.delete(id);
   }
 }
