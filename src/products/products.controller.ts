@@ -38,7 +38,7 @@ export class ProductsController {
   }
 
   @Delete(':id')
-  deleteById(@Param('id') id: string): Promise<DeleteResult> {
+  deleteById(@Param('id') id: string): Promise<Product> {
     return this.productService.deleteById(id);
   }
 

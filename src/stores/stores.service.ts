@@ -26,6 +26,6 @@ export class StoresService {
   }
 
   delete(id: string) {
-    return this.storeRepository.delete(id);
+    this.storeRepository.delete(id);
   }
 }

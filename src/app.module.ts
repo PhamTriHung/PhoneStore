@@ -15,7 +15,6 @@ import { PhonesModule } from './phones/phones.module';
 import { LaptopsModule } from './laptops/laptops.module';
 import { AddressesModule } from './addresses/addresses.module';
 import { OrdersModule } from './orders/orders.module';
-import { OrderItemsModule } from './order-items/order-items.module';
 import { CartItemsModule } from './cart-items/cart-items.module';
 
 @Module({
@@ -52,7 +51,6 @@ import { CartItemsModule } from './cart-items/cart-items.module';
     LaptopsModule,
     AddressesModule,
     OrdersModule,
-    OrderItemsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

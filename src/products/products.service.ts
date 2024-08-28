@@ -1,7 +1,7 @@
 import { Product } from 'src/products/products.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateProductDto } from './dto/create-product.dto';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import {
   Between,
   DeleteResult,
@@ -72,12 +72,23 @@ export class ProductsService {
       : this.productRepository.find();
   }
 
-  findById(id: string): Promise<Product> {
-    return this.productRepository.findOne({ where: { id } });
+  async findById(id: string): Promise<Product> {
+    const product = await this.productRepository.findOne({ where: { id } });
+
+    if (!product) {
+      throw new NotFoundException(`Product with Id ${id} not found`);
+    } else {
+      return product;
+    }
   }
 
-  deleteById(id: string): Promise<DeleteResult> {
-    return this.productRepository.delete({ id });
+  async deleteById(id: string): Promise<Product> {
+    const product = await this.productRepository.findOne({ where: { id } });
+    if (!product) {
+      throw new NotFoundException(`Product with Id ${id} not found`);
+    } else {
+      return this.productRepository.remove(product);
+    }
   }
 
   deleteManyByIds(ids: string[]): Promise<DeleteResult> {
