@@ -43,7 +43,7 @@ export class ProductsController {
   }
 
   @Delete()
-  deleteMany(@Body('ids') ids: string[]): Promise<DeleteResult> {
+  deleteMany(@Body('ids') ids: string[]): Promise<Product[]> {
     return this.productService.deleteManyByIds(ids);
   }
 

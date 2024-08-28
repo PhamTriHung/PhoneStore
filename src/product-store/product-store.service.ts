@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductStore } from './product-store.entity';
 import { Repository, UpdateResult } from 'typeorm';
@@ -34,7 +34,17 @@ export class ProductStoreService {
     );
   }
 
-  delete(deleteProductStoreDto: DeleteProductStoreDto) {
-    return this.productStoreRepository.delete(deleteProductStoreDto);
+  async delete(deleteProductStoreDto: DeleteProductStoreDto) {
+    const productStore = await this.productStoreRepository.findOne({
+      where: deleteProductStoreDto,
+    });
+
+    if (!productStore) {
+      throw new NotFoundException(
+        `Product store with productId ${deleteProductStoreDto.productId} and storeId ${deleteProductStoreDto.storeId} not found`,
+      );
+    } else {
+      return this.productStoreRepository.remove(productStore);
+    }
   }
 }

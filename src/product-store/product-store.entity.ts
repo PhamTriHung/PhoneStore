@@ -13,7 +13,10 @@ export class ProductStore {
   @Column({ type: 'int' })
   quantity: number;
 
-  @ManyToOne(() => Product, (product) => product.productStores)
+  @ManyToOne(() => Product, (product) => product.productStores, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   product: Product;
 
   @ManyToOne(() => Store, (store) => store.productStores)

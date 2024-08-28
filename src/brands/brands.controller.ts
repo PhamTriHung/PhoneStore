@@ -13,7 +13,6 @@ import { BrandsService } from './brands.service';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
 import { Brand } from './brand.entity';
-import { DeleteResult, UpdateResult } from 'typeorm';
 import { DeleteManyBrandDto } from './dto/delete-many-brand.dto';
 
 @Controller('brands')

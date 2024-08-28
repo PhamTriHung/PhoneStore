@@ -1,7 +1,7 @@
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, In, Repository, UpdateResult } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Brand } from './brand.entity';
 import { UpdateBrandDto } from './dto/update-brand.dto';
 import { Category } from 'src/categories/category.entity';

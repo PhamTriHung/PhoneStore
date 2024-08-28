@@ -4,7 +4,6 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import {
   Between,
-  DeleteResult,
   FindOptionsWhere,
   In,
   LessThan,
@@ -91,8 +90,16 @@ export class ProductsService {
     }
   }
 
-  deleteManyByIds(ids: string[]): Promise<DeleteResult> {
-    return this.productRepository.delete({ id: In(ids) });
+  async deleteManyByIds(ids: string[]): Promise<Product[]> {
+    const products = await this.productRepository.find({
+      where: { id: In(ids) },
+    });
+
+    if (products.length === 0) {
+      throw new NotFoundException(`Some id in this list ${ids} is not exist`);
+    } else {
+      return this.productRepository.remove(products);
+    }
   }
 
   async updateProductById(
