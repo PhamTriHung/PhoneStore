@@ -1,4 +1,4 @@
-import { OrderItem } from 'src/orders/order-item.entity';
+import { OrderItem } from 'src/order-items/order-item.entity';
 import { User } from 'src/users/users.entity';
 import {
   Column,
