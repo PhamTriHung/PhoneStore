@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { MaxLength } from 'class-validator';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, Repository, UpdateResult } from 'typeorm';
+import { Not, Repository, UpdateResult } from 'typeorm';
 import { AddToCartDto } from './dto/add-to-cart.dto';
 import { DeleteFromCartDto } from './dto/delete-from-card.dto';
 import { CartItem } from './cart-item.entity';
@@ -18,20 +19,35 @@ export class CartItemsService {
     return this.cartItemRepository.save(newCartItem);
   }
 
-  deleteFromCart(deleteFromCartDto: DeleteFromCartDto): Promise<DeleteResult> {
-    return this.cartItemRepository.delete(deleteFromCartDto);
+  async deleteFromCart(
+    deleteFromCartDto: DeleteFromCartDto,
+  ): Promise<CartItem> {
+    const cartItem = await this.cartItemRepository.findOne({
+      where: deleteFromCartDto,
+    });
+
+    if (!cartItem) {
+      throw new NotFoundException(
+        `Cart item with userId ${deleteFromCartDto.userId} and productId ${deleteFromCartDto.productId} not found`,
+      );
+    } else {
+      return this.cartItemRepository.remove(cartItem);
+    }
   }
 
-  updateCart(updateCartDto: UpdateCartItemDto): Promise<UpdateResult> {
+  updateCart(updateCartDto: UpdateCartItemDto): Promise<CartItem> {
     const { userId, productId, ...updateField } = updateCartDto;
-    return this.cartItemRepository.update({ userId, productId }, updateField);
+    this.cartItemRepository.update({ userId, productId }, updateField);
+
+    return this.cartItemRepository.findOne({ where: { userId, productId } });
   }
 
-  findCartItemByUserId(userId: string): Promise<CartItem[]> {
-    return this.cartItemRepository.find({ where: { userId } });
+  async findCartItemByUserId(userId: string): Promise<CartItem[]> {
+    const cartItems = await this.cartItemRepository.find({ where: { userId } });
+    return cartItems;
   }
 
-  find() {
+  find(): Promise<CartItem[]> {
     return this.cartItemRepository.find();
   }
 }

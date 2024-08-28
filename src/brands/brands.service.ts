@@ -1,5 +1,5 @@
 import { CreateBrandDto } from './dto/create-brand.dto';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, In, Repository, UpdateResult } from 'typeorm';
 import { Brand } from './brand.entity';
@@ -15,15 +15,15 @@ export class BrandsService {
   ) {}
 
   create(createBrandDto: CreateBrandDto): Promise<Brand> {
-    const newBrand = this.brandRepository.create(createBrandDto);
-    return this.brandRepository.save(newBrand);
+    const branch = this.brandRepository.create(createBrandDto);
+    return this.brandRepository.save(branch);
   }
 
   find(): Promise<Brand[]> {
     return this.brandRepository.find();
   }
 
-  async update(updateBrandDto: UpdateBrandDto): Promise<UpdateResult> {
+  async update(updateBrandDto: UpdateBrandDto): Promise<Brand> {
     const { id, productTypeIds, ...brand } = updateBrandDto;
 
     if (productTypeIds && productTypeIds.length > 0) {
@@ -34,14 +34,25 @@ export class BrandsService {
       brand.productTypes = productTypes;
     }
 
-    return this.brandRepository.update({ id }, brand);
+    this.brandRepository.update({ id }, brand);
+    return this.brandRepository.findOne({ where: { id } });
   }
 
-  deleteById(id: string): Promise<DeleteResult> {
-    return this.brandRepository.delete(id);
+  async deleteById(id: string): Promise<Brand> {
+    const brand = await this.brandRepository.findOne({ where: { id } });
+    if (!brand) {
+      throw new NotFoundException(`Brand with id ${id} not found`);
+    } else {
+      return this.brandRepository.remove(brand);
+    }
   }
 
-  deleteManyByIds(ids: string[]): Promise<DeleteResult> {
-    return this.brandRepository.delete({ id: In(ids) });
+  async deleteManyByIds(ids: string[]): Promise<Brand[]> {
+    const brands = await this.brandRepository.find({ where: { id: In(ids) } });
+    if (brands.length !== ids.length) {
+      throw new NotFoundException(`Some id in this list ${ids} is not exist`);
+    } else {
+      return this.brandRepository.remove(brands);
+    }
   }
 }

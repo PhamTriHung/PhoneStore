@@ -1,7 +1,7 @@
 import { Brand } from 'src/brands/brand.entity';
 import { CartItem } from 'src/cart-items/cart-item.entity';
 import { Category } from 'src/categories/category.entity';
-import { OrderItem } from 'src/order-items/order-item.entity';
+import { OrderItem } from 'src/orders/order-item.entity';
 import { ProductStore } from 'src/product-store/product-store.entity';
 import {
   Column,

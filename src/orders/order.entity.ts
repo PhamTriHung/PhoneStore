@@ -1,4 +1,4 @@
-import { OrderItem } from 'src/order-items/order-item.entity';
+import { OrderItem } from 'src/orders/order-item.entity';
 import { User } from 'src/users/users.entity';
 import {
   Column,
@@ -19,7 +19,7 @@ export class Order {
   @Column({ type: 'datetime' })
   orderDeliveredDate: Date;
 
-  @OneToMany(() => OrderItem, (orderItem) => orderItem.order, { cascade: true })
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.order)
   orderItems: OrderItem[];
 
   @ManyToOne(() => User, (user) => user.orders)

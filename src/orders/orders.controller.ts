@@ -23,7 +23,7 @@ export class OrdersController {
     this.orderService.makeOrder(makeOrderDtos);
   }
 
-  @Get()
+  @Get('search')
   listAllOrderByUserId(
     @Query('userId', new ParseUUIDPipe({ version: '4' })) userId: string,
   ) {
@@ -37,10 +37,22 @@ export class OrdersController {
     return this.orderService.findOrderByOrderId(id);
   }
 
+  @Get()
+  findAllOrder() {
+    return this.orderService.findAllOrder();
+  }
+
   @Delete(':id')
   deleteOrderById(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ) {
-    return this.deleteOrderById(id);
+    return this.orderService.deleteOrder(id);
+  }
+
+  @Patch()
+  updateOrderItemById(
+    @Body(ValidationPipe) updateOrderItemDto: UpdateOrderItemDto,
+  ) {
+    return this.orderService.updateOrderItem(updateOrderItemDto);
   }
 }

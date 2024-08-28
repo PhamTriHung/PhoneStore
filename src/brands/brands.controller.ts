@@ -34,7 +34,7 @@ export class BrandsController {
   update(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body(ValidationPipe) updateBrandDto: UpdateBrandDto,
-  ): Promise<UpdateResult> {
+  ): Promise<Brand> {
     updateBrandDto.id = id;
     return this.brandService.update(updateBrandDto);
   }
@@ -42,14 +42,14 @@ export class BrandsController {
   @Delete(':id')
   deleteById(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
-  ): Promise<DeleteResult> {
+  ): Promise<Brand> {
     return this.brandService.deleteById(id);
   }
 
   @Delete()
   deleteManyByIds(
     @Body(ValidationPipe) deleteManyBrandDto: DeleteManyBrandDto,
-  ): Promise<DeleteResult> {
+  ): Promise<Brand[]> {
     return this.brandService.deleteManyByIds(deleteManyBrandDto.ids);
   }
 }

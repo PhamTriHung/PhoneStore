@@ -42,14 +42,14 @@ export class CategoriesController {
   @Delete(':id')
   deleteProductTypeById(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
-  ): Promise<DeleteResult> {
+  ): Promise<Category> {
     return this.categoriesService.deleteById(id);
   }
 
   @Delete()
   deleteManyProductTypeByIds(
     @Body(ValidationPipe) deleteManyCategoryDto: DeleteManyCategoryDto,
-  ): Promise<DeleteResult> {
+  ): Promise<Category[]> {
     return this.categoriesService.deleteManyByIds(deleteManyCategoryDto.ids);
   }
 

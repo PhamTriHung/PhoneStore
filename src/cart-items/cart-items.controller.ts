@@ -11,7 +11,6 @@ import {
 } from '@nestjs/common';
 import { AddToCartDto } from './dto/add-to-cart.dto';
 import { DeleteFromCartDto } from './dto/delete-from-card.dto';
-import { DeleteResult, UpdateResult } from 'typeorm';
 import { CartItemsService } from './cart-items.service';
 import { CartItem } from './cart-item.entity';
 import { UpdateCartItemDto } from './dto/update-cart-item.dto';
@@ -30,14 +29,14 @@ export class CartItemsController {
   @Delete()
   deleteFromCart(
     @Body(ValidationPipe) deleteFromCartDto: DeleteFromCartDto,
-  ): Promise<DeleteResult> {
+  ): Promise<CartItem> {
     return this.cartItemService.deleteFromCart(deleteFromCartDto);
   }
 
   @Patch()
   updateCart(
     @Body(ValidationPipe) updateCartItemDto: UpdateCartItemDto,
-  ): Promise<UpdateResult> {
+  ): Promise<CartItem> {
     return this.cartItemService.updateCart(updateCartItemDto);
   }
 

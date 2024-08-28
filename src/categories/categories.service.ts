@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, In, Repository, UpdateResult } from 'typeorm';
+import { In, Not, Repository, UpdateResult } from 'typeorm';
 import { Brand } from 'src/brands/brand.entity';
 import { Category } from './category.entity';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -26,25 +26,61 @@ export class CategoriesService {
 
   async findByBrandId(brandId: string): Promise<Category[]> {
     const brand = await this.brandRepository.findOne({
-      where: { id: brandId },
+      where: {
+        id: brandId,
+      },
     });
 
-    return this.categoryRepository.find({ where: { brands: brand } });
+    if (!brand) {
+      throw new NotFoundException(`Brand with id ${brandId} not found`);
+    } else {
+      return this.categoryRepository.find({ where: { brands: brand } });
+    }
   }
 
   findOneById(id: string): Promise<Category> {
-    return this.categoryRepository.findOne({ where: { id } });
+    const category = this.categoryRepository.findOne({
+      where: {
+        id,
+      },
+    });
+
+    if (!category) {
+      throw new NotFoundException(`Category with Id ${id} not found`);
+    } else {
+      return category;
+    }
   }
 
   // hes loo
   // holaaaaaaaaaaaa
 
-  deleteById(id: string): Promise<DeleteResult> {
-    return this.categoryRepository.delete(id);
+  async deleteById(id: string): Promise<Category> {
+    const category = await this.categoryRepository.findOne({
+      where: {
+        id,
+      },
+    });
+
+    if (!category) {
+      throw new NotFoundException(`Category with Id ${id} not found`);
+    } else {
+      return this.categoryRepository.remove(category);
+    }
   }
 
-  deleteManyByIds(ids: string[]): Promise<DeleteResult> {
-    return this.categoryRepository.delete({ id: In(ids) });
+  async deleteManyByIds(ids: string[]): Promise<Category[]> {
+    const categories = await this.categoryRepository.find({
+      where: {
+        id: In(ids),
+      },
+    });
+
+    if (categories.length !== ids.length) {
+      throw new NotFoundException(`Some id in list ${ids} not found`);
+    } else {
+      return this.categoryRepository.remove(categories);
+    }
   }
 
   updateById(updateCategoryDto: UpdateCategoryDto): Promise<UpdateResult> {
