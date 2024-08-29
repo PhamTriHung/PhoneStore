@@ -31,7 +31,7 @@ export class AddressesController {
   }
 
   @Post('ward')
-  createWard(createWardDto: CreateWardDto) {
+  createWard(@Body(ValidationPipe) createWardDto: CreateWardDto) {
     return this.addressesService.createWard(createWardDto);
   }
 

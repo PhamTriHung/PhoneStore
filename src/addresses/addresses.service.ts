@@ -22,7 +22,7 @@ export class AddressesService {
 
   createCity(createCityDto: CreateCityDto) {
     const newCity = this.cityRepository.create(createCityDto);
-    this.cityRepository.save(newCity);
+    return this.cityRepository.save(newCity);
   }
 
   findAllCity() {
