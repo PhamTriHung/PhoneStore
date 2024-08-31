@@ -1,4 +1,4 @@
-import { IsUUID } from 'class-validator';
+import { IsIn, IsInt, IsUUID, Min } from 'class-validator';
 
 export class MakeOrderDto {
   @IsUUID(4)
@@ -7,5 +7,7 @@ export class MakeOrderDto {
   @IsUUID(4)
   productId: string;
 
+  @IsInt()
+  @Min(1)
   quantity: number;
 }

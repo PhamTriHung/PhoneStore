@@ -55,13 +55,13 @@ export class ReviewsService {
     }
   }
 
-  updateReview(updateReviewDto: UpdateReviewDto) {
+  async updateReview(updateReviewDto: UpdateReviewDto) {
     const { id, productId, userId, ...review } = updateReviewDto;
 
     review.product = this.productRepository.create({ id: productId });
     review.user = this.userRepository.create({ id: userId });
 
-    this.reviewRepository.update({ id }, review);
+    await this.reviewRepository.update({ id }, review);
     return this.reviewRepository.findOneBy({ id });
   }
 }

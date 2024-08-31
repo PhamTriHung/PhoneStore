@@ -1,6 +1,7 @@
 import { PartialType } from '@nestjs/mapped-types';
 import {
   IsBoolean,
+  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsPositive,
@@ -15,6 +16,7 @@ import {
 import { Product } from '../products.entity';
 
 export class CreateProductDto extends PartialType(Product) {
+  @IsNotEmpty()
   @IsString()
   @MinLength(5)
   @MaxLength(50)

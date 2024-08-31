@@ -8,6 +8,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
   ValidationPipe,
 } from '@nestjs/common';
 import { CreateReviewDto } from './dto/create-review.dto';
@@ -28,14 +29,14 @@ export class ReviewsController {
     return this.reviewsService.findAllReview();
   }
 
-  @Get()
-  filterReview(@Body(ValidationPipe) filterReviewDto: FilterReviewDto) {
+  @Get('search')
+  filterReview(@Query(ValidationPipe) filterReviewDto: FilterReviewDto) {
     return this.reviewsService.filterReview(filterReviewDto);
   }
 
   @Patch(':id')
   updateReview(
-    @Param(':id', new ParseUUIDPipe({ version: '4' })) id: string,
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updateReviewDto: UpdateReviewDto,
   ) {
     updateReviewDto.id = id;
@@ -43,7 +44,7 @@ export class ReviewsController {
   }
 
   @Delete(':id')
-  deleteReview(@Param(':id', new ParseUUIDPipe({ version: '4' })) id: string) {
+  deleteReview(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     return this.reviewsService.deleteReview(id);
   }
 }

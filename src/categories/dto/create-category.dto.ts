@@ -1,8 +1,15 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { IsString, Matches, MaxLength, MinLength } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  Matches,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 import { Category } from '../category.entity';
 
 export class CreateCategoryDto extends PartialType(Category) {
+  @IsNotEmpty()
   @IsString()
   @MinLength(5)
   @MaxLength(50)

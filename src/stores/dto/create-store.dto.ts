@@ -1,5 +1,6 @@
 import { PartialType } from '@nestjs/mapped-types';
 import {
+  IsNotEmpty,
   IsOptional,
   IsString,
   Matches,
@@ -9,6 +10,7 @@ import {
 import { Store } from '../store.entity';
 
 export class CreateStoreDto extends PartialType(Store) {
+  @IsNotEmpty()
   @IsString()
   @MinLength(5)
   @MaxLength(50)
@@ -19,6 +21,7 @@ export class CreateStoreDto extends PartialType(Store) {
   name: string;
 
   @IsOptional()
+  @IsNotEmpty()
   @IsString()
   @MinLength(5)
   @MaxLength(50)
