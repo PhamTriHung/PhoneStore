@@ -11,6 +11,7 @@ import {
 import { CartItem } from '../cart-items/cart-item.entity';
 import { Address } from 'src/addresses/address.entity';
 import { Order } from 'src/orders/order.entity';
+import { Review } from 'src/reviews/review.entity';
 
 @Entity()
 export class User {
@@ -37,4 +38,7 @@ export class User {
 
   @OneToMany(() => Order, (order) => order.user)
   orders: Order[];
+
+  @OneToMany(() => Review, (review) => review.user)
+  reviews: Review[];
 }
