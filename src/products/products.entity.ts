@@ -4,9 +4,11 @@ import { Category } from 'src/categories/category.entity';
 import { OrderItem } from 'src/orders/order-item.entity';
 import { ProductStore } from 'src/product-store/product-store.entity';
 import { Review } from 'src/reviews/review.entity';
+import { Tag } from 'src/tags/tag.entity';
 import {
   Column,
   Entity,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -55,4 +57,7 @@ export class Product {
 
   @ManyToOne(() => Category, (category) => category.products)
   category: Category;
+
+  @ManyToMany(() => Tag, (tag) => tag.products)
+  tags: Tag[];
 }

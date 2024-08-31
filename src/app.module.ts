@@ -17,6 +17,8 @@ import { AddressesModule } from './addresses/addresses.module';
 import { OrdersModule } from './orders/orders.module';
 import { CartItemsModule } from './cart-items/cart-items.module';
 import { ReviewsModule } from './reviews/reviews.module';
+import { TagsModule } from './tags/tags.module';
+import { TagCategoriesModule } from './tag-categories/tag-categories.module';
 
 @Module({
   imports: [
@@ -53,6 +55,8 @@ import { ReviewsModule } from './reviews/reviews.module';
     AddressesModule,
     OrdersModule,
     ReviewsModule,
+    TagsModule,
+    TagCategoriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

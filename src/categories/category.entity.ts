@@ -1,5 +1,6 @@
 import { Brand } from 'src/brands/brand.entity';
 import { Product } from 'src/products/products.entity';
+import { TagCategory } from 'src/tag-categories/tag-category.entity';
 import {
   Column,
   Entity,
@@ -17,10 +18,16 @@ export class Category {
   @Column({ type: 'varchar', length: 50 })
   value: string;
 
+  @Column({ type: 'varchar', length: 50 })
+  slug: string;
+
   @ManyToMany(() => Brand, (brand) => brand.productTypes)
   @JoinTable()
   brands: Brand[];
 
   @OneToMany(() => Product, (product) => product.category)
   products: Product[];
+
+  @OneToMany(() => TagCategory, (tagCategory) => tagCategory.category)
+  tagCategories: TagCategory[];
 }
