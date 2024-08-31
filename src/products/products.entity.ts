@@ -32,6 +32,12 @@ export class Product {
   @Column({ type: 'boolean' })
   isMonopoly: boolean;
 
+  @Column({ type: 'float', default: 0.0 })
+  rating: number;
+
+  @Column({ type: 'int', default: 0 })
+  numOfReview: number;
+
   @OneToMany(() => CartItem, (cartItem) => cartItem.product)
   cartItems: CartItem[];
 

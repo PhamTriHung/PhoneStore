@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product } from './products.entity';
 import { Brand } from 'src/brands/brand.entity';
 import { Category } from 'src/categories/category.entity';
+import { Review } from 'src/reviews/review.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Product, Brand, Category])],
