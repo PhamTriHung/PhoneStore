@@ -8,7 +8,6 @@ import { AuthModule } from './auth/auth.module';
 import EnvironmentVariables from './types/EnvironmentVariables';
 import { ProductsModule } from './products/products.module';
 import { ProductTypeModule } from './categories/categories.module';
-import { BrandsModule } from './brands/brands.module';
 import { StoresModule } from './stores/stores.module';
 import { ProductStoreModule } from './product-store/product-store.module';
 import { PhonesModule } from './phones/phones.module';
@@ -19,6 +18,7 @@ import { CartItemsModule } from './cart-items/cart-items.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { TagsModule } from './tags/tags.module';
 import { TagCategoriesModule } from './tag-categories/tag-categories.module';
+import { CouponsModule } from './coupons/coupons.module';
 
 @Module({
   imports: [
@@ -47,7 +47,6 @@ import { TagCategoriesModule } from './tag-categories/tag-categories.module';
     ProductsModule,
     CartItemsModule,
     ProductTypeModule,
-    BrandsModule,
     StoresModule,
     ProductStoreModule,
     PhonesModule,
@@ -57,6 +56,7 @@ import { TagCategoriesModule } from './tag-categories/tag-categories.module';
     ReviewsModule,
     TagsModule,
     TagCategoriesModule,
+    CouponsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

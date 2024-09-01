@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository, UpdateResult } from 'typeorm';
-import { Brand } from 'src/brands/brand.entity';
 import { Category } from './category.entity';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-product-type.dto';
@@ -11,7 +10,6 @@ export class CategoriesService {
   constructor(
     @InjectRepository(Category)
     private categoryRepository: Repository<Category>,
-    @InjectRepository(Brand) private brandRepository: Repository<Brand>,
   ) {}
 
   create(createCategoryDto: CreateCategoryDto): Promise<Category> {
@@ -24,20 +22,6 @@ export class CategoriesService {
     return this.categoryRepository.find({
       relations: { childCategories: true },
     });
-  }
-
-  async findByBrandId(brandId: string): Promise<Category[]> {
-    const brand = await this.brandRepository.findOne({
-      where: {
-        id: brandId,
-      },
-    });
-
-    if (!brand) {
-      throw new NotFoundException(`Brand with id ${brandId} not found`);
-    } else {
-      return this.categoryRepository.find({ where: { brands: brand } });
-    }
   }
 
   findOneById(id: string): Promise<Category> {

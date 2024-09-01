@@ -12,7 +12,6 @@ import {
   UpdateResult,
 } from 'typeorm';
 import { FilterProductDto } from './dto/filter-product.dto';
-import { Brand } from 'src/brands/brand.entity';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Category } from 'src/categories/category.entity';
 import { Tag } from 'src/tags/tag.entity';
@@ -21,7 +20,6 @@ import { Tag } from 'src/tags/tag.entity';
 export class ProductsService {
   constructor(
     @InjectRepository(Product) private productRepository: Repository<Product>,
-    @InjectRepository(Brand) private brandRepository: Repository<Brand>,
     @InjectRepository(Category)
     private categoryRepository: Repository<Category>,
     @InjectRepository(Tag) private tagRepository: Repository<Tag>,
@@ -31,12 +29,6 @@ export class ProductsService {
     const { brandId, productTypeId, ...product } = createProductDto;
 
     const newProduct = this.productRepository.create(product);
-
-    if (brandId) {
-      newProduct.brand = await this.brandRepository.findOne({
-        where: { id: brandId },
-      });
-    }
 
     if (productTypeId) {
       newProduct.category = await this.categoryRepository.findOne({
@@ -58,10 +50,6 @@ export class ProductsService {
       findProductOptionsWhere.price = MoreThan(lowestPrice);
     } else if (highestPrice) {
       findProductOptionsWhere.price = LessThan(highestPrice);
-    } else if (brandId) {
-      findProductOptionsWhere.brand = await this.brandRepository.findOne({
-        where: { id: brandId },
-      });
     } else if (productTypeId) {
       findProductOptionsWhere.category = await this.categoryRepository.findOne({
         where: { id: productTypeId },
@@ -108,12 +96,6 @@ export class ProductsService {
     updateProductDto: UpdateProductDto,
   ): Promise<UpdateResult> {
     const { id, brandId, productTypeId, ...product } = updateProductDto;
-
-    if (brandId) {
-      product.brand = await this.brandRepository.findOne({
-        where: { id: brandId },
-      });
-    }
 
     if (productTypeId) {
       product.category = await this.categoryRepository.findOne({

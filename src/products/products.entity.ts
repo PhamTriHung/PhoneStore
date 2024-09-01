@@ -1,4 +1,3 @@
-import { Brand } from 'src/brands/brand.entity';
 import { CartItem } from 'src/cart-items/cart-item.entity';
 import { Category } from 'src/categories/category.entity';
 import { Coupon } from 'src/coupons/coupon.entity';
@@ -49,9 +48,6 @@ export class Product {
 
   @OneToMany(() => Review, (review) => review.product)
   reviews: Review[];
-
-  @ManyToOne(() => Brand, (brand) => brand.products)
-  brand: Brand;
 
   @ManyToOne(() => Category, (category) => category.products)
   category: Category;
