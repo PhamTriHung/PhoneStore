@@ -1,6 +1,7 @@
 import { Brand } from 'src/brands/brand.entity';
 import { CartItem } from 'src/cart-items/cart-item.entity';
 import { Category } from 'src/categories/category.entity';
+import { Coupon } from 'src/coupons/coupon.entity';
 import { OrderItem } from 'src/orders/order-item.entity';
 import { ProductStore } from 'src/product-store/product-store.entity';
 import { Review } from 'src/reviews/review.entity';
@@ -57,4 +58,7 @@ export class Product {
 
   @ManyToMany(() => Tag, (tag) => tag.products)
   tags: Tag[];
+
+  @ManyToMany(() => Coupon, (coupon) => coupon.products)
+  coupons: Coupon[];
 }
