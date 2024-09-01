@@ -16,10 +16,10 @@ export class Category {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'varchar', length: 50 })
+  @Column({ type: 'nvarchar', length: 50 })
   value: string;
 
-  @Column({ type: 'varchar', length: 50 })
+  @Column({ type: 'nvarchar', length: 50, nullable: true })
   slug: string;
 
   @ManyToMany(() => Brand, (brand) => brand.productTypes)

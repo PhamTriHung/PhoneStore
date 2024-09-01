@@ -14,7 +14,7 @@ export class Tag {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'varchar', unique: true, length: 50 })
+  @Column({ type: 'nvarchar', unique: true, length: 50 })
   name: string;
 
   @ManyToMany(() => Product, (product) => product.tags)

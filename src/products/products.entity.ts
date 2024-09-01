@@ -20,19 +20,19 @@ export class Product {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'varchar', length: 50 })
+  @Column({ type: 'nvarchar', length: 50 })
   name: string;
 
-  @Column({ type: 'varchar', length: 50 })
+  @Column({ type: 'nvarchar', length: 50 })
   description: string;
 
-  @Column({ type: 'double' })
+  @Column({ type: 'float' })
   price: number;
 
   @Column({ type: 'date', nullable: true })
   releaseDate: Date;
 
-  @Column({ type: 'boolean' })
+  @Column({ type: 'bool' })
   isMonopoly: boolean;
 
   @Column({ type: 'float', default: 0.0 })

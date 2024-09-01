@@ -13,7 +13,7 @@ export class TagCategory {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'varchar', length: 50, unique: true })
+  @Column({ type: 'nvarchar', length: 50, unique: true })
   name: string;
 
   @OneToMany(() => Tag, (tag) => tag.tagCategory)

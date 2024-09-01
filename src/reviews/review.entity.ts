@@ -17,7 +17,7 @@ export class Review {
   @Column({ type: 'int' })
   rating: number;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'nvarchar' })
   reviewText: string;
 
   @CreateDateColumn()

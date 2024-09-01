@@ -13,22 +13,22 @@ export class Coupon {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ type: 'float' })
   discountAmount: number;
 
-  @Column()
+  @Column({ type: 'bool' })
   isPercentage: boolean;
 
-  @Column()
+  @Column({ type: 'datetime' })
   startDate: Date;
 
-  @Column()
+  @Column({ type: 'datetime' })
   endDate: Date;
 
-  @Column()
+  @Column({ type: 'int' })
   usagelimit: number;
 
-  @Column()
+  @Column({ type: 'int' })
   currentUsageCount: number;
 
   @ManyToMany(() => Product, (product) => product.coupons)
