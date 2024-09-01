@@ -1,3 +1,4 @@
+import { Coupon } from 'src/coupons/coupon.entity';
 import { OrderItem } from 'src/orders/order-item.entity';
 import { User } from 'src/users/users.entity';
 import {
@@ -21,6 +22,9 @@ export class Order {
 
   @OneToMany(() => OrderItem, (orderItem) => orderItem.order)
   orderItems: OrderItem[];
+
+  @ManyToOne(() => Coupon, (coupon) => coupon.orders)
+  coupon: Coupon;
 
   @ManyToOne(() => User, (user) => user.orders)
   user: User;
