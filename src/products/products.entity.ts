@@ -43,9 +43,6 @@ export class Product {
   @OneToMany(() => CartItem, (cartItem) => cartItem.product)
   cartItems: CartItem[];
 
-  @OneToMany(() => OrderItem, (cart) => cart.product)
-  orderItems: OrderItem[];
-
   @OneToMany(() => ProductStore, (productStore) => productStore.product)
   productStores: ProductStore[];
 

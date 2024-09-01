@@ -5,9 +5,8 @@ import { Repository } from 'typeorm';
 import { Order } from './order.entity';
 import { OrderItem } from 'src/orders/order-item.entity';
 import { User } from 'src/users/users.entity';
-import { Product } from 'src/products/products.entity';
 import { UpdateOrderItemDto } from './dto/update-order-item.dto';
-import { NotFoundError } from 'rxjs';
+import { ProductStore } from 'src/product-store/product-store.entity';
 
 @Injectable()
 export class OrdersService {
@@ -16,7 +15,8 @@ export class OrdersService {
     @InjectRepository(OrderItem)
     private orderItemRepository: Repository<OrderItem>,
     @InjectRepository(User) private userRepository: Repository<User>,
-    @InjectRepository(Product) private productRepository: Repository<Product>,
+    @InjectRepository(ProductStore)
+    private productStoreRepository: Repository<ProductStore>,
   ) {}
 
   async makeOrder(makeOrderDtos: MakeOrderDto[]) {
@@ -31,8 +31,9 @@ export class OrdersService {
       makeOrderDtos.forEach((carItem) => {
         const orderItem = this.orderItemRepository.create({
           quantity: carItem.quantity,
-          product: this.productRepository.create({
-            id: carItem.productId,
+          productStore: this.productStoreRepository.create({
+            productId: carItem.productId,
+            storeId: carItem.storeId,
           }),
         });
 
@@ -58,12 +59,12 @@ export class OrdersService {
       return this.orderRepository.find({
         where: { user },
         relations: {
-          orderItems: { product: true },
+          orderItems: { productStore: { product: true } },
         },
         select: {
           orderItems: {
-            productId: true,
-            product: { name: true, price: true },
+            productStoreId: true,
+            productStore: { product: { name: true, price: true } },
             quantity: true,
           },
         },
@@ -74,12 +75,12 @@ export class OrdersService {
   async findOrderByOrderId(id: string) {
     const order = await this.orderRepository.findOne({
       where: { id },
-      relations: { orderItems: { product: true } },
+      relations: { orderItems: { productStore: { product: true } } },
       select: {
         orderItems: {
           orderId: true,
-          productId: true,
-          product: { name: true, price: true },
+          productStoreId: true,
+          productStore: { product: { name: true, price: true } },
           quantity: true,
         },
       },
@@ -108,19 +109,24 @@ export class OrdersService {
   }
 
   updateOrderItem(updateOrderItemDto: UpdateOrderItemDto) {
-    const { productId, orderId, ...orderItem } = updateOrderItemDto;
-    return this.orderItemRepository.update({ productId, orderId }, orderItem);
+    const { productStoreId, orderId, ...orderItem } = updateOrderItemDto;
+    return this.orderItemRepository.update(
+      { productStoreId, orderId },
+      orderItem,
+    );
   }
 
   findAllOrder() {
     return this.orderRepository.find({
       relations: {
-        orderItems: { product: true },
+        orderItems: { productStore: { product: true } },
       },
       select: {
         orderItems: {
-          productId: true,
-          product: { name: true, price: true },
+          productStoreId: true,
+          productStore: {
+            product: { name: true, price: true },
+          },
           quantity: true,
         },
       },

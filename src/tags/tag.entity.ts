@@ -3,6 +3,7 @@ import { TagCategory } from 'src/tag-categories/tag-category.entity';
 import {
   Column,
   Entity,
+  JoinTable,
   ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -17,6 +18,7 @@ export class Tag {
   name: string;
 
   @ManyToMany(() => Product, (product) => product.tags)
+  @JoinTable()
   products: Product[];
 
   @ManyToOne(() => TagCategory, (tagCategory) => tagCategory.tags)

@@ -15,6 +15,7 @@ import { FilterProductDto } from './dto/filter-product.dto';
 import { Brand } from 'src/brands/brand.entity';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Category } from 'src/categories/category.entity';
+import { Tag } from 'src/tags/tag.entity';
 
 @Injectable()
 export class ProductsService {
@@ -23,12 +24,13 @@ export class ProductsService {
     @InjectRepository(Brand) private brandRepository: Repository<Brand>,
     @InjectRepository(Category)
     private categoryRepository: Repository<Category>,
+    @InjectRepository(Tag) private tagRepository: Repository<Tag>,
   ) {}
 
   async create(createProductDto: CreateProductDto): Promise<Product> {
     const { brandId, productTypeId, ...product } = createProductDto;
 
-    const newProduct = this.productRepository.create(createProductDto);
+    const newProduct = this.productRepository.create(product);
 
     if (brandId) {
       newProduct.brand = await this.brandRepository.findOne({
@@ -46,7 +48,7 @@ export class ProductsService {
   }
 
   async find(filterProductDto: FilterProductDto): Promise<Product[]> {
-    const { lowestPrice, highestPrice, brandId, productTypeId } =
+    const { lowestPrice, highestPrice, brandId, productTypeId, tagIds } =
       filterProductDto;
     const findProductOptionsWhere: FindOptionsWhere<Product | Product[]> = {};
 
@@ -64,11 +66,15 @@ export class ProductsService {
       findProductOptionsWhere.category = await this.categoryRepository.findOne({
         where: { id: productTypeId },
       });
-    }
+    } else if (tagIds) {
+      findProductOptionsWhere.tags = await this.tagRepository.findBy({
+        id: In(tagIds),
+      });
 
-    return Object.keys(findProductOptionsWhere).length > 0
-      ? this.productRepository.find({ where: findProductOptionsWhere })
-      : this.productRepository.find();
+      return Object.keys(findProductOptionsWhere).length > 0
+        ? this.productRepository.find({ where: findProductOptionsWhere })
+        : this.productRepository.find();
+    }
   }
 
   async findById(id: string): Promise<Product> {
@@ -95,11 +101,7 @@ export class ProductsService {
       where: { id: In(ids) },
     });
 
-    if (products.length === 0) {
-      throw new NotFoundException(`Some id in this list ${ids} is not exist`);
-    } else {
-      return this.productRepository.remove(products);
-    }
+    return this.productRepository.remove(products);
   }
 
   async updateProductById(
