@@ -6,6 +6,7 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -30,4 +31,10 @@ export class Category {
 
   @OneToMany(() => TagCategory, (tagCategory) => tagCategory.category)
   tagCategories: TagCategory[];
+
+  @ManyToOne(() => Category, (category) => category.childCategories)
+  parentCategory: Category;
+
+  @OneToMany(() => Category, (category) => category.parentCategory)
+  childCategories: Category[];
 }
