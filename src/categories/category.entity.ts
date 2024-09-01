@@ -35,6 +35,9 @@ export class Category {
   @ManyToOne(() => Category, (category) => category.childCategories)
   parentCategory: Category;
 
-  @OneToMany(() => Category, (category) => category.parentCategory)
+  @OneToMany(() => Category, (category) => category.parentCategory, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   childCategories: Category[];
 }
