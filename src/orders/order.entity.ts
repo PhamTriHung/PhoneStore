@@ -14,7 +14,7 @@ export class Order {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'datetime' })
+  @Column({ type: 'datetime', nullable: false })
   orderApprovedAt: Date;
 
   @Column({ type: 'datetime' })
