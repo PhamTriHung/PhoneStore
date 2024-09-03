@@ -3,6 +3,7 @@ import { ProductStore } from 'src/product-store/product-store.entity';
 import { Product } from 'src/products/products.entity';
 import {
   Entity,
+  JoinTable,
   ManyToMany,
   ManyToOne,
   OneToMany,
@@ -15,6 +16,7 @@ export class Variant {
   id: string;
 
   @ManyToMany(() => AttributeValue, (attributeValue) => attributeValue.variants)
+  @JoinTable()
   attributeValues: AttributeValue[];
 
   @ManyToOne(() => Product, (product) => product.variants)
