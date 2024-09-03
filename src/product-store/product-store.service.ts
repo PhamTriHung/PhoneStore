@@ -26,10 +26,10 @@ export class ProductStoreService {
   }
 
   update(updateProductStoreDto: UpdateProductStoreDto): Promise<UpdateResult> {
-    const { productId, storeId, ...productStore } = updateProductStoreDto;
+    const { variantId, storeId, ...productStore } = updateProductStoreDto;
 
     return this.productStoreRepository.update(
-      { productId, storeId },
+      { variantId, storeId },
       productStore,
     );
   }

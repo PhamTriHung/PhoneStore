@@ -1,10 +1,9 @@
 import { CartItem } from 'src/cart-items/cart-item.entity';
 import { Category } from 'src/categories/category.entity';
 import { Coupon } from 'src/coupons/coupon.entity';
-import { OrderItem } from 'src/orders/order-item.entity';
-import { ProductStore } from 'src/product-store/product-store.entity';
 import { Review } from 'src/reviews/review.entity';
 import { Tag } from 'src/tags/tag.entity';
+import { Variant } from 'src/variants/variant.entity';
 import {
   Column,
   Entity,
@@ -43,11 +42,11 @@ export class Product {
   @OneToMany(() => CartItem, (cartItem) => cartItem.product)
   cartItems: CartItem[];
 
-  @OneToMany(() => ProductStore, (productStore) => productStore.product)
-  productStores: ProductStore[];
-
   @OneToMany(() => Review, (review) => review.product)
   reviews: Review[];
+
+  @OneToMany(() => Variant, (variant) => variant.product)
+  variants: Variant[];
 
   @ManyToOne(() => Category, (category) => category.products)
   category: Category;

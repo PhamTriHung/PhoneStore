@@ -10,8 +10,6 @@ import { ProductsModule } from './products/products.module';
 import { ProductTypeModule } from './categories/categories.module';
 import { StoresModule } from './stores/stores.module';
 import { ProductStoreModule } from './product-store/product-store.module';
-import { PhonesModule } from './phones/phones.module';
-import { LaptopsModule } from './laptops/laptops.module';
 import { AddressesModule } from './addresses/addresses.module';
 import { OrdersModule } from './orders/orders.module';
 import { CartItemsModule } from './cart-items/cart-items.module';
@@ -19,6 +17,9 @@ import { ReviewsModule } from './reviews/reviews.module';
 import { TagsModule } from './tags/tags.module';
 import { TagCategoriesModule } from './tag-categories/tag-categories.module';
 import { CouponsModule } from './coupons/coupons.module';
+import { AttributesModule } from './attributes/attributes.module';
+import { VariantsModule } from './variants/variants.module';
+import { ShippingsModule } from './shippings/shippings.module';
 
 @Module({
   imports: [
@@ -49,14 +50,15 @@ import { CouponsModule } from './coupons/coupons.module';
     ProductTypeModule,
     StoresModule,
     ProductStoreModule,
-    PhonesModule,
-    LaptopsModule,
     AddressesModule,
     OrdersModule,
     ReviewsModule,
     TagsModule,
     TagCategoriesModule,
     CouponsModule,
+    AttributesModule,
+    VariantsModule,
+    ShippingsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

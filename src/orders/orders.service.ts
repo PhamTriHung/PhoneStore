@@ -32,7 +32,7 @@ export class OrdersService {
         const orderItem = this.orderItemRepository.create({
           quantity: carItem.quantity,
           productStore: this.productStoreRepository.create({
-            productId: carItem.productId,
+            variantId: carItem.variantId,
             storeId: carItem.storeId,
           }),
         });
@@ -59,12 +59,12 @@ export class OrdersService {
       return this.orderRepository.find({
         where: { user },
         relations: {
-          orderItems: { productStore: { product: true } },
+          orderItems: { productStore: { variant: true } },
         },
         select: {
           orderItems: {
             productStoreId: true,
-            productStore: { product: { name: true, price: true } },
+            productStore: { variant: { product: { name: true, price: true } } },
             quantity: true,
           },
         },
@@ -75,12 +75,14 @@ export class OrdersService {
   async findOrderByOrderId(id: string) {
     const order = await this.orderRepository.findOne({
       where: { id },
-      relations: { orderItems: { productStore: { product: true } } },
+      relations: {
+        orderItems: { productStore: { variant: { product: true } } },
+      },
       select: {
         orderItems: {
           orderId: true,
           productStoreId: true,
-          productStore: { product: { name: true, price: true } },
+          productStore: { variant: { product: { name: true, price: true } } },
           quantity: true,
         },
       },
@@ -119,13 +121,15 @@ export class OrdersService {
   findAllOrder() {
     return this.orderRepository.find({
       relations: {
-        orderItems: { productStore: { product: true } },
+        orderItems: { productStore: { variant: { product: true } } },
       },
       select: {
         orderItems: {
           productStoreId: true,
           productStore: {
-            product: { name: true, price: true },
+            variant: {
+              product: { name: true, price: true },
+            },
           },
           quantity: true,
         },

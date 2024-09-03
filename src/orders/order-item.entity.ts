@@ -1,6 +1,6 @@
 import { Order } from 'src/orders/order.entity';
 import { ProductStore } from 'src/product-store/product-store.entity';
-import { Product } from 'src/products/products.entity';
+import { ShippingGroup } from 'src/shippings/shipping-group.entity';
 import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
 
 @Entity()
@@ -14,12 +14,15 @@ export class OrderItem {
   @ManyToOne(() => ProductStore, (productStore) => productStore)
   productStore: ProductStore;
 
+  @Column({ type: 'int' })
+  quantity: number;
+
   @ManyToOne(() => Order, (order) => order.orderItems, {
     cascade: true,
     onDelete: 'CASCADE',
   })
   order: Order;
 
-  @Column({ type: 'int' })
-  quantity: number;
+  @ManyToOne(() => ShippingGroup, (shippingGroup) => shippingGroup.orderItems)
+  shippingGroup: ShippingGroup;
 }

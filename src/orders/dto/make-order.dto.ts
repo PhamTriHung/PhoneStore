@@ -5,7 +5,7 @@ export class MakeOrderDto {
   userId: string;
 
   @IsUUID(4)
-  productId: string;
+  variantId: string;
 
   @IsUUID(4)
   storeId: string;

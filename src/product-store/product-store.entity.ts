@@ -1,12 +1,12 @@
 import { OrderItem } from 'src/orders/order-item.entity';
-import { Product } from 'src/products/products.entity';
 import { Store } from 'src/stores/store.entity';
+import { Variant } from 'src/variants/variant.entity';
 import { Column, Entity, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
 
 @Entity()
 export class ProductStore {
   @PrimaryColumn()
-  productId: string;
+  variantId: string;
 
   @PrimaryColumn()
   storeId: string;
@@ -14,11 +14,11 @@ export class ProductStore {
   @Column({ type: 'int' })
   quantity: number;
 
-  @ManyToOne(() => Product, (product) => product.productStores, {
+  @ManyToOne(() => Variant, (variant) => variant.productStores, {
     cascade: true,
     onDelete: 'CASCADE',
   })
-  product: Product;
+  variant: Variant;
 
   @OneToMany(() => OrderItem, (orderItem) => orderItem.productStore)
   orderItems: OrderItem[];
