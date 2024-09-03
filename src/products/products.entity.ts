@@ -1,3 +1,4 @@
+import { Attribute } from 'src/attributes/attribute.entity';
 import { CartItem } from 'src/cart-items/cart-item.entity';
 import { Category } from 'src/categories/category.entity';
 import { Coupon } from 'src/coupons/coupon.entity';
@@ -56,4 +57,7 @@ export class Product {
 
   @ManyToMany(() => Coupon, (coupon) => coupon.products)
   coupons: Coupon[];
+
+  @ManyToMany(() => Attribute, (attribute) => attribute.products)
+  attributes: Attribute[];
 }

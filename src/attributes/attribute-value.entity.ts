@@ -6,7 +6,6 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Attribute } from './attribute.entity';
-import { Product } from 'src/products/products.entity';
 import { Variant } from 'src/variants/variant.entity';
 
 @Entity()
