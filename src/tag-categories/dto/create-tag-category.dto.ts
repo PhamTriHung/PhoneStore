@@ -1,7 +1,9 @@
 import { PartialType } from '@nestjs/mapped-types';
 import {
   IsNotEmpty,
+  IsOptional,
   IsString,
+  IsUUID,
   Matches,
   MaxLength,
   MinLength,
@@ -18,4 +20,8 @@ export class CreateTagCategoryDto extends PartialType(TagCategory) {
       'Product name can only contain letters, numbers, spaces, and hyphens.',
   })
   name: string;
+
+  @IsOptional()
+  @IsUUID('4')
+  categoryId?: string;
 }

@@ -32,8 +32,9 @@ export class CreateProductDto extends PartialType(Product) {
   @Max(200000000)
   price: number;
 
+  @IsOptional()
   @IsBoolean()
-  isInStock: boolean;
+  isInStock?: boolean;
 
   @IsOptional()
   @IsUUID(4)

@@ -10,7 +10,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { TagCategoriesService } from './tag-categories.service';
-import { CreateTagCategoryDto } from './dto/create-tag.dto';
+import { CreateTagCategoryDto } from './dto/create-tag-category.dto';
 import { UpdateTagCategoryDto } from './dto/udpate-tag.dto';
 
 @Controller('tag-categories')
