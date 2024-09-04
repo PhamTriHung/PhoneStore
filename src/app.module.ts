@@ -20,6 +20,7 @@ import { CouponsModule } from './coupons/coupons.module';
 import { AttributesModule } from './attributes/attributes.module';
 import { VariantsModule } from './variants/variants.module';
 import { ShippingsModule } from './shippings/shippings.module';
+import { CartsModule } from './carts/carts.module';
 
 @Module({
   imports: [
@@ -59,6 +60,7 @@ import { ShippingsModule } from './shippings/shippings.module';
     AttributesModule,
     VariantsModule,
     ShippingsModule,
+    CartsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

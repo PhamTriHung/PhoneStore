@@ -1,6 +1,7 @@
 import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
 import { User } from '../users/users.entity';
 import { Product } from 'src/products/products.entity';
+import { Cart } from 'src/carts/cart.entity';
 
 @Entity()
 export class CartItem {
@@ -10,8 +11,8 @@ export class CartItem {
   @PrimaryColumn()
   productId: string;
 
-  @ManyToOne(() => User, (user) => user.cartItems)
-  user: User;
+  @ManyToOne(() => Cart, (cart) => cart.cartItems)
+  cart: Cart;
 
   @ManyToOne(() => Product, (product) => product.cartItems)
   product: Product;

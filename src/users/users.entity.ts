@@ -12,6 +12,7 @@ import { CartItem } from '../cart-items/cart-item.entity';
 import { Address } from 'src/addresses/address.entity';
 import { Order } from 'src/orders/order.entity';
 import { Review } from 'src/reviews/review.entity';
+import { Cart } from 'src/carts/cart.entity';
 
 @Entity()
 export class User {
@@ -30,9 +31,6 @@ export class User {
   @Column()
   phone: string;
 
-  @OneToMany(() => CartItem, (cartItem) => cartItem.user)
-  cartItems: CartItem[];
-
   @OneToMany(() => Address, (address) => address.user)
   addresses: Address[];
 
@@ -41,4 +39,7 @@ export class User {
 
   @OneToMany(() => Review, (review) => review.user)
   reviews: Review[];
+
+  @OneToMany(() => Cart, (cart) => cart.user)
+  carts: Cart[];
 }
