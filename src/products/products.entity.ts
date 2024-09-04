@@ -40,9 +40,6 @@ export class Product {
   @Column({ type: 'int', default: 0 })
   numOfReview: number;
 
-  @OneToMany(() => CartItem, (cartItem) => cartItem.product)
-  cartItems: CartItem[];
-
   @OneToMany(() => Review, (review) => review.product)
   reviews: Review[];
 

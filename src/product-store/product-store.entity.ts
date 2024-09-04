@@ -1,3 +1,4 @@
+import { CartItem } from 'src/cart-items/cart-item.entity';
 import { OrderItem } from 'src/orders/order-item.entity';
 import { Store } from 'src/stores/store.entity';
 import { Variant } from 'src/variants/variant.entity';
@@ -22,6 +23,9 @@ export class ProductStore {
 
   @OneToMany(() => OrderItem, (orderItem) => orderItem.productStore)
   orderItems: OrderItem[];
+
+  @OneToMany(() => CartItem, (cartItem) => cartItem.productStore)
+  cartItems: CartItem[];
 
   @ManyToOne(() => Store, (store) => store.productStores)
   store: Store;
