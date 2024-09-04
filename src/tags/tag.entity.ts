@@ -18,7 +18,6 @@ export class Tag {
   name: string;
 
   @ManyToMany(() => Product, (product) => product.tags)
-  @JoinTable()
   products: Product[];
 
   @ManyToOne(() => TagCategory, (tagCategory) => tagCategory.tags)

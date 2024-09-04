@@ -7,7 +7,6 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-
 @Entity()
 export class Coupon {
   @PrimaryGeneratedColumn('uuid')
