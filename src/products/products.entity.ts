@@ -1,5 +1,3 @@
-import { Attribute } from 'src/attributes/attribute.entity';
-import { CartItem } from 'src/cart-items/cart-item.entity';
 import { Category } from 'src/categories/category.entity';
 import { Coupon } from 'src/coupons/coupon.entity';
 import { Review } from 'src/reviews/review.entity';
@@ -8,6 +6,7 @@ import { Variant } from 'src/variants/variant.entity';
 import {
   Column,
   Entity,
+  JoinTable,
   ManyToMany,
   ManyToOne,
   OneToMany,
@@ -22,7 +21,7 @@ export class Product {
   @Column({ type: 'nvarchar', length: 50 })
   name: string;
 
-  @Column({ type: 'nvarchar', length: 50 })
+  @Column({ type: 'nvarchar', length: 50, nullable: true })
   description: string;
 
   @Column({ type: 'float' })
@@ -31,8 +30,11 @@ export class Product {
   @Column({ type: 'date', nullable: true })
   releaseDate: Date;
 
-  @Column({ type: 'bool' })
+  @Column({ type: 'bool', default: false })
   isMonopoly: boolean;
+
+  @Column({ type: 'int', default: 0 })
+  quantity: number;
 
   @Column({ type: 'float', default: 0.0 })
   rating: number;
@@ -43,18 +45,17 @@ export class Product {
   @OneToMany(() => Review, (review) => review.product)
   reviews: Review[];
 
-  @OneToMany(() => Variant, (variant) => variant.product)
+  @OneToMany(() => Variant, (variant) => variant.product, { cascade: true })
   variants: Variant[];
 
   @ManyToOne(() => Category, (category) => category.products)
   category: Category;
 
   @ManyToMany(() => Tag, (tag) => tag.products)
+  @JoinTable()
   tags: Tag[];
 
   @ManyToMany(() => Coupon, (coupon) => coupon.products)
+  @JoinTable()
   coupons: Coupon[];
-
-  @ManyToMany(() => Attribute, (attribute) => attribute.products)
-  attributes: Attribute[];
 }
