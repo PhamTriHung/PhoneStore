@@ -1,7 +1,9 @@
 import { PartialType } from '@nestjs/mapped-types';
 import {
   IsNotEmpty,
+  IsOptional,
   IsString,
+  IsUUID,
   Matches,
   MaxLength,
   MinLength,
@@ -18,4 +20,12 @@ export class CreateCategoryDto extends PartialType(Category) {
       'Category value can only contain letters, numbers, spaces, and hyphens.',
   })
   value: string;
+
+  @IsOptional()
+  @IsUUID('4')
+  parentCategoryId: string;
+
+  @IsOptional()
+  @IsUUID('4', { each: true })
+  childCategoryIds: string[];
 }

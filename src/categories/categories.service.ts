@@ -12,15 +12,53 @@ export class CategoriesService {
     private categoryRepository: Repository<Category>,
   ) {}
 
-  create(createCategoryDto: CreateCategoryDto): Promise<Category> {
-    const newProductType = this.categoryRepository.create(createCategoryDto);
+  async create(createCategoryDto: CreateCategoryDto): Promise<Category> {
+    const { parentCategoryId, childCategoryIds, ...category } =
+      createCategoryDto;
 
-    return this.categoryRepository.save(newProductType);
+    const newCategory = this.categoryRepository.create(category);
+
+    if (parentCategoryId) {
+      const parentCategory = await this.categoryRepository.findOneBy({
+        id: parentCategoryId,
+      });
+
+      if (!parentCategory) {
+        throw new NotFoundException(
+          `Category with id ${parentCategory} not found`,
+        );
+      } else {
+        newCategory.parentCategory = parentCategory;
+      }
+    }
+
+    if (childCategoryIds && childCategoryIds.length > 0) {
+      const childCategories = await this.categoryRepository.findBy({
+        id: In(childCategoryIds),
+      });
+
+      if (childCategoryIds.length !== childCategories.length) {
+        const foundIds = childCategories.map(
+          (childCategory) => childCategory.id,
+        );
+        const notFoundIds = childCategoryIds.filter(
+          (id) => !foundIds.includes(id),
+        );
+
+        throw new NotFoundException(
+          `Category not found for ids ${notFoundIds.join(', ')}`,
+        );
+      } else {
+        newCategory.childCategories = childCategories;
+      }
+    }
+
+    return this.categoryRepository.save(newCategory);
   }
 
   find(): Promise<Category[]> {
     return this.categoryRepository.find({
-      relations: { childCategories: true },
+      relations: { childCategories: true, tagCategories: { tags: true } },
     });
   }
 
@@ -28,6 +66,10 @@ export class CategoriesService {
     const category = this.categoryRepository.findOne({
       where: {
         id,
+      },
+      relations: {
+        childCategories: true,
+        tagCategories: { tags: true },
       },
     });
 
@@ -63,14 +105,58 @@ export class CategoriesService {
     });
 
     if (categories.length !== ids.length) {
-      throw new NotFoundException(`Some id in list ${ids} not found`);
+      const foundIds = categories.map((attr) => attr.id);
+      const notFoundIds = ids.filter((id) => !foundIds.includes(id));
+
+      throw new NotFoundException(
+        `Category not found for IDs: ${notFoundIds.join(', ')}`,
+      );
     } else {
       return this.categoryRepository.remove(categories);
     }
   }
 
-  updateById(updateCategoryDto: UpdateCategoryDto): Promise<UpdateResult> {
-    const { id, value } = updateCategoryDto;
-    return this.categoryRepository.update({ id }, { value });
+  async updateById(updateCategoryDto: UpdateCategoryDto) {
+    const { id, parentCategoryId, childCategoryIds, ...category } =
+      updateCategoryDto;
+
+    if (parentCategoryId) {
+      const parentCategory = await this.categoryRepository.findOneBy({
+        id: parentCategoryId,
+      });
+
+      if (!parentCategory) {
+        throw new NotFoundException(
+          `Category with id ${parentCategory} not found`,
+        );
+      } else {
+        category.parentCategory = parentCategory;
+      }
+    }
+
+    if (childCategoryIds && childCategoryIds.length > 0) {
+      const childCategories = await this.categoryRepository.findBy({
+        id: In(childCategoryIds),
+      });
+
+      if (childCategoryIds.length !== childCategories.length) {
+        const foundIds = childCategories.map(
+          (childCategory) => childCategory.id,
+        );
+        const notFoundIds = childCategoryIds.filter(
+          (id) => !foundIds.includes(id),
+        );
+
+        throw new NotFoundException(
+          `Category not found for ids ${notFoundIds.join(', ')}`,
+        );
+      } else {
+        category.childCategories = childCategories;
+      }
+    }
+
+    await this.categoryRepository.update({ id }, category);
+
+    return this.categoryRepository.findOneBy({ id });
   }
 }
