@@ -17,15 +17,23 @@ export class TagsService {
     private tagCategoryRepository: Repository<TagCategory>,
   ) {}
 
-  createTag(createTagDto: CreateTagDto) {
+  async createTag(createTagDto: CreateTagDto) {
     const { name, tagCategoryId } = createTagDto;
 
     const newTag = this.tagRepository.create({ name });
 
     if (tagCategoryId) {
-      newTag.tagCategory = this.tagCategoryRepository.create({
+      const tagCategory = await this.tagCategoryRepository.findOneBy({
         id: tagCategoryId,
       });
+
+      if (!tagCategory) {
+        throw new NotFoundException(
+          `Tag category with id ${tagCategoryId} not found`,
+        );
+      } else {
+        newTag.tagCategory = tagCategory;
+      }
     }
 
     this.tagRepository.save(newTag);
@@ -66,7 +74,22 @@ export class TagsService {
   }
 
   async updateTag(updateTagDto: UpdateTagDto) {
-    const { id, ...tag } = updateTagDto;
+    const { id, tagCategoryId, ...tag } = updateTagDto;
+
+    if (tagCategoryId) {
+      const tagCategory = await this.tagCategoryRepository.findOneBy({
+        id: tagCategoryId,
+      });
+
+      if (!tagCategory) {
+        throw new NotFoundException(
+          `Tag category with id ${tagCategoryId} not found`,
+        );
+      } else {
+        tag.tagCategory = tagCategory;
+      }
+    }
+
     await this.tagRepository.update({ id }, tag);
 
     return this.tagRepository.findOneBy({ id });
