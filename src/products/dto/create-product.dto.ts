@@ -37,9 +37,13 @@ export class CreateProductDto extends PartialType(Product) {
 
   @IsOptional()
   @IsUUID(4)
-  brandId?: string;
+  categoryId?: string;
 
   @IsOptional()
-  @IsUUID(4)
-  productTypeId?: string;
+  @IsUUID(4, { each: true })
+  tagIds?: string[];
+
+  @IsOptional()
+  @IsUUID(4, { each: true })
+  attributeValueIds?: string[];
 }

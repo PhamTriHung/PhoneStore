@@ -12,11 +12,7 @@ export class FilterProductDto {
 
   @IsUUID(4)
   @IsOptional()
-  brandId: string;
-
-  @IsUUID(4)
-  @IsOptional()
-  productTypeId: string;
+  categoryId: string;
 
   @IsUUID(4, { each: true })
   @IsOptional()
