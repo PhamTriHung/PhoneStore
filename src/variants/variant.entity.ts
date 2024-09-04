@@ -20,7 +20,6 @@ export class Variant {
   attributeValues: AttributeValue[];
 
   @ManyToOne(() => Product, (product) => product.variants)
-  @JoinTable()
   product: Product;
 
   @OneToMany(() => ProductStore, (productStore) => productStore.variant)
