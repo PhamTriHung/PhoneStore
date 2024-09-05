@@ -14,7 +14,9 @@ import { DeleteFromCartDto } from './dto/delete-from-card.dto';
 import { CartItemsService } from './cart-items.service';
 import { CartItem } from './cart-item.entity';
 import { UpdateCartItemDto } from './dto/update-cart-item.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('cart-items')
 @Controller('cart-items')
 export class CartItemsController {
   constructor(private cartItemService: CartItemsService) {}

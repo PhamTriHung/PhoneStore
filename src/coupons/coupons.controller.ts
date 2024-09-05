@@ -14,7 +14,9 @@ import { CreateCouponDto } from './dto/create-coupon.dto';
 import { CouponsService } from './coupons.service';
 import { FindCouponDto } from './dto/find-coupon-dto';
 import { UpdateCouponDto } from './dto/update-coupon.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('coupons')
 @Controller('coupons')
 export class CouponsController {
   constructor(private couponsService: CouponsService) {}

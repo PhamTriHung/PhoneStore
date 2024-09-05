@@ -12,7 +12,9 @@ import {
 import { TagCategoriesService } from './tag-categories.service';
 import { CreateTagCategoryDto } from './dto/create-tag-category.dto';
 import { UpdateTagCategoryDto } from './dto/udpate-tag.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('tag-categories')
 @Controller('tag-categories')
 export class TagCategoriesController {
   constructor(private tagCategoriesService: TagCategoriesService) {}

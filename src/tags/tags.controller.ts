@@ -15,7 +15,9 @@ import { CreateTagDto } from './dto/create-tag.dto';
 import { FilterTagDto } from './dto/filter-tag.dto';
 import { UpdateTagDto } from './dto/update-tag.dto';
 import { DeleteManyTagDto } from './dto/delete-many-tag.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('tags')
 @Controller('tags')
 export class TagsController {
   constructor(private tagsService: TagsService) {}

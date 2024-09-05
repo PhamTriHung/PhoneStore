@@ -16,7 +16,9 @@ import { CreateWardDto } from './dto/create-ward.dto';
 import { UpdateCityDto } from './dto/update-city.dto';
 import { UpdateDistrictDto } from './dto/update-district.dto';
 import { UpdateWardDto } from './dto/update-ward.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('addressess')
 @Controller('addresses')
 export class AddressesController {
   constructor(private addressesService: AddressesService) {}

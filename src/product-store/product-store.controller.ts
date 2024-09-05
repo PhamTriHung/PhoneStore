@@ -13,7 +13,9 @@ import { ProductStore } from './product-store.entity';
 import { UpdateResult } from 'typeorm';
 import { UpdateProductStoreDto } from './dto/update-product-store.dto';
 import { DeleteProductStoreDto } from './dto/delete-product-store.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('product-stores')
 @Controller('product-stores')
 export class ProductStoreController {
   constructor(private productStoreService: ProductStoreService) {}

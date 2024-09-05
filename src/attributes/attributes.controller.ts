@@ -14,7 +14,9 @@ import { CreateAttributeValueDto } from './dto/create-attribute-value.dto';
 import { UpdateAttributeValueDto } from './dto/update-attribute-value.dto';
 import { CreateAttributeDto } from './dto/create-attribute.dto';
 import { UpdateAttributeDto } from './dto/update-attribute.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('attributes')
 @Controller('attributes')
 export class AttributesController {
   constructor(private attributesService: AttributesService) {}

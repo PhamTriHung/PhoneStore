@@ -14,7 +14,9 @@ import { CreateStoreDto } from './dto/create-store.dto';
 import { Store } from './store.entity';
 import { UpdateResult } from 'typeorm';
 import { UpdateStoreDto } from './dto/update-store.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('stores')
 @Controller('stores')
 export class StoresController {
   constructor(private storeService: StoresService) {}

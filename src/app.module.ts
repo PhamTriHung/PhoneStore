@@ -21,6 +21,7 @@ import { AttributesModule } from './attributes/attributes.module';
 import { VariantsModule } from './variants/variants.module';
 import { ShippingsModule } from './shippings/shippings.module';
 import { CartsModule } from './carts/carts.module';
+import { CaslModule } from './casl/casl.module';
 
 @Module({
   imports: [
@@ -61,6 +62,7 @@ import { CartsModule } from './carts/carts.module';
     VariantsModule,
     ShippingsModule,
     CartsModule,
+    CaslModule,
   ],
   controllers: [AppController],
   providers: [AppService],
