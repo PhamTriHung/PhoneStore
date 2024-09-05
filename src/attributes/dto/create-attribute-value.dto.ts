@@ -1,8 +1,8 @@
-import { PartialType } from '@nestjs/mapped-types';
+import { PartialType } from '@nestjs/swagger';
 import { AttributeValue } from '../attribute-value.entity';
 import { IsNotEmpty, IsString, Length, Matches, IsUUID } from 'class-validator';
 
-export class CreateAttributeValueDto extends PartialType(AttributeValue) {
+export class CreateAttributeValueDto {
   @IsString()
   @IsNotEmpty()
   @Length(2, 50)

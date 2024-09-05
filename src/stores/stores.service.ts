@@ -20,9 +20,8 @@ export class StoresService {
     return this.storeRepository.find();
   }
 
-  update(updateStoreDto: UpdateStoreDto) {
-    const { id, ...store } = updateStoreDto;
-    return this.storeRepository.update({ id }, store);
+  update(id: string, updateStoreDto: UpdateStoreDto) {
+    return this.storeRepository.update({ id }, updateStoreDto);
   }
 
   delete(id: string) {

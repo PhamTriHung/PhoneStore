@@ -60,7 +60,6 @@ export class CategoriesController {
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body(ValidationPipe) updateCategoryDto: UpdateCategoryDto,
   ) {
-    updateCategoryDto.id = id;
-    return this.categoriesService.updateById(updateCategoryDto);
+    return this.categoriesService.updateById(id, updateCategoryDto);
   }
 }

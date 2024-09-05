@@ -1,4 +1,4 @@
-import { PartialType } from '@nestjs/mapped-types';
+import { PartialType } from '@nestjs/swagger';
 import {
   IsBoolean,
   IsNotEmpty,
@@ -15,7 +15,7 @@ import {
 } from 'class-validator';
 import { Product } from '../products.entity';
 
-export class CreateProductDto extends PartialType(Product) {
+export class CreateProductDto {
   @IsNotEmpty()
   @IsString()
   @MinLength(5)

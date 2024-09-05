@@ -111,9 +111,11 @@ export class ProductsService {
   }
 
   async updateProductById(
+    id: string,
     updateProductDto: UpdateProductDto,
   ): Promise<UpdateResult> {
-    const { id, categoryId, tagIds, ...product } = updateProductDto;
+    const { categoryId, tagIds } = updateProductDto;
+    const product = this.productRepository.create();
 
     if (categoryId) {
       product.category = await this.categoryRepository.findOne({

@@ -7,7 +7,7 @@ import {
 } from 'class-validator';
 import { City } from '../city.entity';
 
-export class CreateCityDto extends City {
+export class CreateCityDto {
   @IsNotEmpty()
   @IsString()
   @MinLength(5)

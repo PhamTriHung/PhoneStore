@@ -41,7 +41,7 @@ export class ProductStoreService {
 
     if (!productStore) {
       throw new NotFoundException(
-        `Product store with productId ${deleteProductStoreDto.productId} and storeId ${deleteProductStoreDto.storeId} not found`,
+        `Product store with variantId ${deleteProductStoreDto.variantId} and storeId ${deleteProductStoreDto.storeId} not found`,
       );
     } else {
       return this.productStoreRepository.remove(productStore);

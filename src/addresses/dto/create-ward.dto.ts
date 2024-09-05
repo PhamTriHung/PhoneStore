@@ -1,4 +1,4 @@
-import { PartialType } from '@nestjs/mapped-types';
+import { PartialType } from '@nestjs/swagger';
 import { Ward } from '../ward.entity';
 import {
   IsNotEmpty,
@@ -8,7 +8,7 @@ import {
   MinLength,
 } from 'class-validator';
 
-export class CreateWardDto extends PartialType(Ward) {
+export class CreateWardDto {
   @IsNotEmpty()
   @IsString()
   @MinLength(5)

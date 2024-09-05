@@ -53,11 +53,10 @@ export class AttributesService {
     updateAttributeValueDto: UpdateAttributeValueDto,
   ) {
     const { attributeId } = updateAttributeValueDto;
+    const attributeValue = this.attributeValuesRepository.create();
 
     if (attributeId) {
-      updateAttributeValueDto.attribute = await this.findAttributeById(
-        attributeId,
-      );
+      attributeValue.attribute = await this.findAttributeById(attributeId);
     }
 
     await this.attributeValuesRepository.update(

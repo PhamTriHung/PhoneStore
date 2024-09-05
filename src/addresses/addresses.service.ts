@@ -33,9 +33,8 @@ export class AddressesService {
     return this.cityRepository.findOneBy({ id });
   }
 
-  updateCityById(updateCityDto: UpdateCityDto) {
-    const { id, ...city } = updateCityDto;
-    return this.cityRepository.update({ id }, city);
+  updateCityById(id: string, updateCityDto: UpdateCityDto) {
+    return this.cityRepository.update({ id }, updateCityDto);
   }
 
   async deleteCityById(id: string) {
@@ -72,9 +71,8 @@ export class AddressesService {
     }
   }
 
-  updateDistrictById(updateDistrictDto: UpdateDistrictDto) {
-    const { id, ...district } = updateDistrictDto;
-    this.districtRepository.update({ id }, district);
+  updateDistrictById(id: string, updateDistrictDto: UpdateDistrictDto) {
+    this.districtRepository.update({ id }, updateDistrictDto);
   }
 
   createWard(createWardDto: CreateWardDto) {
@@ -106,8 +104,7 @@ export class AddressesService {
     }
   }
 
-  updateWardById(updateWardDto: UpdateWardDto) {
-    const { id, ...ward } = updateWardDto;
-    return this.wardRepository.update({ id }, ward);
+  updateWardById(id: string, updateWardDto: UpdateWardDto) {
+    return this.wardRepository.update({ id }, updateWardDto);
   }
 }

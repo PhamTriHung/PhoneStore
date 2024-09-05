@@ -116,9 +116,10 @@ export class CategoriesService {
     }
   }
 
-  async updateById(updateCategoryDto: UpdateCategoryDto) {
-    const { id, parentCategoryId, childCategoryIds, ...category } =
-      updateCategoryDto;
+  async updateById(id: string, updateCategoryDto: UpdateCategoryDto) {
+    const { parentCategoryId, childCategoryIds } = updateCategoryDto;
+
+    const category = this.categoryRepository.create();
 
     if (parentCategoryId) {
       const parentCategory = await this.categoryRepository.findOneBy({
@@ -155,7 +156,7 @@ export class CategoriesService {
       }
     }
 
-    await this.categoryRepository.update({ id }, category);
+    await this.categoryRepository.update(id, category);
 
     return this.categoryRepository.findOneBy({ id });
   }

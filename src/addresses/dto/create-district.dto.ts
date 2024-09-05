@@ -1,5 +1,5 @@
 import { District } from './../district.entity';
-import { PartialType } from '@nestjs/mapped-types';
+import { PartialType } from '@nestjs/swagger';
 import {
   IsNotEmpty,
   IsString,
@@ -8,7 +8,7 @@ import {
   MinLength,
 } from 'class-validator';
 
-export class CreateDistrictDto extends PartialType(District) {
+export class CreateDistrictDto {
   @IsNotEmpty()
   @IsString()
   @MinLength(5)

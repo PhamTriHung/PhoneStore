@@ -38,8 +38,7 @@ export class StoresController {
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body(ValidationPipe) updateStoreDto: UpdateStoreDto,
   ): Promise<UpdateResult> {
-    updateStoreDto.id = id;
-    return this.storeService.update(updateStoreDto);
+    return this.storeService.update(id, updateStoreDto);
   }
 
   @Delete(':id')

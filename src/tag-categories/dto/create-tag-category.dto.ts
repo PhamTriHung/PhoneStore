@@ -1,4 +1,4 @@
-import { PartialType } from '@nestjs/mapped-types';
+import { PartialType } from '@nestjs/swagger';
 import {
   IsNotEmpty,
   IsOptional,
@@ -10,7 +10,7 @@ import {
 } from 'class-validator';
 import { TagCategory } from '../tag-category.entity';
 
-export class CreateTagCategoryDto extends PartialType(TagCategory) {
+export class CreateTagCategoryDto {
   @IsNotEmpty()
   @IsString()
   @MinLength(5)

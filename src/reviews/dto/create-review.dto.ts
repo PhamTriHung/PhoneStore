@@ -1,4 +1,4 @@
-import { PartialType } from '@nestjs/mapped-types';
+import { PartialType } from '@nestjs/swagger';
 import { Review } from '../review.entity';
 import {
   IsInt,
@@ -10,7 +10,7 @@ import {
   Min,
 } from 'class-validator';
 
-export class CreateReviewDto extends PartialType(Review) {
+export class CreateReviewDto {
   @IsUUID('4')
   userId: string;
 

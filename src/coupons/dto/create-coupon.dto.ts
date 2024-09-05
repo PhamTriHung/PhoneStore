@@ -1,4 +1,4 @@
-import { PartialType } from '@nestjs/mapped-types';
+import { PartialType } from '@nestjs/swagger';
 import { Coupon } from '../coupon.entity';
 
-export class CreateCouponDto extends PartialType(Coupon) {}
+export class CreateCouponDto {}

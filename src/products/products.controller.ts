@@ -21,22 +21,26 @@ import { ApiTags } from '@nestjs/swagger';
 @Controller('products')
 export class ProductsController {
   constructor(private productService: ProductsService) {}
-
-  @Post()
-  create(
+  @Post() create(
     @Body(ValidationPipe) createProductDto: CreateProductDto,
   ): Promise<Product> {
     return this.productService.create(createProductDto);
   }
-
-  @Get(':id')
-  findOne(@Param('id') id: string): Promise<Product> {
+  @Get(':id') findOne(@Param('id') id: string): Promise<Product> {
     return this.productService.findById(id);
   }
 
   @Get()
   find(@Query() filterProductDto: FilterProductDto): Promise<Product[]> {
     return this.productService.find(filterProductDto);
+  }
+
+  @Patch(':id')
+  updateProductById(
+    @Param('id') id: string,
+    @Body(ValidationPipe) updateProductDto: UpdateProductDto,
+  ): Promise<UpdateResult> {
+    return this.productService.updateProductById(id, updateProductDto);
   }
 
   @Delete(':id')
@@ -47,14 +51,5 @@ export class ProductsController {
   @Delete()
   deleteMany(@Body('ids') ids: string[]): Promise<Product[]> {
     return this.productService.deleteManyByIds(ids);
-  }
-
-  @Patch(':id')
-  updateProductById(
-    @Param('id') id: string,
-    @Body(ValidationPipe) updateProductDto: UpdateProductDto,
-  ): Promise<UpdateResult> {
-    updateProductDto.id = id;
-    return this.productService.updateProductById(updateProductDto);
   }
 }

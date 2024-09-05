@@ -73,8 +73,9 @@ export class TagsService {
     }
   }
 
-  async updateTag(updateTagDto: UpdateTagDto) {
-    const { id, tagCategoryId, ...tag } = updateTagDto;
+  async updateTag(id: string, updateTagDto: UpdateTagDto) {
+    const { tagCategoryId } = updateTagDto;
+    const tag = this.tagRepository.create();
 
     if (tagCategoryId) {
       const tagCategory = await this.tagCategoryRepository.findOneBy({

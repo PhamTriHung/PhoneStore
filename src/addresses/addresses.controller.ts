@@ -92,8 +92,7 @@ export class AddressesController {
     @Body(ValidationPipe)
     updateCityDto: UpdateCityDto,
   ) {
-    updateCityDto.id = id;
-    return this.addressesService.updateCityById(updateCityDto);
+    return this.addressesService.updateCityById(id, updateCityDto);
   }
 
   @Patch('district/:id')
@@ -102,8 +101,7 @@ export class AddressesController {
     @Body(ValidationPipe)
     updateDistrictDto: UpdateDistrictDto,
   ) {
-    updateDistrictDto.id = id;
-    return this.addressesService.updateDistrictById(updateDistrictDto);
+    return this.addressesService.updateDistrictById(id, updateDistrictDto);
   }
 
   @Patch('ward/:id')
@@ -112,7 +110,6 @@ export class AddressesController {
     @Body(ValidationPipe)
     updateWardDto: UpdateWardDto,
   ) {
-    updateWardDto.id = id;
-    return this.addressesService.updateWardById(updateWardDto);
+    return this.addressesService.updateWardById(id, updateWardDto);
   }
 }

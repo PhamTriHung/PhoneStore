@@ -4,17 +4,17 @@ export class FilterProductDto {
   @IsNumber()
   @IsPositive()
   @IsOptional()
-  lowestPrice: number;
+  lowestPrice?: number;
 
   @IsNumber()
   @IsOptional()
-  highestPrice: number;
+  highestPrice?: number;
 
   @IsUUID(4)
   @IsOptional()
-  categoryId: string;
+  categoryId?: string;
 
   @IsUUID(4, { each: true })
   @IsOptional()
-  tagIds: string[];
+  tagIds?: string[];
 }

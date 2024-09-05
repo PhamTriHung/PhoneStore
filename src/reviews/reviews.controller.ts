@@ -41,8 +41,7 @@ export class ReviewsController {
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updateReviewDto: UpdateReviewDto,
   ) {
-    updateReviewDto.id = id;
-    return this.reviewsService.updateReview(updateReviewDto);
+    return this.reviewsService.updateReview(id, updateReviewDto);
   }
 
   @Delete(':id')

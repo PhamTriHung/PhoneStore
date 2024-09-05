@@ -1,4 +1,4 @@
-import { PartialType } from '@nestjs/mapped-types';
+import { PartialType } from '@nestjs/swagger';
 import {
   IsNotEmpty,
   IsOptional,
@@ -9,7 +9,7 @@ import {
 } from 'class-validator';
 import { Store } from '../store.entity';
 
-export class CreateStoreDto extends PartialType(Store) {
+export class CreateStoreDto {
   @IsNotEmpty()
   @IsString()
   @MinLength(5)

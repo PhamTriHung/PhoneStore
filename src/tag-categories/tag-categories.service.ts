@@ -49,8 +49,13 @@ export class TagCategoriesService {
     }
   }
 
-  async updateTagCategory(updateTagCategoryDto: UpdateTagCategoryDto) {
-    const { id, categoryId, ...tagCategory } = updateTagCategoryDto;
+  async updateTagCategory(
+    id: string,
+    updateTagCategoryDto: UpdateTagCategoryDto,
+  ) {
+    const { categoryId } = updateTagCategoryDto;
+
+    const tagCategory = this.tagCategoryRepository.create();
 
     if (categoryId) {
       const category = await this.categoriesRepository.findOneBy({

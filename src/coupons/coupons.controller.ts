@@ -41,7 +41,6 @@ export class CouponsController {
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body(ValidationPipe) updateCouponDto: UpdateCouponDto,
   ) {
-    updateCouponDto.id = id;
-    return this.couponsService.updateCoupon(updateCouponDto);
+    return this.couponsService.updateCoupon(id, updateCouponDto);
   }
 }

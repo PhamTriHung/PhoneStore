@@ -47,7 +47,6 @@ export class TagsController {
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body(ValidationPipe) updateTagDto: UpdateTagDto,
   ) {
-    updateTagDto.id = id;
-    return this.tagsService.updateTag(updateTagDto);
+    return this.tagsService.updateTag(id, updateTagDto);
   }
 }

@@ -42,9 +42,9 @@ export class CouponsService {
     }
   }
 
-  async updateCoupon(updateCouponDto: UpdateCouponDto) {
-    const { id, ...coupon } = updateCouponDto;
-    await this.couponsRepository.update({ id }, coupon);
+  async updateCoupon(id: string, updateCouponDto: UpdateCouponDto) {
+    await this.couponsRepository.update({ id }, updateCouponDto);
+
     return this.couponsRepository.findOneBy({ id });
   }
 }
