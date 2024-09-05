@@ -1,4 +1,4 @@
-import { PartialType } from '@nestjs/swagger';
+import { ApiProperty, PartialType } from '@nestjs/swagger';
 import {
   IsBoolean,
   IsNotEmpty,
@@ -24,6 +24,7 @@ export class CreateProductDto {
     message:
       'Product name can only contain letters, numbers, spaces, and hyphens.',
   })
+  @ApiProperty({ default: 'Product name' })
   name: string;
 
   @IsNumber()
