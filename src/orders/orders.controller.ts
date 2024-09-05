@@ -1,4 +1,3 @@
-import { MakeOrderDto } from './dto/make-order.dto';
 import {
   Body,
   Controller,
@@ -14,6 +13,7 @@ import {
 import { OrdersService } from './orders.service';
 import { UpdateOrderItemDto } from './dto/update-order-item.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { CreateOrderDto } from './dto/make-order.dto';
 
 @ApiTags('orders')
 @Controller('orders')
@@ -21,8 +21,8 @@ export class OrdersController {
   constructor(private orderService: OrdersService) {}
 
   @Post()
-  makeOrder(@Body(ValidationPipe) makeOrderDtos: MakeOrderDto[]) {
-    this.orderService.makeOrder(makeOrderDtos);
+  makeOrder(@Body(ValidationPipe) createOrderDto: CreateOrderDto) {
+    this.orderService.makeOrder(createOrderDto);
   }
 
   @Get('search')

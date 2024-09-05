@@ -1,4 +1,3 @@
-import { MakeOrderDto } from './dto/make-order.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -7,6 +6,7 @@ import { OrderItem } from 'src/orders/order-item.entity';
 import { User } from 'src/users/users.entity';
 import { UpdateOrderItemDto } from './dto/update-order-item.dto';
 import { ProductStore } from 'src/product-store/product-store.entity';
+import { CreateOrderDto } from './dto/make-order.dto';
 
 @Injectable()
 export class OrdersService {
@@ -19,31 +19,28 @@ export class OrdersService {
     private productStoreRepository: Repository<ProductStore>,
   ) {}
 
-  async makeOrder(makeOrderDtos: MakeOrderDto[]) {
-    if (makeOrderDtos.length > 0) {
-      const order = this.orderRepository.create({
-        user: this.userRepository.create({
-          id: makeOrderDtos[0].userId,
+  async makeOrder(createOrderDto: CreateOrderDto) {
+    const order = this.orderRepository.create({
+      user: this.userRepository.create({
+        id: createOrderDto.userId,
+      }),
+    });
+
+    const orderItems = [];
+    createOrderDto.orderItems.forEach(async (cartItem) => {
+      const orderItem = this.orderItemRepository.create({
+        quantity: cartItem.quantity,
+        productStore: await this.productStoreRepository.findOneBy({
+          id: cartItem.productStoreId,
         }),
       });
 
-      const orderItems = [];
-      makeOrderDtos.forEach((carItem) => {
-        const orderItem = this.orderItemRepository.create({
-          quantity: carItem.quantity,
-          productStore: this.productStoreRepository.create({
-            variantId: carItem.variantId,
-            storeId: carItem.storeId,
-          }),
-        });
+      orderItems.push(orderItem);
+    });
 
-        orderItems.push(orderItem);
-      });
+    order.orderItems = orderItems;
 
-      order.orderItems = orderItems;
-
-      return this.orderRepository.save(order);
-    }
+    return this.orderRepository.save(order);
   }
 
   async findOrderByUser(userId: string) {

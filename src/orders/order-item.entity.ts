@@ -1,21 +1,25 @@
 import { Order } from 'src/orders/order.entity';
 import { ProductStore } from 'src/product-store/product-store.entity';
 import { ShippingGroup } from 'src/shippings/shipping-group.entity';
-import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 
 @Entity()
 export class OrderItem {
   @PrimaryColumn()
-  productStoreId: string;
-
-  @PrimaryColumn()
   orderId: string;
 
-  @ManyToOne(() => ProductStore, (productStore) => productStore)
-  productStore: ProductStore;
+  @PrimaryColumn()
+  productStoreId: string;
 
   @Column({ type: 'int' })
   quantity: number;
+
+  @ManyToOne(() => ProductStore, (productStore) => productStore)
+  @JoinColumn({
+    name: 'productStoreId',
+    referencedColumnName: 'id',
+  })
+  productStore: ProductStore;
 
   @ManyToOne(() => Order, (order) => order.orderItems, {
     cascade: true,
