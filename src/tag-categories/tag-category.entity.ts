@@ -3,10 +3,12 @@ import { Tag } from 'src/tags/tag.entity';
 import {
   Column,
   Entity,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { CategoryTagCategory } from './category-tag-category.entity';
 
 @Entity()
 export class TagCategory {
@@ -16,9 +18,9 @@ export class TagCategory {
   @Column({ type: 'nvarchar', length: 50, unique: true })
   name: string;
 
-  @OneToMany(() => Tag, (tag) => tag.tagCategory)
-  tags: Tag[];
-
-  @ManyToOne(() => Category, (category) => category.tagCategories)
-  category: Category;
+  @OneToMany(
+    () => CategoryTagCategory,
+    (categoryTagCategory) => categoryTagCategory.tagCategory,
+  )
+  categoryTagCategories: CategoryTagCategory[];
 }

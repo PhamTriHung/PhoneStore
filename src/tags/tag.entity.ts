@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Product } from 'src/products/products.entity';
+import { CategoryTagCategory } from 'src/tag-categories/category-tag-category.entity';
 import { TagCategory } from 'src/tag-categories/tag-category.entity';
 import {
   Column,
@@ -20,6 +21,9 @@ export class Tag {
   @ManyToMany(() => Product, (product) => product.tags)
   products: Product[];
 
-  @ManyToOne(() => TagCategory, (tagCategory) => tagCategory.tags)
-  tagCategory: TagCategory;
+  @ManyToOne(
+    () => CategoryTagCategory,
+    (categoryTagCategory) => categoryTagCategory.tags,
+  )
+  categoryTagCategory: CategoryTagCategory;
 }

@@ -1,8 +1,11 @@
 import { Product } from 'src/products/products.entity';
+import { CategoryTagCategory } from 'src/tag-categories/category-tag-category.entity';
 import { TagCategory } from 'src/tag-categories/tag-category.entity';
 import {
   Column,
   Entity,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -22,8 +25,11 @@ export class Category {
   @OneToMany(() => Product, (product) => product.category)
   products: Product[];
 
-  @OneToMany(() => TagCategory, (tagCategory) => tagCategory.category)
-  tagCategories: TagCategory[];
+  @OneToMany(
+    () => CategoryTagCategory,
+    (categoryTagCategory) => categoryTagCategory.category,
+  )
+  categoryTagCategories: CategoryTagCategory[];
 
   @ManyToOne(() => Category, (category) => category.childCategories)
   parentCategory: Category;
