@@ -1,6 +1,11 @@
-import { PartialType } from '@nestjs/swagger';
+import {
+  ApiNonAuthoritativeInformationResponse,
+  ApiProperty,
+  PartialType,
+} from '@nestjs/swagger';
 import {
   IsNotEmpty,
+  IsOptional,
   IsString,
   IsUUID,
   Matches,
@@ -10,16 +15,17 @@ import {
 import { Tag } from '../tag.entity';
 
 export class CreateTagDto {
+  @ApiProperty({ default: 'Tag name' })
   @IsNotEmpty()
   @IsString()
   @MinLength(5)
   @MaxLength(50)
   @Matches(/^[a-zA-Z0-9\s-]+$/, {
-    message:
-      'Product name can only contain letters, numbers, spaces, and hyphens.',
+    message: 'Tag name can only contain letters, numbers, spaces, and hyphens.',
   })
   name: string;
 
   @IsUUID('4')
-  tagCategoryId: string;
+  @IsOptional()
+  tagCategoryId?: string;
 }

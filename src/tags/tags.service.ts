@@ -36,7 +36,7 @@ export class TagsService {
       }
     }
 
-    this.tagRepository.save(newTag);
+    return this.tagRepository.save(newTag);
   }
 
   filterTag(filterTaskDto: FilterTagDto) {
