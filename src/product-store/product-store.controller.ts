@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
+  ParseUUIDPipe,
   Patch,
   Post,
   ValidationPipe,
@@ -14,6 +16,7 @@ import { UpdateResult } from 'typeorm';
 import { UpdateProductStoreDto } from './dto/update-product-store.dto';
 import { DeleteProductStoreDto } from './dto/delete-product-store.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { DeleteMultipleProductStoreDto } from './dto/delete-multiple-product-store.dto';
 
 @ApiTags('product-stores')
 @Controller('product-stores')
@@ -32,17 +35,29 @@ export class ProductStoreController {
     return this.productStoreService.find();
   }
 
-  @Patch()
+  @Patch(':id')
   updateProductStore(
-    @Body(ValidationPipe) updateProductStoreDto: UpdateProductStoreDto,
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+    @Body(ValidationPipe)
+    updateProductStoreDto: UpdateProductStoreDto,
   ): Promise<UpdateResult> {
-    return this.productStoreService.update(updateProductStoreDto);
+    return this.productStoreService.update(id, updateProductStoreDto);
+  }
+
+  @Delete(':id')
+  deleteProductStore(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+  ) {
+    return this.productStoreService.delete(id);
   }
 
   @Delete()
-  deleteProductStore(
-    @Body(ValidationPipe) deleteProductStoreDto: DeleteProductStoreDto,
+  deleteMultipleProductStore(
+    @Body(ValidationPipe)
+    deleteMultipleProductStoreDto: DeleteMultipleProductStoreDto,
   ) {
-    return this.productStoreService.delete(deleteProductStoreDto);
+    return this.productStoreService.deleteMultipleByIds(
+      deleteMultipleProductStoreDto.ids,
+    );
   }
 }
