@@ -88,11 +88,11 @@ export class ProductsService {
         await this.tagRepository.findBy({
           id: In(categoryTagCategoryIds),
         });
-
-      return Object.keys(findProductOptionsWhere).length > 0
-        ? this.productRepository.find({ where: findProductOptionsWhere })
-        : this.productRepository.find();
     }
+
+    return Object.keys(findProductOptionsWhere).length > 0
+      ? this.productRepository.find({ where: findProductOptionsWhere })
+      : this.productRepository.find();
   }
 
   async findById(id: string): Promise<Product> {
