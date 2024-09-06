@@ -7,6 +7,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
   ValidationPipe,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
@@ -17,6 +18,7 @@ import { DeleteManyCategoryDto } from './dto/request/delete-category.dto';
 import { UpdateCategoryDto } from './dto/request/update-product-type.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { CategoryDto } from './dto/response/category.dto';
+import { FindCategoryDto } from './dto/request/find-category.dto';
 
 @ApiTags('categories')
 @Controller('categories')
@@ -33,6 +35,13 @@ export class CategoriesController {
   @Get()
   getAllProductType(): Promise<CategoryDto[]> {
     return this.categoriesService.find();
+  }
+
+  @Get('search')
+  findCategoryBySlug(
+    @Query(ValidationPipe) findCategoryQuery: FindCategoryDto,
+  ) {
+    return this.categoriesService.findOneBySlug(findCategoryQuery.slug);
   }
 
   @Get(':id')

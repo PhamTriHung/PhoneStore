@@ -75,6 +75,25 @@ export class CategoriesService {
     );
   }
 
+  async findOneBySlug(slug: string) {
+    const category = await this.categoryRepository.findOne({
+      where: {
+        slug,
+      },
+      relations: {
+        childCategories: true,
+        categoryTagCategories: { tag: true, tagCategory: true },
+        products: true,
+      },
+    });
+
+    if (!category) {
+      throw new NotFoundException(`Category with slud ${slug} not found`);
+    } else {
+      return this.mapCategoryToCategoryDto(category);
+    }
+  }
+
   async findOneById(id: string): Promise<CategoryDto> {
     const category = await this.categoryRepository.findOne({
       where: {
