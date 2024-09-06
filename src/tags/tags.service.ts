@@ -1,4 +1,3 @@
-import { MaxLength } from 'class-validator';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Tag } from './tag.entity';
@@ -8,6 +7,9 @@ import { TagCategory } from 'src/tag-categories/tag-category.entity';
 import { FilterTagDto } from './dto/filter-tag.dto';
 import { UpdateTagDto } from './dto/update-tag.dto';
 import { DeleteManyTagDto } from './dto/delete-many-tag.dto';
+import { DuplicateNameException } from 'src/exceptions/duplicate-name.exception';
+import { CategoryTagCategory } from 'src/tag-categories/category-tag-category.entity';
+import { Category } from 'src/categories/category.entity';
 
 @Injectable()
 export class TagsService {
@@ -15,37 +17,54 @@ export class TagsService {
     @InjectRepository(Tag) private tagRepository: Repository<Tag>,
     @InjectRepository(TagCategory)
     private tagCategoryRepository: Repository<TagCategory>,
+    @InjectRepository(Category)
+    private categoryRepository: Repository<Category>,
+    @InjectRepository(CategoryTagCategory)
+    private categoryTagCategoryRepository: Repository<CategoryTagCategory>,
   ) {}
 
   async createTag(createTagDto: CreateTagDto) {
-    const { name, tagCategoryId } = createTagDto;
+    const { name, categoryId, tagCategoryId } = createTagDto;
 
-    const newTag = this.tagRepository.create({ name });
+    const oldTag = await this.tagRepository.findOneBy({ name });
 
-    if (tagCategoryId) {
-      const tagCategory = await this.tagCategoryRepository.findOneBy({
-        id: tagCategoryId,
-      });
+    if (oldTag) {
+      throw new DuplicateNameException(name);
+    } else {
+      const newTag = this.tagRepository.create({ name });
 
-      if (!tagCategory) {
-        throw new NotFoundException(
-          `Tag category with id ${tagCategoryId} not found`,
-        );
-      } else {
-        newTag.tagCategory = tagCategory;
+      if (categoryId && tagCategoryId) {
+        const categoryTagCategory =
+          await this.categoryTagCategoryRepository.create({
+            category: await this.categoryRepository.findOneBy({
+              id: categoryId,
+            }),
+            tagCategory: await this.tagCategoryRepository.findOneBy({
+              id: tagCategoryId,
+            }),
+          });
+
+        if (!categoryTagCategory) {
+          throw new NotFoundException(
+            `Tag category with id ${categoryTagCategory} not found`,
+          );
+        } else {
+          newTag.categoryTagCategories = [categoryTagCategory];
+        }
       }
-    }
 
-    return this.tagRepository.save(newTag);
+      return this.tagRepository.save(newTag);
+    }
   }
 
-  filterTag(filterTaskDto: FilterTagDto) {
+  filterTag(filterTagDto: FilterTagDto) {
     const findTagOptionsWhere: FindOptionsWhere<Tag> = {};
 
-    if (filterTaskDto.tagCategoryId) {
-      findTagOptionsWhere.tagCategory = this.tagCategoryRepository.create({
-        id: filterTaskDto.tagCategoryId,
-      });
+    if (filterTagDto.categoryTagCategoryId) {
+      findTagOptionsWhere.categoryTagCategories =
+        this.tagCategoryRepository.create({
+          id: filterTagDto.categoryTagCategoryId,
+        });
     }
 
     return Object.keys(findTagOptionsWhere).length === 0
@@ -74,20 +93,24 @@ export class TagsService {
   }
 
   async updateTag(id: string, updateTagDto: UpdateTagDto) {
-    const { tagCategoryId } = updateTagDto;
+    const { categoryId, tagCategoryId } = updateTagDto;
     const tag = this.tagRepository.create();
 
-    if (tagCategoryId) {
-      const tagCategory = await this.tagCategoryRepository.findOneBy({
-        id: tagCategoryId,
-      });
+    if (categoryId && tagCategoryId) {
+      const categoryTagCategory =
+        await this.categoryTagCategoryRepository.findOneBy({
+          category: await this.categoryRepository.findOneBy({ id: categoryId }),
+          tagCategory: await this.tagCategoryRepository.findOneBy({
+            id: tagCategoryId,
+          }),
+        });
 
-      if (!tagCategory) {
+      if (!categoryTagCategory) {
         throw new NotFoundException(
-          `Tag category with id ${tagCategoryId} not found`,
+          `Tag category with category id ${categoryId} and tag category ${tagCategoryId} not found`,
         );
       } else {
-        tag.tagCategory = tagCategory;
+        tag.categoryTagCategories = [categoryTagCategory];
       }
     }
 

@@ -1,7 +1,7 @@
 import { Category } from 'src/categories/category.entity';
 import { Coupon } from 'src/coupons/coupon.entity';
 import { Review } from 'src/reviews/review.entity';
-import { Tag } from 'src/tags/tag.entity';
+import { CategoryTagCategory } from 'src/tag-categories/category-tag-category.entity';
 import { Variant } from 'src/variants/variant.entity';
 import {
   Column,
@@ -51,9 +51,12 @@ export class Product {
   @ManyToOne(() => Category, (category) => category.products)
   category: Category;
 
-  @ManyToMany(() => Tag, (tag) => tag.products)
+  @ManyToMany(
+    () => CategoryTagCategory,
+    (categoryTagCategory) => categoryTagCategory.products,
+  )
   @JoinTable()
-  tags: Tag[];
+  categoryTagCategories: CategoryTagCategory[];
 
   @ManyToMany(() => Coupon, (coupon) => coupon.products)
   @JoinTable()

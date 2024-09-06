@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { UpdateTagCategoryDto } from './dto/udpate-tag.dto';
 import { CreateTagCategoryDto } from './dto/create-tag-category.dto';
 import { Category } from 'src/categories/category.entity';
+import { CategoryTagCategory } from './category-tag-category.entity';
 
 @Injectable()
 export class TagCategoriesService {
@@ -13,6 +14,8 @@ export class TagCategoriesService {
     private tagCategoryRepository: Repository<TagCategory>,
     @InjectRepository(Category)
     private categoriesRepository: Repository<Category>,
+    @InjectRepository(CategoryTagCategory)
+    private categoryTagCategoriesRepository: Repository<CategoryTagCategory>,
   ) {}
 
   async createTagCategory(createTagCategoryDto: CreateTagCategoryDto) {
@@ -28,7 +31,9 @@ export class TagCategoriesService {
       if (!category) {
         throw new NotFoundException(`Category with id ${categoryId} not found`);
       } else {
-        newTagCategory.category = category;
+        newTagCategory.categoryTagCategories = [
+          this.categoryTagCategoriesRepository.create({ category }),
+        ];
       }
     }
 
@@ -65,7 +70,9 @@ export class TagCategoriesService {
       if (!category) {
         throw new NotFoundException(`Category with id ${categoryId} not found`);
       } else {
-        tagCategory.category = category;
+        tagCategory.categoryTagCategories = [
+          this.categoryTagCategoriesRepository.create({ category }),
+        ];
       }
     }
 

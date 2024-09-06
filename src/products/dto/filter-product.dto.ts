@@ -16,5 +16,5 @@ export class FilterProductDto {
 
   @IsUUID(4, { each: true })
   @IsOptional()
-  tagIds?: string[];
+  categoryTagCategoryIds?: string[];
 }

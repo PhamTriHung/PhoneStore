@@ -7,6 +7,7 @@ import {
   Entity,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -18,12 +19,12 @@ export class Tag {
   @Column({ type: 'nvarchar', unique: true, length: 50 })
   name: string;
 
-  @ManyToMany(() => Product, (product) => product.tags)
+  @ManyToMany(() => Product, (product) => product.categoryTagCategories)
   products: Product[];
 
-  @ManyToOne(
+  @OneToMany(
     () => CategoryTagCategory,
-    (categoryTagCategory) => categoryTagCategory.tags,
+    (categoryTagCategory) => categoryTagCategory.tag,
   )
-  categoryTagCategory: CategoryTagCategory;
+  categoryTagCategories: CategoryTagCategory[];
 }

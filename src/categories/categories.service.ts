@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Delete, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { Category } from './category.entity';
@@ -58,7 +58,10 @@ export class CategoriesService {
 
   find(): Promise<Category[]> {
     return this.categoryRepository.find({
-      relations: { childCategories: true, tagCategories: { tags: true } },
+      relations: {
+        childCategories: true,
+        categoryTagCategories: { tag: true },
+      },
     });
   }
 
@@ -69,7 +72,7 @@ export class CategoriesService {
       },
       relations: {
         childCategories: true,
-        tagCategories: { tags: true },
+        categoryTagCategories: { tag: true },
       },
     });
 

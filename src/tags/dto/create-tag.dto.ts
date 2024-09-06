@@ -27,5 +27,9 @@ export class CreateTagDto {
 
   @IsUUID('4')
   @IsOptional()
+  categoryId?: string;
+
+  @IsUUID('4')
+  @IsOptional()
   tagCategoryId?: string;
 }

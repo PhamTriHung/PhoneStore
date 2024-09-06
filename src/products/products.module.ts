@@ -8,10 +8,18 @@ import { Tag } from 'src/tags/tag.entity';
 import { Attribute } from 'src/attributes/attribute.entity';
 import { AttributeValue } from 'src/attributes/attribute-value.entity';
 import { Variant } from 'src/variants/variant.entity';
+import { CategoryTagCategory } from 'src/tag-categories/category-tag-category.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Product, Category, Tag, AttributeValue, Variant]),
+    TypeOrmModule.forFeature([
+      Product,
+      Category,
+      Tag,
+      AttributeValue,
+      Variant,
+      CategoryTagCategory,
+    ]),
   ],
   providers: [ProductsService],
   controllers: [ProductsController],

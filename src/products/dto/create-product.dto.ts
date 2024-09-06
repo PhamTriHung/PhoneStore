@@ -43,7 +43,7 @@ export class CreateProductDto {
 
   @IsOptional()
   @IsUUID(4, { each: true })
-  tagIds?: string[];
+  categoryTagCategoryIds?: string[];
 
   @IsOptional()
   @IsUUID(4, { each: true })

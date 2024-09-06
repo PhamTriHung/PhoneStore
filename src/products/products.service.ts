@@ -17,6 +17,7 @@ import { Category } from 'src/categories/category.entity';
 import { Tag } from 'src/tags/tag.entity';
 import { AttributeValue } from 'src/attributes/attribute-value.entity';
 import { Variant } from 'src/variants/variant.entity';
+import { CategoryTagCategory } from 'src/tag-categories/category-tag-category.entity';
 
 @Injectable()
 export class ProductsService {
@@ -28,11 +29,17 @@ export class ProductsService {
     @InjectRepository(AttributeValue)
     private attributeValuesRepsitory: Repository<AttributeValue>,
     @InjectRepository(Variant) private variantRepository: Repository<Variant>,
+    @InjectRepository(CategoryTagCategory)
+    private categoryTagCategoriesRepository: Repository<CategoryTagCategory>,
   ) {}
 
   async create(createProductDto: CreateProductDto): Promise<Product> {
-    const { categoryId, tagIds, attributeValueIds, ...product } =
-      createProductDto;
+    const {
+      categoryId,
+      categoryTagCategoryIds,
+      attributeValueIds,
+      ...product
+    } = createProductDto;
 
     const newProduct = this.productRepository.create(product);
     const baseVariant = this.variantRepository.create();
@@ -45,8 +52,11 @@ export class ProductsService {
       });
     }
 
-    if (tagIds && tagIds.length > 0) {
-      newProduct.tags = await this.tagRepository.findBy({ id: In(tagIds) });
+    if (categoryTagCategoryIds && categoryTagCategoryIds.length > 0) {
+      newProduct.categoryTagCategories =
+        await this.categoryTagCategoriesRepository.findBy({
+          id: In(categoryTagCategoryIds),
+        });
     }
 
     if (attributeValueIds && attributeValueIds.length > 0) {
@@ -59,7 +69,8 @@ export class ProductsService {
   }
 
   async find(filterProductDto: FilterProductDto): Promise<Product[]> {
-    const { lowestPrice, highestPrice, categoryId, tagIds } = filterProductDto;
+    const { lowestPrice, highestPrice, categoryId, categoryTagCategoryIds } =
+      filterProductDto;
     const findProductOptionsWhere: FindOptionsWhere<Product | Product[]> = {};
 
     if (lowestPrice && highestPrice) {
@@ -72,10 +83,11 @@ export class ProductsService {
       findProductOptionsWhere.category = await this.categoryRepository.findOne({
         where: { id: categoryId },
       });
-    } else if (tagIds) {
-      findProductOptionsWhere.tags = await this.tagRepository.findBy({
-        id: In(tagIds),
-      });
+    } else if (categoryTagCategoryIds) {
+      findProductOptionsWhere.categoryTagCategories =
+        await this.tagRepository.findBy({
+          id: In(categoryTagCategoryIds),
+        });
 
       return Object.keys(findProductOptionsWhere).length > 0
         ? this.productRepository.find({ where: findProductOptionsWhere })
@@ -114,7 +126,7 @@ export class ProductsService {
     id: string,
     updateProductDto: UpdateProductDto,
   ): Promise<UpdateResult> {
-    const { categoryId, tagIds } = updateProductDto;
+    const { categoryId, categoryTagCategoryIds } = updateProductDto;
     const product = this.productRepository.create();
 
     if (categoryId) {
@@ -123,8 +135,11 @@ export class ProductsService {
       });
     }
 
-    if (tagIds && tagIds.length > 0) {
-      product.tags = await this.tagRepository.findBy({ id: In(tagIds) });
+    if (categoryTagCategoryIds && categoryTagCategoryIds.length > 0) {
+      product.categoryTagCategories =
+        await this.categoryTagCategoriesRepository.findBy({
+          id: In(categoryTagCategoryIds),
+        });
     }
 
     return this.productRepository.update({ id }, product);
