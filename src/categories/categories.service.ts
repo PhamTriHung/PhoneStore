@@ -2,8 +2,10 @@ import { Delete, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { Category } from './category.entity';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-product-type.dto';
+import { CreateCategoryDto } from './dto/request/create-category.dto';
+import { UpdateCategoryDto } from './dto/request/update-product-type.dto';
+import { TagCategoryDto } from 'src/tag-categories/dto/response/tag-category.dto';
+import { CategoryDto } from './dto/response/category.dto';
 
 @Injectable()
 export class CategoriesService {
@@ -56,30 +58,37 @@ export class CategoriesService {
     return this.categoryRepository.save(newCategory);
   }
 
-  find(): Promise<Category[]> {
-    return this.categoryRepository.find({
+  async find(): Promise<CategoryDto[]> {
+    const categories = await this.categoryRepository.find({
       relations: {
         childCategories: true,
-        categoryTagCategories: { tag: true },
+        categoryTagCategories: {
+          tag: true,
+          tagCategory: true,
+        },
       },
     });
+
+    return categories.map((category) =>
+      this.mapCategoryToCategoryDto(category),
+    );
   }
 
-  findOneById(id: string): Promise<Category> {
-    const category = this.categoryRepository.findOne({
+  async findOneById(id: string): Promise<CategoryDto> {
+    const category = await this.categoryRepository.findOne({
       where: {
         id,
       },
       relations: {
         childCategories: true,
-        categoryTagCategories: { tag: true },
+        categoryTagCategories: { tag: true, tagCategory: true },
       },
     });
 
     if (!category) {
       throw new NotFoundException(`Category with Id ${id} not found`);
     } else {
-      return category;
+      return this.mapCategoryToCategoryDto(category);
     }
   }
 
@@ -162,5 +171,38 @@ export class CategoriesService {
     await this.categoryRepository.update(id, category);
 
     return this.categoryRepository.findOneBy({ id });
+  }
+
+  mapCategoryToCategoryDto(category: Category): CategoryDto {
+    const groupedTagCategory: TagCategoryDto[] = [];
+
+    category.categoryTagCategories.forEach((categoryTag) => {
+      const tagCategoryName = categoryTag.tagCategory.name;
+      const tag = categoryTag.tag;
+      const tagCateogryId = categoryTag.id;
+
+      if (tag) {
+        const existingCategory = groupedTagCategory.find(
+          (group) => group.name === tagCategoryName,
+        );
+
+        if (existingCategory) {
+          existingCategory.tags.push(tag);
+        } else {
+          groupedTagCategory.push({
+            id: tagCateogryId,
+            name: tagCategoryName,
+            tags: [tag],
+          });
+        }
+      }
+    });
+
+    return {
+      id: category.id,
+      value: category.value,
+      childCategories: category.childCategories,
+      tagCategories: groupedTagCategory,
+    };
   }
 }

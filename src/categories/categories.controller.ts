@@ -12,10 +12,11 @@ import {
 import { CategoriesService } from './categories.service';
 import { UpdateResult } from 'typeorm';
 import { Category } from './category.entity';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { DeleteManyCategoryDto } from './dto/delete-category.dto';
-import { UpdateCategoryDto } from './dto/update-product-type.dto';
+import { CreateCategoryDto } from './dto/request/create-category.dto';
+import { DeleteManyCategoryDto } from './dto/request/delete-category.dto';
+import { UpdateCategoryDto } from './dto/request/update-product-type.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { CategoryDto } from './dto/response/category.dto';
 
 @ApiTags('categories')
 @Controller('categories')
@@ -30,14 +31,14 @@ export class CategoriesController {
   }
 
   @Get()
-  getAllProductType(): Promise<Category[]> {
+  getAllProductType(): Promise<CategoryDto[]> {
     return this.categoriesService.find();
   }
 
   @Get(':id')
   getProductTypeById(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
-  ): Promise<Category> {
+  ): Promise<CategoryDto> {
     return this.categoriesService.findOneById(id);
   }
 
