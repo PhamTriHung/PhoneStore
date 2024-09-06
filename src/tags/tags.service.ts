@@ -60,10 +60,12 @@ export class TagsService {
   filterTag(filterTagDto: FilterTagDto) {
     const findTagOptionsWhere: FindOptionsWhere<Tag> = {};
 
-    if (filterTagDto.categoryTagCategoryId) {
+    if (filterTagDto.categoryId) {
       findTagOptionsWhere.categoryTagCategories =
-        this.tagCategoryRepository.create({
-          id: filterTagDto.categoryTagCategoryId,
+        this.categoryTagCategoryRepository.create({
+          category: this.categoryRepository.create({
+            id: filterTagDto.categoryId,
+          }),
         });
     }
 

@@ -29,7 +29,6 @@ export class CategoryTagCategory {
   tagCategory: TagCategory;
 
   @ManyToOne(() => Tag, (tag) => tag.categoryTagCategories, {
-    cascade: true,
     onDelete: 'CASCADE',
   })
   tag: Tag;
