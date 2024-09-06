@@ -129,9 +129,10 @@ export class CategoriesService {
   }
 
   async updateById(id: string, updateCategoryDto: UpdateCategoryDto) {
-    const { parentCategoryId, childCategoryIds } = updateCategoryDto;
+    const { parentCategoryId, childCategoryIds, ...updateField } =
+      updateCategoryDto;
 
-    const category = this.categoryRepository.create();
+    const category = this.categoryRepository.create(updateCategoryDto);
 
     if (parentCategoryId) {
       const parentCategory = await this.categoryRepository.findOneBy({
