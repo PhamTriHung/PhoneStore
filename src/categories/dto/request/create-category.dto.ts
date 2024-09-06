@@ -22,8 +22,18 @@ export class CreateCategoryDto {
   value: string;
 
   @IsOptional()
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(5)
+  @MaxLength(50)
+  @Matches(/^[a-zA-Z-]+$/, {
+    message: 'Category slug can only contain letters and hyphens.',
+  })
+  slug: string;
+
+  @IsOptional()
   @IsUUID('4')
-  parentCategoryId: string;
+  parentCategoryId?: string;
 
   @IsOptional()
   @IsUUID('4', { each: true })

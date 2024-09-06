@@ -66,6 +66,7 @@ export class CategoriesService {
           tag: true,
           tagCategory: true,
         },
+        products: true,
       },
     });
 
@@ -82,6 +83,7 @@ export class CategoriesService {
       relations: {
         childCategories: true,
         categoryTagCategories: { tag: true, tagCategory: true },
+        products: true,
       },
     });
 
@@ -204,6 +206,7 @@ export class CategoriesService {
       value: category.value,
       childCategories: category.childCategories,
       tagCategories: groupedTagCategory,
+      products: category.products,
     };
   }
 }
