@@ -45,7 +45,7 @@ export class Product {
   @Column({ type: 'int', default: 0 })
   numOfReview: number;
 
-  @OneToMany(() => Review, (review) => review.product)
+  @OneToMany(() => Review, (review) => review.product, { cascade: true })
   reviews: Review[];
 
   @OneToMany(() => Variant, (variant) => variant.product, { cascade: true })

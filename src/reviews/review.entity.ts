@@ -17,6 +17,9 @@ export class Review {
   @Column({ type: 'int' })
   rating: number;
 
+  @Column({ type: 'int', default: 0 })
+  like: number;
+
   @Column({ type: 'nvarchar' })
   reviewText: string;
 
