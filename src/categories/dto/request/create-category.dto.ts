@@ -8,7 +8,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { Category } from '../category.entity';
+import { Category } from '../../category.entity';
 
 export class CreateCategoryDto {
   @IsNotEmpty()

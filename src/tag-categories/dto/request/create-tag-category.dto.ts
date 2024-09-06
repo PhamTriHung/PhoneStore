@@ -1,5 +1,5 @@
 import {
-  ApiNonAuthoritativeInformationResponse,
+  ApiProcessingResponse,
   ApiProperty,
   PartialType,
 } from '@nestjs/swagger';
@@ -12,24 +12,21 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { Tag } from '../tag.entity';
+import { TagCategory } from '../../tag-category.entity';
 
-export class CreateTagDto {
-  @ApiProperty({ default: 'Tag name' })
+export class CreateTagCategoryDto {
+  @ApiProperty({ default: 'Tag category name' })
   @IsNotEmpty()
   @IsString()
   @MinLength(5)
   @MaxLength(50)
   @Matches(/^[a-zA-Z0-9\s-]+$/, {
-    message: 'Tag name can only contain letters, numbers, spaces, and hyphens.',
+    message:
+      'Tag category name can only contain letters, numbers, spaces, and hyphens.',
   })
   name: string;
 
-  @IsUUID('4')
   @IsOptional()
+  @IsUUID('4')
   categoryId?: string;
-
-  @IsUUID('4')
-  @IsOptional()
-  tagCategoryId?: string;
 }
