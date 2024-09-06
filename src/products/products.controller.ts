@@ -21,11 +21,13 @@ import { ApiTags } from '@nestjs/swagger';
 @Controller('products')
 export class ProductsController {
   constructor(private productService: ProductsService) {}
+
   @Post() create(
     @Body(ValidationPipe) createProductDto: CreateProductDto,
   ): Promise<Product> {
     return this.productService.create(createProductDto);
   }
+
   @Get(':id') findOne(@Param('id') id: string): Promise<Product> {
     return this.productService.findById(id);
   }
@@ -39,7 +41,7 @@ export class ProductsController {
   updateProductById(
     @Param('id') id: string,
     @Body(ValidationPipe) updateProductDto: UpdateProductDto,
-  ): Promise<UpdateResult> {
+  ): Promise<Product> {
     return this.productService.updateProductById(id, updateProductDto);
   }
 

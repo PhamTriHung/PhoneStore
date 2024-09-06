@@ -18,6 +18,9 @@ export class Product {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Column({ type: 'varchar', length: 50 })
+  slug: string;
+
   @Column({ type: 'nvarchar', length: 50 })
   name: string;
 

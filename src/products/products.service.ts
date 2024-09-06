@@ -69,8 +69,13 @@ export class ProductsService {
   }
 
   async find(filterProductDto: FilterProductDto): Promise<Product[]> {
-    const { lowestPrice, highestPrice, categoryId, categoryTagCategoryIds } =
-      filterProductDto;
+    const {
+      lowestPrice,
+      highestPrice,
+      categoryId,
+      categoryTagCategoryIds,
+      slug,
+    } = filterProductDto;
     const findProductOptionsWhere: FindOptionsWhere<Product | Product[]> = {};
 
     if (lowestPrice && highestPrice) {
@@ -88,6 +93,8 @@ export class ProductsService {
         await this.tagRepository.findBy({
           id: In(categoryTagCategoryIds),
         });
+    } else if (slug) {
+      findProductOptionsWhere.slug = slug;
     }
 
     return Object.keys(findProductOptionsWhere).length > 0
@@ -96,7 +103,12 @@ export class ProductsService {
   }
 
   async findById(id: string): Promise<Product> {
-    const product = await this.productRepository.findOne({ where: { id } });
+    const product = await this.productRepository.findOne({
+      where: { id },
+      relations: {
+        reviews: true,
+      },
+    });
 
     if (!product) {
       throw new NotFoundException(`Product with Id ${id} not found`);
@@ -125,9 +137,10 @@ export class ProductsService {
   async updateProductById(
     id: string,
     updateProductDto: UpdateProductDto,
-  ): Promise<UpdateResult> {
-    const { categoryId, categoryTagCategoryIds } = updateProductDto;
-    const product = this.productRepository.create();
+  ): Promise<Product> {
+    const { categoryId, categoryTagCategoryIds, ...updateField } =
+      updateProductDto;
+    const product = this.productRepository.create(updateField);
 
     if (categoryId) {
       product.category = await this.categoryRepository.findOne({
@@ -142,6 +155,8 @@ export class ProductsService {
         });
     }
 
-    return this.productRepository.update({ id }, product);
+    await this.productRepository.update({ id }, product);
+
+    return this.productRepository.findOneBy({ id });
   }
 }
