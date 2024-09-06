@@ -72,13 +72,13 @@ export class TagsService {
       : this.tagRepository.findBy(findTagOptionsWhere);
   }
 
-  deleteTag(id: string) {
-    const tag = this.tagCategoryRepository.findOneBy({ id });
+  async deleteTag(id: string) {
+    const tag = await this.tagRepository.findOneBy({ id });
 
     if (!tag) {
       throw new NotFoundException(`Tag with id ${id} not found`);
     } else {
-      return tag;
+      return this.tagRepository.remove(tag);
     }
   }
 
@@ -93,8 +93,8 @@ export class TagsService {
   }
 
   async updateTag(id: string, updateTagDto: UpdateTagDto) {
-    const { categoryId, tagCategoryId } = updateTagDto;
-    const tag = this.tagRepository.create();
+    const { categoryId, tagCategoryId, ...fieldToUpdate } = updateTagDto;
+    const tag = this.tagRepository.create(fieldToUpdate);
 
     if (categoryId && tagCategoryId) {
       const categoryTagCategory =

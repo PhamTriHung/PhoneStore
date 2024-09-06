@@ -15,16 +15,23 @@ export class CategoryTagCategory {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => Category, (category) => category.categoryTagCategories)
+  @ManyToOne(() => Category, (category) => category.categoryTagCategories, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   category: Category;
 
   @ManyToOne(
     () => TagCategory,
     (tagCategory) => tagCategory.categoryTagCategories,
+    { cascade: true, onDelete: 'CASCADE' },
   )
   tagCategory: TagCategory;
 
-  @ManyToOne(() => Tag, (tag) => tag.categoryTagCategories)
+  @ManyToOne(() => Tag, (tag) => tag.categoryTagCategories, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   tag: Tag;
 
   @ManyToMany(() => Product, (product) => product.categoryTagCategories)
