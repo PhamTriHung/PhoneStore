@@ -2,8 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TagCategory } from './tag-category.entity';
 import { Repository } from 'typeorm';
-import { UpdateTagCategoryDto } from './dto/udpate-tag.dto';
-import { CreateTagCategoryDto } from './dto/create-tag-category.dto';
+import { UpdateTagCategoryDto } from './dto/request/udpate-tag.dto';
+import { CreateTagCategoryDto } from './dto/request/create-tag-category.dto';
 import { Category } from 'src/categories/category.entity';
 import { CategoryTagCategory } from './category-tag-category.entity';
 
@@ -58,23 +58,26 @@ export class TagCategoriesService {
     id: string,
     updateTagCategoryDto: UpdateTagCategoryDto,
   ) {
-    const { categoryId } = updateTagCategoryDto;
+    const { categoryId, ...updateField } = updateTagCategoryDto;
 
-    const tagCategory = this.tagCategoryRepository.create();
+    const tagCategory = this.tagCategoryRepository.create(updateField);
 
-    if (categoryId) {
-      const category = await this.categoriesRepository.findOneBy({
-        id: categoryId,
-      });
+    // if (categoryId) {
+    //   const category = await this.categoriesRepository.findOneBy({
+    //     id: categoryId,
+    //   });
 
-      if (!category) {
-        throw new NotFoundException(`Category with id ${categoryId} not found`);
-      } else {
-        tagCategory.categoryTagCategories = [
-          this.categoryTagCategoriesRepository.create({ category }),
-        ];
-      }
-    }
+    //   if (!category) {
+    //     throw new NotFoundException(`Category with id ${categoryId} not found`);
+    //   } else {
+    //     const categoryTagCategory =
+    //       await this.categoryTagCategoriesRepository.findOneBy({ category });
+
+    //     console.log(categoryTagCategory);
+
+    //     tagCategory.categoryTagCategories = [categoryTagCategory];
+    //   }
+    // }
 
     await this.tagCategoryRepository.update({ id }, tagCategory);
 

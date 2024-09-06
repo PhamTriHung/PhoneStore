@@ -2,11 +2,11 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Tag } from './tag.entity';
 import { FindOptionsWhere, In, Repository } from 'typeorm';
-import { CreateTagDto } from './dto/create-tag.dto';
+import { CreateTagDto } from './dto/request/create-tag.dto';
 import { TagCategory } from 'src/tag-categories/tag-category.entity';
-import { FilterTagDto } from './dto/filter-tag.dto';
-import { UpdateTagDto } from './dto/update-tag.dto';
-import { DeleteManyTagDto } from './dto/delete-many-tag.dto';
+import { FilterTagDto } from './dto/request/filter-tag.dto';
+import { UpdateTagDto } from './dto/request/update-tag.dto';
+import { DeleteManyTagDto } from './dto/request/delete-many-tag.dto';
 import { DuplicateNameException } from 'src/exceptions/duplicate-name.exception';
 import { CategoryTagCategory } from 'src/tag-categories/category-tag-category.entity';
 import { Category } from 'src/categories/category.entity';
@@ -98,23 +98,31 @@ export class TagsService {
     const { categoryId, tagCategoryId, ...fieldToUpdate } = updateTagDto;
     const tag = this.tagRepository.create(fieldToUpdate);
 
-    if (categoryId && tagCategoryId) {
-      const categoryTagCategory =
-        await this.categoryTagCategoryRepository.findOneBy({
-          category: await this.categoryRepository.findOneBy({ id: categoryId }),
-          tagCategory: await this.tagCategoryRepository.findOneBy({
-            id: tagCategoryId,
-          }),
-        });
+    // if (categoryId && tagCategoryId) {
+    //   const categoryTagCategory =
+    //     await this.categoryTagCategoryRepository.findOne({
+    //       where: {
+    //         category: await this.categoryRepository.findOneBy({
+    //           id: categoryId,
+    //         }),
+    //         tagCategory: await this.tagCategoryRepository.findOneBy({
+    //           id: tagCategoryId,
+    //         }),
+    //       },
+    //       relations: {
+    //         category: true,
+    //         tagCategory: true,
+    //       },
+    //     });
 
-      if (!categoryTagCategory) {
-        throw new NotFoundException(
-          `Tag category with category id ${categoryId} and tag category ${tagCategoryId} not found`,
-        );
-      } else {
-        tag.categoryTagCategories = [categoryTagCategory];
-      }
-    }
+    //   if (!categoryTagCategory) {
+    //     throw new NotFoundException(
+    //       `Tag category with category id ${categoryId} and tag category ${tagCategoryId} not found`,
+    //     );
+    //   } else {
+    //     tag.categoryTagCategories = [categoryTagCategory];
+    //   }
+    // }
 
     await this.tagRepository.update({ id }, tag);
 

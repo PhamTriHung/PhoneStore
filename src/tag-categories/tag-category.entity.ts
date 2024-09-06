@@ -21,6 +21,7 @@ export class TagCategory {
   @OneToMany(
     () => CategoryTagCategory,
     (categoryTagCategory) => categoryTagCategory.tagCategory,
+    { cascade: true },
   )
   categoryTagCategories: CategoryTagCategory[];
 }

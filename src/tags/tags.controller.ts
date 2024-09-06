@@ -11,10 +11,10 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { TagsService } from './tags.service';
-import { CreateTagDto } from './dto/create-tag.dto';
-import { FilterTagDto } from './dto/filter-tag.dto';
-import { UpdateTagDto } from './dto/update-tag.dto';
-import { DeleteManyTagDto } from './dto/delete-many-tag.dto';
+import { CreateTagDto } from './dto/request/create-tag.dto';
+import { FilterTagDto } from './dto/request/filter-tag.dto';
+import { UpdateTagDto } from './dto/request/update-tag.dto';
+import { DeleteManyTagDto } from './dto/request/delete-many-tag.dto';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('tags')
