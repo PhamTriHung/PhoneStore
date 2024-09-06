@@ -33,9 +33,8 @@ export class FilterProductDto {
   @IsString()
   @MinLength(5)
   @MaxLength(50)
-  @Matches(/^[a-zA-Z-]+$/, {
-    message:
-      'Product slug can only contain letters, numbers, spaces, and hyphens.',
+  @Matches(/^[a-zA-Z0-9-]+$/, {
+    message: 'Product slug can only contain letters, number and hyphens.',
   })
   slug: string;
 }
