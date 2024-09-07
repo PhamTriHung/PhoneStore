@@ -1,14 +1,10 @@
 import { PickType } from '@nestjs/swagger';
 import {
+  IsBoolean,
   IsNumber,
   IsOptional,
   IsPositive,
   IsUUID,
-  IsNotEmpty,
-  IsString,
-  MinLength,
-  MaxLength,
-  Matches,
 } from 'class-validator';
 import { CreateProductDto } from './create-product.dto';
 
@@ -29,4 +25,16 @@ export class FilterProductDto extends PickType(CreateProductDto, ['slug']) {
   @IsUUID(4, { each: true })
   @IsOptional()
   categoryTagCategoryIds?: string[];
+
+  @IsBoolean()
+  @IsOptional()
+  isMonopoly: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  isNew: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  isDiscount: boolean;
 }

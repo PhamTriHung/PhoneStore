@@ -43,6 +43,13 @@ export class CreateProductDto {
   price: number;
 
   @IsOptional()
+  @IsNumber()
+  @IsPositive()
+  @Min(1000)
+  @Max(200000000)
+  discountPrice?: number;
+
+  @IsOptional()
   @IsUUID(4)
   categoryId?: string;
 

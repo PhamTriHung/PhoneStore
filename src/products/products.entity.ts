@@ -30,6 +30,9 @@ export class Product {
   @Column({ type: 'float' })
   price: number;
 
+  @Column({ type: 'float' })
+  discountPrice: number;
+
   @Column({ type: 'date', nullable: true })
   releaseDate: Date;
 

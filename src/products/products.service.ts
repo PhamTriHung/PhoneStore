@@ -1,3 +1,4 @@
+import { IsNotEmpty } from 'class-validator';
 import { TagCategoriesService } from './../tag-categories/tag-categories.service';
 import { Coupon } from 'src/coupons/coupon.entity';
 import { Product } from 'src/products/products.entity';
@@ -6,10 +7,13 @@ import { CreateProductDto } from './dto/request/create-product.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import {
   Between,
+  FindOperator,
   FindOptionsWhere,
   In,
+  IsNull,
   LessThan,
   MoreThan,
+  Not,
   Repository,
 } from 'typeorm';
 import { FilterProductDto } from './dto/request/filter-product.dto';
@@ -80,7 +84,9 @@ export class ProductsService {
       highestPrice,
       categoryId,
       categoryTagCategoryIds,
-      slug,
+      isMonopoly,
+      isNew,
+      isDiscount,
     } = filterProductDto;
     const findProductOptionsWhere: FindOptionsWhere<Product | Product[]> = {};
 
@@ -99,11 +105,11 @@ export class ProductsService {
         await this.categoryTagCategoriesRepository.findBy({
           id: In(categoryTagCategoryIds),
         });
-    } else if (slug) {
-      findProductOptionsWhere.slug = slug;
+    } else if (isMonopoly) {
+      findProductOptionsWhere.isMonopoly = true;
+    } else if (isDiscount) {
+      findProductOptionsWhere.discountPrice = Not(IsNull());
     }
-
-    console.log(findProductOptionsWhere);
 
     return Object.keys(findProductOptionsWhere).length > 0
       ? this.productRepository.find({ where: findProductOptionsWhere })
