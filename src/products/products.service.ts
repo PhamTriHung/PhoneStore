@@ -96,12 +96,14 @@ export class ProductsService {
       });
     } else if (categoryTagCategoryIds) {
       findProductOptionsWhere.categoryTagCategories =
-        await this.tagRepository.findBy({
+        await this.categoryTagCategoriesRepository.findBy({
           id: In(categoryTagCategoryIds),
         });
     } else if (slug) {
       findProductOptionsWhere.slug = slug;
     }
+
+    console.log(findProductOptionsWhere);
 
     return Object.keys(findProductOptionsWhere).length > 0
       ? this.productRepository.find({ where: findProductOptionsWhere })

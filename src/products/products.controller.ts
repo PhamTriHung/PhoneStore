@@ -50,6 +50,7 @@ export class ProductsController {
 
   @Get()
   find(@Query() filterProductDto: FilterProductDto): Promise<Product[]> {
+    console.log(filterProductDto);
     return this.productService.find(filterProductDto);
   }
 
