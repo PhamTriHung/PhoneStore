@@ -1,3 +1,4 @@
+import { PickType } from '@nestjs/swagger';
 import {
   IsNumber,
   IsOptional,
@@ -9,8 +10,9 @@ import {
   MaxLength,
   Matches,
 } from 'class-validator';
+import { CreateProductDto } from './create-product.dto';
 
-export class FilterProductDto {
+export class FilterProductDto extends PickType(CreateProductDto, ['slug']) {
   @IsNumber()
   @IsPositive()
   @IsOptional()
@@ -27,14 +29,4 @@ export class FilterProductDto {
   @IsUUID(4, { each: true })
   @IsOptional()
   categoryTagCategoryIds?: string[];
-
-  @IsOptional()
-  @IsNotEmpty()
-  @IsString()
-  @MinLength(5)
-  @MaxLength(50)
-  @Matches(/^[a-zA-Z0-9-]+$/, {
-    message: 'Product slug can only contain letters, number and hyphens.',
-  })
-  slug: string;
 }

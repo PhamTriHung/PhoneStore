@@ -1,5 +1,4 @@
 import { PartialType } from '@nestjs/swagger';
-import { Review } from '../review.entity';
 import {
   IsInt,
   IsNotEmpty,
