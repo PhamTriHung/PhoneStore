@@ -74,11 +74,26 @@ export class ReviewsService {
   }
 
   async deleteReview(id: string) {
-    const review = await this.reviewRepository.findOneBy({ id });
+    const review = await this.reviewRepository.findOne({
+      where: { id },
+      relations: { product: true },
+    });
 
     if (!review) {
       throw new NotFoundException(`Review with id ${id} not found`);
     } else {
+      await this.reviewRepository.remove(review);
+
+      const productId = review.product.id;
+      const product = review.product;
+
+      const reviewStatistic = await this.getReviewStatistics(productId);
+
+      product.numOfReview = reviewStatistic.numOfReview;
+      product.rating = reviewStatistic.rating;
+
+      await this.productRepository.update(productId, product);
+
       return review;
     }
   }
