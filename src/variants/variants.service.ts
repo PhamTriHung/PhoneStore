@@ -17,9 +17,9 @@ export class VariantsService {
   ) {}
 
   async createVariant(createVariantDto: CreateVariantDto) {
-    const { productId, attributeValueIds } = createVariantDto;
+    const { productId, attributeValueIds, ...variantValue } = createVariantDto;
 
-    const newVariant = this.variantsRepository.create({});
+    const newVariant = this.variantsRepository.create(variantValue);
 
     if (productId) {
       const product = await this.productsRepository.findOneBy({
@@ -67,7 +67,10 @@ export class VariantsService {
 
   async updateVariantById(id: string, updateVariantDto: UpdateVariantDto) {
     const { productId, attributeValueIds } = updateVariantDto;
-    const variant = this.variantsRepository.create({});
+    const variant = await this.variantsRepository.findOne({
+      where: { id },
+      relations: { product: true, attributeValues: true },
+    });
 
     if (productId) {
       const product = await this.productsRepository.findOneBy({
@@ -102,9 +105,7 @@ export class VariantsService {
       }
     }
 
-    await this.variantsRepository.update({ id }, variant);
-
-    return this.variantsRepository.findOneBy({ id });
+    return this.variantsRepository.save(variant);
   }
 
   async deleteVariantById(id: string) {
