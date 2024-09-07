@@ -18,6 +18,7 @@ import { UpdateProductDto } from './dto/request/update-product.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { FindBySlugDto } from './dto/request/find-by-slug.dto';
 import { AddTagsToProductDto } from './dto/request/add-tags-to-product.dto';
+import { ProductDto } from './dto/response/product.dto';
 
 @ApiTags('products')
 @Controller('products')
@@ -44,7 +45,7 @@ export class ProductsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<Product> {
+  findOne(@Param('id') id: string): Promise<ProductDto> {
     return this.productService.findByIdOrSlug({ id });
   }
 

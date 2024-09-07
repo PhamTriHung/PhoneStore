@@ -138,6 +138,9 @@ export class ProductsService {
       product = await this.productRepository
         .createQueryBuilder('product')
         .leftJoinAndSelect('product.reviews', 'review')
+        .leftJoinAndSelect('product.variants', 'variant')
+        .leftJoinAndSelect('variant.attributeValues', 'attributeValue')
+        .leftJoinAndSelect('attributeValue.attribute', 'attribute')
         .where('product.id = :id', { id })
         .orderBy('review.createDate', 'DESC')
         .getOne();
@@ -145,6 +148,9 @@ export class ProductsService {
       product = await this.productRepository
         .createQueryBuilder('product')
         .leftJoinAndSelect('product.reviews', 'review')
+        .leftJoinAndSelect('product.variants', 'variant')
+        .leftJoinAndSelect('variant.attributeValues', 'attributeValue')
+        .leftJoinAndSelect('attributeValue.attribute', 'attribute')
         .where('product.slug = :slug', { slug })
         .orderBy('review.createDate', 'DESC')
         .getOne();
@@ -193,6 +199,7 @@ export class ProductsService {
     } else {
       return {
         ...product,
+        variants: this.processVariantAttributeArray(product.variants),
         ratingDistribution: {
           items: initRatingDistributionItems,
         },
@@ -257,5 +264,18 @@ export class ProductsService {
     product.categoryTagCategories = categoryTagCategories;
 
     return this.productRepository.save(product);
+  }
+
+  processVariantAttributeArray(variants: Variant[]) {
+    return variants.map((variant) => {
+      return {
+        attributes: variant.attributeValues.map((attributeValue) => {
+          return {
+            type: attributeValue.attribute.name,
+            value: attributeValue.value,
+          };
+        }),
+      };
+    });
   }
 }
