@@ -11,10 +11,10 @@ import {
   Query,
   ValidationPipe,
 } from '@nestjs/common';
-import { CreateReviewDto } from './dto/create-review.dto';
-import { FilterReviewDto } from './dto/filter-review.dto';
-import { UpdateReviewDto } from './dto/update-review.dto';
+import { UpdateReviewDto } from './dto/request/update-review.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { CreateReviewDto } from './dto/request/create-review.dto';
+import { FilterReviewDto } from './dto/request/filter-review.dto';
 
 @ApiTags('reviews')
 @Controller('reviews')

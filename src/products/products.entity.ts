@@ -47,10 +47,13 @@ export class Product {
 
   @OneToMany(() => Review, (review) => review.product, { cascade: true })
   reviews: Review[];
+
   @OneToMany(() => Variant, (variant) => variant.product, { cascade: true })
   variants: Variant[];
+
   @ManyToOne(() => Category, (category) => category.products)
   category: Category;
+
   @ManyToMany(
     () => CategoryTagCategory,
     (categoryTagCategory) => categoryTagCategory.products,

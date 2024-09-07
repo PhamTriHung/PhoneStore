@@ -8,10 +8,10 @@ import { FindOptionsWhere, Repository } from 'typeorm';
 import { Review } from './review.entity';
 import { Product } from 'src/products/products.entity';
 import { User } from 'src/users/users.entity';
-import { CreateReviewDto } from './dto/create-review.dto';
-import { FilterReviewDto } from './dto/filter-review.dto';
-import { UpdateReviewDto } from './dto/update-review.dto';
+import { UpdateReviewDto } from './dto/request/update-review.dto';
 import { log } from 'console';
+import { CreateReviewDto } from './dto/request/create-review.dto';
+import { FilterReviewDto } from './dto/request/filter-review.dto';
 
 @Injectable()
 export class ReviewsService {
@@ -58,11 +58,11 @@ export class ReviewsService {
   }
 
   filterReview(filterReviewDto: FilterReviewDto) {
-    const { reviewId, productId } = filterReviewDto;
+    const { id, productId } = filterReviewDto;
     const filterReviewFindOptionsWhere: FindOptionsWhere<Review> = {};
 
-    if (reviewId) {
-      filterReviewFindOptionsWhere.id = reviewId;
+    if (id) {
+      filterReviewFindOptionsWhere.id = id;
     }
 
     if (productId) {
@@ -122,9 +122,7 @@ export class ReviewsService {
     return {
       numOfReview: Number(result.count) || 0,
       rating:
-        result.averageRating !== null
-          ? Math.round(parseFloat(result.averageRating) * 2) / 2
-          : 0,
+        result.averageRating !== null ? parseFloat(result.averageRating) : 0,
     };
   }
 }

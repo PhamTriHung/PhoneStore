@@ -10,12 +10,13 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
-import { CreateProductDto } from './dto/create-product.dto';
+import { CreateProductDto } from './dto/request/create-product.dto';
 import { Product } from './products.entity';
 import { UpdateResult } from 'typeorm';
-import { FilterProductDto } from './dto/filter-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
+import { FilterProductDto } from './dto/request/filter-product.dto';
+import { UpdateProductDto } from './dto/request/update-product.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { FindBySlugDto } from './dto/request/find-by-slug.dto';
 
 @ApiTags('products')
 @Controller('products')
@@ -28,8 +29,14 @@ export class ProductsController {
     return this.productService.create(createProductDto);
   }
 
-  @Get(':id') findOne(@Param('id') id: string): Promise<Product> {
-    return this.productService.findById(id);
+  @Get('/search')
+  findOneBySlug(@Query(ValidationPipe) findBySlugDto: FindBySlugDto) {
+    return this.productService.findByIdOrSlug({ slug: findBySlugDto.slug });
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string): Promise<Product> {
+    return this.productService.findByIdOrSlug({ id });
   }
 
   @Get()
