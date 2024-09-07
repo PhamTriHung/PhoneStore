@@ -103,12 +103,12 @@ export class ProductsService {
   }
 
   async findById(id: string): Promise<Product> {
-    const product = await this.productRepository.findOne({
-      where: { id },
-      relations: {
-        reviews: true,
-      },
-    });
+    const product = await this.productRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.reviews', 'review')
+      .where('product.id = :id', { id })
+      .orderBy('review.createDate', 'DESC')
+      .getOne();
 
     if (!product) {
       throw new NotFoundException(`Product with Id ${id} not found`);

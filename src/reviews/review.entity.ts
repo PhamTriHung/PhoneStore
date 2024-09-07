@@ -24,7 +24,7 @@ export class Review {
   reviewText: string;
 
   @CreateDateColumn()
-  reviewDate: Date;
+  createDate: Date;
 
   @UpdateDateColumn()
   updatedDate: Date;
