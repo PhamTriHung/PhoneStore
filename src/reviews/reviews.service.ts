@@ -84,14 +84,15 @@ export class ReviewsService {
   }
 
   async updateReview(id: string, updateReviewDto: UpdateReviewDto) {
-    const { productId, userId } = updateReviewDto;
+    const { productId, userId, ...updateField } = updateReviewDto;
 
-    const review = this.reviewRepository.create();
+    const review = this.reviewRepository.create(updateField);
 
     review.product = this.productRepository.create({ id: productId });
-    review.user = this.userRepository.create({ id: userId });
 
+    review.user = this.userRepository.create({ id: userId });
     await this.reviewRepository.update({ id }, review);
+
     return this.reviewRepository.findOneBy({ id });
   }
 
