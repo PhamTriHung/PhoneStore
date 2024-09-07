@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseUUIDPipe,
   Patch,
   Post,
   Query,
@@ -12,11 +13,11 @@ import {
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/request/create-product.dto';
 import { Product } from './products.entity';
-import { UpdateResult } from 'typeorm';
 import { FilterProductDto } from './dto/request/filter-product.dto';
 import { UpdateProductDto } from './dto/request/update-product.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { FindBySlugDto } from './dto/request/find-by-slug.dto';
+import { AddTagsToProductDto } from './dto/request/add-tags-to-product.dto';
 
 @ApiTags('products')
 @Controller('products')
@@ -27,6 +28,14 @@ export class ProductsController {
     @Body(ValidationPipe) createProductDto: CreateProductDto,
   ): Promise<Product> {
     return this.productService.create(createProductDto);
+  }
+
+  @Post(':id/tags')
+  addTagToProduct(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+    @Body(ValidationPipe) { categoryTagCategoryIds }: AddTagsToProductDto,
+  ) {
+    this.productService.addTagsToProduct(id, categoryTagCategoryIds);
   }
 
   @Get('/search')

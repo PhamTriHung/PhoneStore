@@ -18,7 +18,7 @@ import { Category } from 'src/categories/category.entity';
 import { Tag } from 'src/tags/tag.entity';
 import { AttributeValue } from 'src/attributes/attribute-value.entity';
 import { Variant } from 'src/variants/variant.entity';
-import { CategoryTagCategory } from 'src/tag-categories/category-tag-category.entity';
+import { CategoryTagCategory } from 'src/category-tag-categories/category-tag-category.entity';
 import { Review } from 'src/reviews/review.entity';
 import { count } from 'console';
 import { RatingDistributionItem } from 'src/reviews/dto/response/rating-distribution.dto';
@@ -224,5 +224,21 @@ export class ProductsService {
     await this.productRepository.update({ id }, product);
 
     return this.productRepository.findOneBy({ id });
+  }
+
+  async addTagsToProduct(id: string, categoryTagCategoryIds: string[]) {
+    const product = await this.productRepository.findOne({
+      where: { id },
+      relations: { categoryTagCategories: true },
+    });
+
+    const categoryTagCategories =
+      await this.categoryTagCategoriesRepository.findBy({
+        id: In(categoryTagCategoryIds),
+      });
+
+    product.categoryTagCategories = categoryTagCategories;
+
+    return this.productRepository.save(product);
   }
 }
