@@ -6,7 +6,7 @@ export class CreateAttributeValueDto {
   @IsString()
   @IsNotEmpty()
   @Length(2, 50)
-  @Matches(/^[A-Za-z\s'-]+$/, {
+  @Matches(/^[A-Za-z\s0-9'-\(\)+]+$/, {
     message:
       'Attribute value can only contain letters, spaces, hyphens, and apostrophes.',
   })

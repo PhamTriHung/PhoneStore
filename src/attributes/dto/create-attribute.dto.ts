@@ -4,7 +4,7 @@ export class CreateAttributeDto {
   @IsString()
   @IsNotEmpty()
   @Length(2, 50)
-  @Matches(/^[A-Za-z\s'-]+$/, {
+  @Matches(/^[\p{L}\s0-9-]+$/u, {
     message: 'Name can only contain letters, spaces, hyphens, and apostrophes.',
   })
   name: string;
