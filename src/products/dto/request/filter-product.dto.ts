@@ -1,6 +1,7 @@
 import { PickType } from '@nestjs/swagger';
 import {
   IsBoolean,
+  IsIn,
   IsNumber,
   IsOptional,
   IsPositive,
@@ -37,4 +38,8 @@ export class FilterProductDto extends PickType(CreateProductDto, ['slug']) {
   @IsBoolean()
   @IsOptional()
   isDiscount: boolean;
+
+  @IsIn(['asc', 'desc'])
+  @IsOptional()
+  orderType: 'asc' | 'desc';
 }

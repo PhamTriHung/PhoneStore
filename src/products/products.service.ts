@@ -8,6 +8,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import {
   Between,
   FindOperator,
+  FindOptionsOrder,
   FindOptionsWhere,
   In,
   IsNull,
@@ -87,8 +88,11 @@ export class ProductsService {
       isMonopoly,
       isNew,
       isDiscount,
+      orderType,
     } = filterProductDto;
+
     const findProductOptionsWhere: FindOptionsWhere<Product | Product[]> = {};
+    const findProductOptionsOrder: FindOptionsOrder<Product | Product[]> = {};
 
     if (lowestPrice && highestPrice) {
       findProductOptionsWhere.price = Between(lowestPrice, highestPrice);
@@ -111,9 +115,14 @@ export class ProductsService {
       findProductOptionsWhere.discountPrice = Not(IsNull());
     }
 
-    return Object.keys(findProductOptionsWhere).length > 0
-      ? this.productRepository.find({ where: findProductOptionsWhere })
-      : this.productRepository.find();
+    if (['asc', 'desc'].includes(orderType)) {
+      findProductOptionsOrder.price = orderType;
+    }
+
+    return this.productRepository.find({
+      where: findProductOptionsWhere,
+      order: findProductOptionsOrder,
+    });
   }
 
   async findByIdOrSlug({
