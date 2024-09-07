@@ -1,7 +1,7 @@
 import { Category } from 'src/categories/category.entity';
 import { Coupon } from 'src/coupons/coupon.entity';
 import { Review } from 'src/reviews/review.entity';
-import { CategoryTagCategory } from 'src/tag-categories/category-tag-category.entity';
+import { CategoryTagCategory } from 'src/category-tag-categories/category-tag-category.entity';
 import { Variant } from 'src/variants/variant.entity';
 import {
   Column,

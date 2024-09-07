@@ -8,7 +8,7 @@ import { FilterTagDto } from './dto/request/filter-tag.dto';
 import { UpdateTagDto } from './dto/request/update-tag.dto';
 import { DeleteManyTagDto } from './dto/request/delete-many-tag.dto';
 import { DuplicateNameException } from 'src/exceptions/duplicate-name.exception';
-import { CategoryTagCategory } from 'src/tag-categories/category-tag-category.entity';
+import { CategoryTagCategory } from 'src/category-tag-categories/category-tag-category.entity';
 import { Category } from 'src/categories/category.entity';
 
 @Injectable()

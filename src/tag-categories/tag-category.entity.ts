@@ -8,7 +8,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { CategoryTagCategory } from './category-tag-category.entity';
+import { CategoryTagCategory } from '../category-tag-categories/category-tag-category.entity';
 
 @Entity()
 export class TagCategory {

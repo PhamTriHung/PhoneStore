@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Product } from 'src/products/products.entity';
-import { CategoryTagCategory } from 'src/tag-categories/category-tag-category.entity';
+import { CategoryTagCategory } from 'src/category-tag-categories/category-tag-category.entity';
 import { TagCategory } from 'src/tag-categories/tag-category.entity';
 import {
   Column,

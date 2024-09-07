@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
   ManyToMany,
 } from 'typeorm';
-import { TagCategory } from './tag-category.entity';
+import { TagCategory } from '../tag-categories/tag-category.entity';
 import { Tag } from 'src/tags/tag.entity';
 import { Product } from 'src/products/products.entity';
 

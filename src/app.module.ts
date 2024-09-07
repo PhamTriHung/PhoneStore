@@ -22,6 +22,7 @@ import { VariantsModule } from './variants/variants.module';
 import { ShippingsModule } from './shippings/shippings.module';
 import { CartsModule } from './carts/carts.module';
 import { CaslModule } from './casl/casl.module';
+import { CategoryTagCategoriesModule } from './category-tag-categories/category-tag-categories.module';
 
 @Module({
   imports: [
@@ -63,6 +64,7 @@ import { CaslModule } from './casl/casl.module';
     ShippingsModule,
     CartsModule,
     CaslModule,
+    CategoryTagCategoriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

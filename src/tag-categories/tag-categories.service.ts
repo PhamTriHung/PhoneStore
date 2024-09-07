@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { UpdateTagCategoryDto } from './dto/request/udpate-tag.dto';
 import { CreateTagCategoryDto } from './dto/request/create-tag-category.dto';
 import { Category } from 'src/categories/category.entity';
-import { CategoryTagCategory } from './category-tag-category.entity';
+import { CategoryTagCategory } from '../category-tag-categories/category-tag-category.entity';
 
 @Injectable()
 export class TagCategoriesService {
