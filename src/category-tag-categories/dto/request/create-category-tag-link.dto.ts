@@ -6,7 +6,4 @@ export class CreateCategoryTagLinkDto {
 
   @IsUUID('4')
   tagCategoryId: string;
-
-  @IsUUID('4')
-  tagId: string;
 }

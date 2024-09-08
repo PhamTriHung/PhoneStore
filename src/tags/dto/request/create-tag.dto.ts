@@ -18,9 +18,9 @@ export class CreateTagDto {
   @ApiProperty({ default: 'Tag name' })
   @IsNotEmpty()
   @IsString()
-  @MinLength(5)
+  @MinLength(2)
   @MaxLength(50)
-  @Matches(/^[a-zA-Z0-9\s-]+$/, {
+  @Matches(/^[\p{L}\s0-9-]+$/u, {
     message: 'Tag name can only contain letters, numbers, spaces, and hyphens.',
   })
   name: string;

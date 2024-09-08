@@ -17,9 +17,9 @@ export class CreateCategoryDto {
   @MaxLength(50)
   @Matches(/^[a-zA-Z0-9\s-]+$/, {
     message:
-      'Category value can only contain letters, numbers, spaces, and hyphens.',
+      'Category name can only contain letters, numbers, spaces, and hyphens.',
   })
-  value: string;
+  name: string;
 
   @IsOptional()
   @IsNotEmpty()

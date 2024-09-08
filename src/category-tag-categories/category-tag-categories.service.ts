@@ -22,7 +22,7 @@ export class CategoryTagCategoriesService {
   async createCategoryTagLink(
     createCategoryTagLinkDto: CreateCategoryTagLinkDto,
   ) {
-    const { categoryId, tagCategoryId, tagId } = createCategoryTagLinkDto;
+    const { categoryId, tagCategoryId } = createCategoryTagLinkDto;
 
     const category = await this.categoriesRepository.findOneBy({
       id: categoryId,
@@ -32,8 +32,6 @@ export class CategoryTagCategoriesService {
       id: tagCategoryId,
     });
 
-    const tag = await this.tagsRepository.findOneBy({ id: tagId });
-
     if (!category)
       throw new NotFoundException(`Category with id ${categoryId} not found`);
 
@@ -41,8 +39,6 @@ export class CategoryTagCategoriesService {
       throw new NotFoundException(
         `Tag Category with id ${categoryId} not found`,
       );
-
-    if (!tag) throw new NotFoundException(`Tag with id ${tagId} not found`);
 
     const newCategoryTagCategory = this.categoryTagCategoriesRepository.create({
       category,

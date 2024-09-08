@@ -18,9 +18,9 @@ export class CreateTagCategoryDto {
   @ApiProperty({ default: 'Tag category name' })
   @IsNotEmpty()
   @IsString()
-  @MinLength(5)
+  @MinLength(2)
   @MaxLength(50)
-  @Matches(/^[a-zA-Z0-9\s-]+$/, {
+  @Matches(/^[\p{L}\s0-9-]+$/u, {
     message:
       'Tag category name can only contain letters, numbers, spaces, and hyphens.',
   })

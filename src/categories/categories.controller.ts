@@ -33,7 +33,7 @@ export class CategoriesController {
   }
 
   @Get()
-  getAllProductType(): Promise<CategoryDto[]> {
+  getAllProductType(): Promise<Category[]> {
     return this.categoriesService.find();
   }
 
@@ -47,7 +47,7 @@ export class CategoriesController {
   @Get(':id')
   getProductTypeById(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
-  ): Promise<CategoryDto> {
+  ): Promise<Category> {
     return this.categoriesService.findOneById(id);
   }
 

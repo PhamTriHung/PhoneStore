@@ -6,6 +6,7 @@ import { CreateCategoryDto } from './dto/request/create-category.dto';
 import { UpdateCategoryDto } from './dto/request/update-product-type.dto';
 import { TagCategoryDto } from 'src/tag-categories/dto/response/tag-category.dto';
 import { CategoryDto } from './dto/response/category.dto';
+import { log } from 'console';
 
 @Injectable()
 export class CategoriesService {
@@ -58,22 +59,21 @@ export class CategoriesService {
     return this.categoryRepository.save(newCategory);
   }
 
-  async find(): Promise<CategoryDto[]> {
+  async find(): Promise<Category[]> {
     const categories = await this.categoryRepository.find({
       relations: {
         childCategories: true,
         categoryTagCategories: {
-          // tag: true,
           tagCategory: true,
+          categoryTagCategoryTags: {
+            tag: true,
+          },
         },
         products: true,
       },
     });
 
-    return categories.map(
-      (category) => null,
-      // this.mapCategoryToCategoryDto(category),
-    );
+    return categories;
   }
 
   async findOneBySlug(slug: string) {
@@ -83,35 +83,49 @@ export class CategoriesService {
       },
       relations: {
         childCategories: true,
-        // categoryTagCategories: { tag: true, tagCategory: true },
+        categoryTagCategories: {
+          tagCategory: true,
+          categoryTagCategoryTags: {
+            tag: true,
+          },
+        },
         products: true,
       },
     });
 
+    console.log(category);
+
     if (!category) {
       throw new NotFoundException(`Category with slud ${slug} not found`);
     } else {
-      return null;
-      // return this.mapCategoryToCategoryDto(category);
+      return category;
     }
   }
 
-  async findOneById(id: string): Promise<CategoryDto> {
+  async findOneById(id: string): Promise<Category> {
     const category = await this.categoryRepository.findOne({
       where: {
         id,
       },
       relations: {
         childCategories: true,
-        categoryTagCategories: {},
+        categoryTagCategories: {
+          tagCategory: true,
+          categoryTagCategoryTags: {
+            tag: true,
+          },
+        },
         products: true,
       },
     });
 
+    console.log(category);
+
     if (!category) {
       throw new NotFoundException(`Category with Id ${id} not found`);
     } else {
-      return null;
+      return category;
+
       // return this.mapCategoryToCategoryDto(category);
     }
   }
@@ -197,38 +211,4 @@ export class CategoriesService {
 
     return this.categoryRepository.findOneBy({ id });
   }
-
-  // mapCategoryToCategoryDto(category: Category): CategoryDto {
-  //   const groupedTagCategory: TagCategoryDto[] = [];
-
-  //   category.categoryTagCategories.forEach((categoryTag) => {
-  //     const tagCategoryName = categoryTag.tagCategory.name;
-  //     const tag = categoryTag.tag;
-  //     const tagCateogryId = categoryTag.id;
-
-  //     if (tag) {
-  //       const existingCategory = groupedTagCategory.find(
-  //         (group) => group.name === tagCategoryName,
-  //       );
-
-  //       if (existingCategory) {
-  //         existingCategory.tags.push(tag);
-  //       } else {
-  //         groupedTagCategory.push({
-  //           id: tagCateogryId,
-  //           name: tagCategoryName,
-  //           tags: [tag],
-  //         });
-  //       }
-  //     }
-  //   });
-
-  //   return {
-  //     id: category.id,
-  //     value: category.value,
-  //     childCategories: category.childCategories,
-  //     tagCategories: groupedTagCategory,
-  //     products: category.products,
-  //   };
-  // }
 }
