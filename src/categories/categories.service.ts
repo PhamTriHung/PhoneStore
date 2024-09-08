@@ -12,6 +12,7 @@ import { isDuplicate } from 'src/utils/database-utils';
 import { TagCategory } from 'src/tag-categories/tag-category.entity';
 import { CategoryTagCategory } from 'src/category-tag-categories/category-tag-category.entity';
 import { AddTagCategoryToCategoryDto } from './dto/request/add-tag-category-to-category.dto';
+import { DeleteTagCategoryFromCategoryDto } from './dto/request/delete-tag-category-from-category.dto';
 
 @Injectable()
 export class CategoriesService {
@@ -284,6 +285,35 @@ export class CategoriesService {
         tagCategory: true,
       },
     });
+  }
+
+  async deleteTagCategoryFromCategoryById({
+    id,
+    tagCategoryId,
+  }: DeleteTagCategoryFromCategoryDto) {
+    const category = await this.categoriesRepository.findOneBy({ id });
+
+    if (!category) {
+      throw new NotFoundException(`Category with id ${id} not found`);
+    }
+
+    const tagCategory = await this.categoryTagCategoriesRepository.findOneBy({
+      id: tagCategoryId,
+    });
+
+    if (!tagCategory) {
+      throw new NotFoundException(
+        `Tag category with id ${tagCategoryId} not found`,
+      );
+    }
+
+    const categoryTagCategory =
+      await this.categoryTagCategoriesRepository.findOneBy({
+        tagCategory,
+        category,
+      });
+
+    return this.categoryTagCategoriesRepository.remove(categoryTagCategory);
   }
   //#endregion
 }

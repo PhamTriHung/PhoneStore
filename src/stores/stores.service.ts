@@ -4,7 +4,6 @@ import { In, Repository } from 'typeorm';
 import { Store } from './store.entity';
 import { CreateStoreDto } from './dto/create-store.dto';
 import { UpdateStoreDto } from './dto/update-store.dto';
-import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class StoresService {
@@ -22,7 +21,10 @@ export class StoresService {
   }
 
   async findById(id: string) {
-    const store = await this.storeRepository.findOneBy({ id });
+    const store = await this.storeRepository.findOne({
+      where: { id },
+      relations: { productStores: { variant: { product: true } } },
+    });
 
     if (!store) {
       throw new NotFoundException(`Store with id ${id} not found`);

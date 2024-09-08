@@ -1,4 +1,4 @@
-import { District } from './../district.entity';
+import { District } from '../district.entity';
 import { PartialType } from '@nestjs/swagger';
 import {
   IsNotEmpty,
