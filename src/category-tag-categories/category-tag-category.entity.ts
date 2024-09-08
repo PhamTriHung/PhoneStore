@@ -9,6 +9,7 @@ import {
 import { TagCategory } from '../tag-categories/tag-category.entity';
 import { Tag } from 'src/tags/tag.entity';
 import { Product } from 'src/products/products.entity';
+import { CategoryTagCategoryTag } from 'src/category-tag-category-tags/category-tag-category-tag.entity';
 
 @Entity()
 export class CategoryTagCategory {
@@ -28,11 +29,12 @@ export class CategoryTagCategory {
   )
   tagCategory: TagCategory;
 
-  @ManyToOne(() => Tag, (tag) => tag.categoryTagCategories, {
-    onDelete: 'CASCADE',
-  })
-  tag: Tag;
-
-  @ManyToMany(() => Product, (product) => product.categoryTagCategories)
-  products: Product[];
+  @OneToMany(
+    () => CategoryTagCategoryTag,
+    (categoryTagCategoryTag) => categoryTagCategoryTag.categoryTagCategory,
+    {
+      onDelete: 'CASCADE',
+    },
+  )
+  categoryTagCategoryTags: CategoryTagCategoryTag[];
 }

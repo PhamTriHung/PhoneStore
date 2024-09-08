@@ -67,6 +67,7 @@ export class VariantsService {
 
   async updateVariantById(id: string, updateVariantDto: UpdateVariantDto) {
     const { productId, attributeValueIds } = updateVariantDto;
+
     const variant = await this.variantsRepository.findOne({
       where: { id },
       relations: { product: true, attributeValues: true },

@@ -12,6 +12,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { CategoryTagCategoryTag } from 'src/category-tag-category-tags/category-tag-category-tag.entity';
 
 @Entity()
 export class Product {
@@ -57,12 +58,9 @@ export class Product {
   @ManyToOne(() => Category, (category) => category.products)
   category: Category;
 
-  @ManyToMany(
-    () => CategoryTagCategory,
-    (categoryTagCategory) => categoryTagCategory.products,
-  )
+  @ManyToMany(() => CategoryTagCategoryTag)
   @JoinTable()
-  categoryTagCategories: CategoryTagCategory[];
+  categoryTagCategoryTag: CategoryTagCategoryTag[];
 
   @ManyToMany(() => Coupon, (coupon) => coupon.products)
   @JoinTable()

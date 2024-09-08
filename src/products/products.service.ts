@@ -1,13 +1,9 @@
-import { IsNotEmpty } from 'class-validator';
-import { TagCategoriesService } from './../tag-categories/tag-categories.service';
-import { Coupon } from 'src/coupons/coupon.entity';
 import { Product } from 'src/products/products.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateProductDto } from './dto/request/create-product.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import {
   Between,
-  FindOperator,
   FindOptionsOrder,
   FindOptionsWhere,
   In,
@@ -25,7 +21,6 @@ import { AttributeValue } from 'src/attributes/attribute-value.entity';
 import { Variant } from 'src/variants/variant.entity';
 import { CategoryTagCategory } from 'src/category-tag-categories/category-tag-category.entity';
 import { Review } from 'src/reviews/review.entity';
-import { count } from 'console';
 import { RatingDistributionItem } from 'src/reviews/dto/response/rating-distribution.dto';
 import { ProductDto } from './dto/response/product.dto';
 
@@ -63,12 +58,12 @@ export class ProductsService {
       });
     }
 
-    if (categoryTagCategoryIds && categoryTagCategoryIds.length > 0) {
-      newProduct.categoryTagCategories =
-        await this.categoryTagCategoriesRepository.findBy({
-          id: In(categoryTagCategoryIds),
-        });
-    }
+    // if (categoryTagCategoryIds && categoryTagCategoryIds.length > 0) {
+    //   newProduct.categoryTagCategories =
+    //     await this.categoryTagCategoriesRepository.findBy({
+    //       id: In(categoryTagCategoryIds),
+    //     });
+    // }
 
     if (attributeValueIds && attributeValueIds.length > 0) {
       baseVariant.attributeValues = await this.attributeValuesRepsitory.findBy({
@@ -104,11 +99,11 @@ export class ProductsService {
       findProductOptionsWhere.category = await this.categoryRepository.findOne({
         where: { id: categoryId },
       });
-    } else if (categoryTagCategoryIds) {
-      findProductOptionsWhere.categoryTagCategories =
-        await this.categoryTagCategoriesRepository.findBy({
-          id: In(categoryTagCategoryIds),
-        });
+      // } else if (categoryTagCategoryIds) {
+      //   findProductOptionsWhere.categoryTagCategories =
+      //     await this.categoryTagCategoriesRepository.findBy({
+      //       id: In(categoryTagCategoryIds),
+      //     });
     } else if (isMonopoly) {
       findProductOptionsWhere.isMonopoly = true;
     } else if (isDiscount) {
@@ -238,12 +233,12 @@ export class ProductsService {
       });
     }
 
-    if (categoryTagCategoryIds && categoryTagCategoryIds.length > 0) {
-      product.categoryTagCategories =
-        await this.categoryTagCategoriesRepository.findBy({
-          id: In(categoryTagCategoryIds),
-        });
-    }
+    // if (categoryTagCategoryIds && categoryTagCategoryIds.length > 0) {
+    //   product.categoryTagCategories =
+    //     await this.categoryTagCategoriesRepository.findBy({
+    //       id: In(categoryTagCategoryIds),
+    //     });
+    // }
 
     await this.productRepository.update({ id }, product);
 
@@ -253,7 +248,7 @@ export class ProductsService {
   async addTagsToProduct(id: string, categoryTagCategoryIds: string[]) {
     const product = await this.productRepository.findOne({
       where: { id },
-      relations: { categoryTagCategories: true },
+      // relations: { categoryTagCategories: true },
     });
 
     const categoryTagCategories =
@@ -261,7 +256,7 @@ export class ProductsService {
         id: In(categoryTagCategoryIds),
       });
 
-    product.categoryTagCategories = categoryTagCategories;
+    // product.categoryTagCategories = categoryTagCategories;
 
     return this.productRepository.save(product);
   }

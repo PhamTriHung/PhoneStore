@@ -49,7 +49,7 @@ export class TagsService {
             `Tag category with id ${categoryTagCategory} not found`,
           );
         } else {
-          newTag.categoryTagCategories = [categoryTagCategory];
+          // newTag.categoryTagCategories = [categoryTagCategory];
         }
       }
 
@@ -60,14 +60,14 @@ export class TagsService {
   filterTag(filterTagDto: FilterTagDto) {
     const findTagOptionsWhere: FindOptionsWhere<Tag> = {};
 
-    if (filterTagDto.categoryId) {
-      findTagOptionsWhere.categoryTagCategories =
-        this.categoryTagCategoryRepository.create({
-          category: this.categoryRepository.create({
-            id: filterTagDto.categoryId,
-          }),
-        });
-    }
+    // if (filterTagDto.categoryId) {
+    //   findTagOptionsWhere.categoryTagCategories =
+    //     this.categoryTagCategoryRepository.create({
+    //       category: this.categoryRepository.create({
+    //         id: filterTagDto.categoryId,
+    //       }),
+    //     });
+    // }
 
     return Object.keys(findTagOptionsWhere).length === 0
       ? this.tagRepository.find()

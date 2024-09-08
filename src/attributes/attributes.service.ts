@@ -7,7 +7,6 @@ import { AttributeValue } from './attribute-value.entity';
 import { UpdateAttributeValueDto } from './dto/update-attribute-value.dto';
 import { CreateAttributeDto } from './dto/create-attribute.dto';
 import { UpdateAttributeDto } from './dto/update-attribute.dto';
-import { createECDH } from 'crypto';
 
 @Injectable()
 export class AttributesService {

@@ -47,7 +47,6 @@ export class CategoryTagCategoriesService {
     const newCategoryTagCategory = this.categoryTagCategoriesRepository.create({
       category,
       tagCategory,
-      tag,
     });
 
     return this.categoryTagCategoriesRepository.save(newCategoryTagCategory);

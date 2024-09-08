@@ -63,15 +63,16 @@ export class CategoriesService {
       relations: {
         childCategories: true,
         categoryTagCategories: {
-          tag: true,
+          // tag: true,
           tagCategory: true,
         },
         products: true,
       },
     });
 
-    return categories.map((category) =>
-      this.mapCategoryToCategoryDto(category),
+    return categories.map(
+      (category) => null,
+      // this.mapCategoryToCategoryDto(category),
     );
   }
 
@@ -82,7 +83,7 @@ export class CategoriesService {
       },
       relations: {
         childCategories: true,
-        categoryTagCategories: { tag: true, tagCategory: true },
+        // categoryTagCategories: { tag: true, tagCategory: true },
         products: true,
       },
     });
@@ -90,7 +91,8 @@ export class CategoriesService {
     if (!category) {
       throw new NotFoundException(`Category with slud ${slug} not found`);
     } else {
-      return this.mapCategoryToCategoryDto(category);
+      return null;
+      // return this.mapCategoryToCategoryDto(category);
     }
   }
 
@@ -101,7 +103,7 @@ export class CategoriesService {
       },
       relations: {
         childCategories: true,
-        categoryTagCategories: { tag: true, tagCategory: true },
+        categoryTagCategories: {},
         products: true,
       },
     });
@@ -109,7 +111,8 @@ export class CategoriesService {
     if (!category) {
       throw new NotFoundException(`Category with Id ${id} not found`);
     } else {
-      return this.mapCategoryToCategoryDto(category);
+      return null;
+      // return this.mapCategoryToCategoryDto(category);
     }
   }
 
@@ -195,37 +198,37 @@ export class CategoriesService {
     return this.categoryRepository.findOneBy({ id });
   }
 
-  mapCategoryToCategoryDto(category: Category): CategoryDto {
-    const groupedTagCategory: TagCategoryDto[] = [];
+  // mapCategoryToCategoryDto(category: Category): CategoryDto {
+  //   const groupedTagCategory: TagCategoryDto[] = [];
 
-    category.categoryTagCategories.forEach((categoryTag) => {
-      const tagCategoryName = categoryTag.tagCategory.name;
-      const tag = categoryTag.tag;
-      const tagCateogryId = categoryTag.id;
+  //   category.categoryTagCategories.forEach((categoryTag) => {
+  //     const tagCategoryName = categoryTag.tagCategory.name;
+  //     const tag = categoryTag.tag;
+  //     const tagCateogryId = categoryTag.id;
 
-      if (tag) {
-        const existingCategory = groupedTagCategory.find(
-          (group) => group.name === tagCategoryName,
-        );
+  //     if (tag) {
+  //       const existingCategory = groupedTagCategory.find(
+  //         (group) => group.name === tagCategoryName,
+  //       );
 
-        if (existingCategory) {
-          existingCategory.tags.push(tag);
-        } else {
-          groupedTagCategory.push({
-            id: tagCateogryId,
-            name: tagCategoryName,
-            tags: [tag],
-          });
-        }
-      }
-    });
+  //       if (existingCategory) {
+  //         existingCategory.tags.push(tag);
+  //       } else {
+  //         groupedTagCategory.push({
+  //           id: tagCateogryId,
+  //           name: tagCategoryName,
+  //           tags: [tag],
+  //         });
+  //       }
+  //     }
+  //   });
 
-    return {
-      id: category.id,
-      value: category.value,
-      childCategories: category.childCategories,
-      tagCategories: groupedTagCategory,
-      products: category.products,
-    };
-  }
+  //   return {
+  //     id: category.id,
+  //     value: category.value,
+  //     childCategories: category.childCategories,
+  //     tagCategories: groupedTagCategory,
+  //     products: category.products,
+  //   };
+  // }
 }

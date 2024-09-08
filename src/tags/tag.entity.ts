@@ -10,6 +10,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { CategoryTagCategoryTag } from 'src/category-tag-category-tags/category-tag-category-tag.entity';
 
 @Entity()
 export class Tag {
@@ -19,13 +20,10 @@ export class Tag {
   @Column({ type: 'nvarchar', unique: true, length: 50 })
   name: string;
 
-  @ManyToMany(() => Product, (product) => product.categoryTagCategories)
-  products: Product[];
-
   @OneToMany(
-    () => CategoryTagCategory,
-    (categoryTagCategory) => categoryTagCategory.tag,
+    () => CategoryTagCategoryTag,
+    (categoryTagCategoryTag) => categoryTagCategoryTag.tag,
     { cascade: true },
   )
-  categoryTagCategories: CategoryTagCategory[];
+  categoryTagCategoryTags: CategoryTagCategoryTag[];
 }
