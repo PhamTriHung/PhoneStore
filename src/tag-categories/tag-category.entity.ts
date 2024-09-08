@@ -1,13 +1,4 @@
-import { Category } from 'src/categories/category.entity';
-import { Tag } from 'src/tags/tag.entity';
-import {
-  Column,
-  Entity,
-  ManyToMany,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { CategoryTagCategory } from '../category-tag-categories/category-tag-category.entity';
 
 @Entity()

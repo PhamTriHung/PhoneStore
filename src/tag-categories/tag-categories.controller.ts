@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { TagCategoriesService } from './tag-categories.service';
 import { CreateTagCategoryDto } from './dto/request/create-tag-category.dto';
-import { UpdateTagCategoryDto } from './dto/request/udpate-tag.dto';
+import { UpdateTagCategoryDto } from './dto/request/update-tag-category.dto';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('tag-categories')

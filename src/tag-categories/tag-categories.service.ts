@@ -1,11 +1,16 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TagCategory } from './tag-category.entity';
 import { Repository } from 'typeorm';
-import { UpdateTagCategoryDto } from './dto/request/udpate-tag.dto';
+import { UpdateTagCategoryDto } from './dto/request/update-tag-category.dto';
 import { CreateTagCategoryDto } from './dto/request/create-tag-category.dto';
 import { Category } from 'src/categories/category.entity';
 import { CategoryTagCategory } from '../category-tag-categories/category-tag-category.entity';
+import { isDuplicate } from 'src/utils/database-utils';
 
 @Injectable()
 export class TagCategoriesService {
@@ -18,10 +23,25 @@ export class TagCategoriesService {
     private categoryTagCategoriesRepository: Repository<CategoryTagCategory>,
   ) {}
 
-  async createTagCategory(createTagCategoryDto: CreateTagCategoryDto) {
-    const { categoryId, ...tagCategory } = createTagCategoryDto;
+  async createTagCategory(
+    createTagCategoryDto: CreateTagCategoryDto,
+  ): Promise<TagCategory> {
+    const { categoryId, ...otherTagCategoryField } = createTagCategoryDto;
 
-    const newTagCategory = this.tagCategoryRepository.create(tagCategory);
+    if (
+      isDuplicate(
+        this.tagCategoryRepository,
+        'name',
+        otherTagCategoryField.name,
+      )
+    )
+      throw new BadRequestException(
+        `Tag category name ${otherTagCategoryField.name} dupplicated`,
+      );
+
+    const newTagCategory = this.tagCategoryRepository.create(
+      otherTagCategoryField,
+    );
 
     if (categoryId) {
       const category = await this.categoriesRepository.findOneBy({
@@ -40,11 +60,11 @@ export class TagCategoriesService {
     return this.tagCategoryRepository.save(newTagCategory);
   }
 
-  findAllTagCategory() {
+  findAllTagCategory(): Promise<TagCategory[]> {
     return this.tagCategoryRepository.find();
   }
 
-  async deleteTagCategory(id: string) {
+  async deleteTagCategory(id: string): Promise<TagCategory> {
     const tagCategory = await this.tagCategoryRepository.findOneBy({ id });
 
     if (!tagCategory) {
@@ -58,26 +78,16 @@ export class TagCategoriesService {
     id: string,
     updateTagCategoryDto: UpdateTagCategoryDto,
   ) {
-    const { categoryId, ...updateField } = updateTagCategoryDto;
+    const { ...updateField } = updateTagCategoryDto;
+
+    if (updateField.name) {
+      if (isDuplicate(this.tagCategoryRepository, 'name', updateField.name))
+        throw new BadRequestException(
+          `Tag category name ${updateField.name} dupplicated`,
+        );
+    }
 
     const tagCategory = this.tagCategoryRepository.create(updateField);
-
-    // if (categoryId) {
-    //   const category = await this.categoriesRepository.findOneBy({
-    //     id: categoryId,
-    //   });
-
-    //   if (!category) {
-    //     throw new NotFoundException(`Category with id ${categoryId} not found`);
-    //   } else {
-    //     const categoryTagCategory =
-    //       await this.categoryTagCategoriesRepository.findOneBy({ category });
-
-    //     console.log(categoryTagCategory);
-
-    //     tagCategory.categoryTagCategories = [categoryTagCategory];
-    //   }
-    // }
 
     await this.tagCategoryRepository.update({ id }, tagCategory);
 
