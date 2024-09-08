@@ -1,5 +1,6 @@
-import { PartialType } from '@nestjs/swagger';
 import {
+  ArrayNotEmpty,
+  IsArray,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -8,14 +9,13 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { Category } from '../../category.entity';
 
 export class CreateCategoryDto {
   @IsNotEmpty()
   @IsString()
-  @MinLength(5)
+  @MinLength(2)
   @MaxLength(50)
-  @Matches(/^[a-zA-Z0-9\s-]+$/, {
+  @Matches(/^[\p{L}\s0-9-]+$/u, {
     message:
       'Category name can only contain letters, numbers, spaces, and hyphens.',
   })
@@ -24,9 +24,9 @@ export class CreateCategoryDto {
   @IsOptional()
   @IsNotEmpty()
   @IsString()
-  @MinLength(5)
+  @MinLength(2)
   @MaxLength(50)
-  @Matches(/^[a-zA-Z-]+$/, {
+  @Matches(/^[a-zA-Z0-9-]+$/, {
     message: 'Category slug can only contain letters and hyphens.',
   })
   slug: string;
@@ -36,6 +36,8 @@ export class CreateCategoryDto {
   parentCategoryId?: string;
 
   @IsOptional()
+  @IsArray()
+  @ArrayNotEmpty()
   @IsUUID('4', { each: true })
-  childCategoryIds: string[];
+  childCategoryIds?: string[];
 }

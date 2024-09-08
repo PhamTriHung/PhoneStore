@@ -1,28 +1,37 @@
-import { Delete, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { Category } from './category.entity';
 import { CreateCategoryDto } from './dto/request/create-category.dto';
 import { UpdateCategoryDto } from './dto/request/update-product-type.dto';
-import { TagCategoryDto } from 'src/tag-categories/dto/response/tag-category.dto';
-import { CategoryDto } from './dto/response/category.dto';
-import { log } from 'console';
+import { isDuplicate } from 'src/utils/database-utils';
 
 @Injectable()
 export class CategoriesService {
   constructor(
     @InjectRepository(Category)
-    private categoryRepository: Repository<Category>,
+    private categoriesRepository: Repository<Category>,
   ) {}
 
-  async create(createCategoryDto: CreateCategoryDto): Promise<Category> {
-    const { parentCategoryId, childCategoryIds, ...category } =
+  async createCategory(
+    createCategoryDto: CreateCategoryDto,
+  ): Promise<Category> {
+    const { parentCategoryId, childCategoryIds, ...otherCategoryField } =
       createCategoryDto;
 
-    const newCategory = this.categoryRepository.create(category);
+    if (isDuplicate(this.categoriesRepository, 'name', otherCategoryField.name))
+      throw new BadRequestException(
+        `Category name ${otherCategoryField.name} dupplicated`,
+      );
+
+    const newCategory = this.categoriesRepository.create(otherCategoryField);
 
     if (parentCategoryId) {
-      const parentCategory = await this.categoryRepository.findOneBy({
+      const parentCategory = await this.categoriesRepository.findOneBy({
         id: parentCategoryId,
       });
 
@@ -36,7 +45,7 @@ export class CategoriesService {
     }
 
     if (childCategoryIds && childCategoryIds.length > 0) {
-      const childCategories = await this.categoryRepository.findBy({
+      const childCategories = await this.categoriesRepository.findBy({
         id: In(childCategoryIds),
       });
 
@@ -56,11 +65,11 @@ export class CategoriesService {
       }
     }
 
-    return this.categoryRepository.save(newCategory);
+    return this.categoriesRepository.save(newCategory);
   }
 
-  async find(): Promise<Category[]> {
-    const categories = await this.categoryRepository.find({
+  async findAllCategory(): Promise<Category[]> {
+    const categories = await this.categoriesRepository.find({
       relations: {
         childCategories: true,
         categoryTagCategories: {
@@ -76,8 +85,8 @@ export class CategoriesService {
     return categories;
   }
 
-  async findOneBySlug(slug: string) {
-    const category = await this.categoryRepository.findOne({
+  async findOneCategoryBySlug(slug: string) {
+    const category = await this.categoriesRepository.findOne({
       where: {
         slug,
       },
@@ -93,8 +102,6 @@ export class CategoriesService {
       },
     });
 
-    console.log(category);
-
     if (!category) {
       throw new NotFoundException(`Category with slud ${slug} not found`);
     } else {
@@ -102,8 +109,8 @@ export class CategoriesService {
     }
   }
 
-  async findOneById(id: string): Promise<Category> {
-    const category = await this.categoryRepository.findOne({
+  async findOneCategoryById(id: string): Promise<Category> {
+    const category = await this.categoriesRepository.findOne({
       where: {
         id,
       },
@@ -119,61 +126,66 @@ export class CategoriesService {
       },
     });
 
-    console.log(category);
-
     if (!category) {
       throw new NotFoundException(`Category with Id ${id} not found`);
     } else {
       return category;
-
-      // return this.mapCategoryToCategoryDto(category);
     }
   }
 
   // hes loo
   // holaaaaaaaaaaaa
 
-  async deleteById(id: string): Promise<Category> {
-    const category = await this.categoryRepository.findOne({
+  async deleteCategoryById(id: string): Promise<Category> {
+    const category = await this.categoriesRepository.findOne({
       where: {
         id,
       },
     });
 
-    if (!category) {
+    if (!category)
       throw new NotFoundException(`Category with Id ${id} not found`);
-    } else {
-      return this.categoryRepository.remove(category);
-    }
+
+    return this.categoriesRepository.remove(category);
   }
 
-  async deleteManyByIds(ids: string[]): Promise<Category[]> {
-    const categories = await this.categoryRepository.find({
+  async deleteMultipleCategoryByIds(ids: string[]): Promise<Category[]> {
+    const categories: Category[] = await this.categoriesRepository.find({
       where: {
         id: In(ids),
       },
     });
 
     if (categories.length !== ids.length) {
-      const foundIds = categories.map((attr) => attr.id);
-      const notFoundIds = ids.filter((id) => !foundIds.includes(id));
+      const foundIds: string[] = categories.map((attr) => attr.id);
+      const notFoundIds: string[] = ids.filter((id) => !foundIds.includes(id));
 
       throw new NotFoundException(
         `Category not found for IDs: ${notFoundIds.join(', ')}`,
       );
     } else {
-      return this.categoryRepository.remove(categories);
+      return this.categoriesRepository.remove(categories);
     }
   }
 
-  async updateById(id: string, updateCategoryDto: UpdateCategoryDto) {
+  async updateCategoryById(id: string, updateCategoryDto: UpdateCategoryDto) {
     const { parentCategoryId, childCategoryIds, ...updateField } =
       updateCategoryDto;
 
-    const category = this.categoryRepository.create(updateCategoryDto);
+    if (updateCategoryDto.name) {
+      if (
+        isDuplicate(this.categoriesRepository, 'name', updateCategoryDto.name)
+      ) {
+        throw new BadRequestException(
+          `Category name ${updateCategoryDto.name} dupplicated`,
+        );
+      }
+    }
+
+    const category = this.categoriesRepository.create(updateField);
 
     if (parentCategoryId) {
-      const parentCategory = await this.categoryRepository.findOneBy({
+      const parentCategory = await this.categoriesRepository.findOneBy({
         id: parentCategoryId,
       });
 
@@ -187,7 +199,7 @@ export class CategoriesService {
     }
 
     if (childCategoryIds && childCategoryIds.length > 0) {
-      const childCategories = await this.categoryRepository.findBy({
+      const childCategories = await this.categoriesRepository.findBy({
         id: In(childCategoryIds),
       });
 
@@ -207,8 +219,8 @@ export class CategoriesService {
       }
     }
 
-    await this.categoryRepository.update(id, category);
+    await this.categoriesRepository.update(id, category);
 
-    return this.categoryRepository.findOneBy({ id });
+    return this.categoriesRepository.findOneBy({ id });
   }
 }

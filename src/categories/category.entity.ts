@@ -1,11 +1,8 @@
 import { Product } from 'src/products/products.entity';
 import { CategoryTagCategory } from 'src/category-tag-categories/category-tag-category.entity';
-import { TagCategory } from 'src/tag-categories/tag-category.entity';
 import {
   Column,
   Entity,
-  JoinTable,
-  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
