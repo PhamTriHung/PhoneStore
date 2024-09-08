@@ -10,6 +10,7 @@ import { AttributeValue } from 'src/attributes/attribute-value.entity';
 import { Variant } from 'src/variants/variant.entity';
 import { CategoryTagCategory } from 'src/category-tag-categories/category-tag-category.entity';
 import { Review } from 'src/reviews/review.entity';
+import { CategoryTagCategoryTag } from 'src/category-tag-category-tags/category-tag-category-tag.entity';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { Review } from 'src/reviews/review.entity';
       AttributeValue,
       Variant,
       CategoryTagCategory,
+      CategoryTagCategoryTag,
       Review,
     ]),
   ],

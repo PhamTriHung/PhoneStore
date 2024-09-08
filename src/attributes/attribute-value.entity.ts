@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { Attribute } from './attribute.entity';
 import { Variant } from 'src/variants/variant.entity';
+import { Product } from 'src/products/products.entity';
 
 @Entity()
 export class AttributeValue {
@@ -21,4 +22,7 @@ export class AttributeValue {
 
   @ManyToMany(() => Variant, (variant) => variant.attributeValues)
   variants: Variant[];
+
+  @ManyToMany(() => Product, (product) => product.attributeValues)
+  products: Product[];
 }

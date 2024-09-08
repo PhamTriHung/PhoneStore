@@ -13,6 +13,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { CategoryTagCategoryTag } from 'src/category-tag-category-tags/category-tag-category-tag.entity';
+import { AttributeValue } from 'src/attributes/attribute-value.entity';
 
 @Entity()
 export class Product {
@@ -65,4 +66,8 @@ export class Product {
   @ManyToMany(() => Coupon, (coupon) => coupon.products)
   @JoinTable()
   coupons: Coupon[];
+
+  @ManyToMany(() => AttributeValue, (attributeValue) => attributeValue.products)
+  @JoinTable()
+  attributeValues: AttributeValue[];
 }

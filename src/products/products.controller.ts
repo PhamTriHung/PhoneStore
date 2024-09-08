@@ -31,14 +31,6 @@ export class ProductsController {
     return this.productService.create(createProductDto);
   }
 
-  @Post(':id/tags')
-  addTagToProduct(
-    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
-    @Body(ValidationPipe) { categoryTagCategoryIds }: AddTagsToProductDto,
-  ) {
-    this.productService.addTagsToProduct(id, categoryTagCategoryIds);
-  }
-
   @Get('/search')
   findOneBySlug(@Query(ValidationPipe) findBySlugDto: FindBySlugDto) {
     return this.productService.findByIdOrSlug({ slug: findBySlugDto.slug });
