@@ -9,14 +9,22 @@ import { Category } from './category.entity';
 import { CreateCategoryDto } from './dto/request/create-category.dto';
 import { UpdateCategoryDto } from './dto/request/update-product-type.dto';
 import { isDuplicate } from 'src/utils/database-utils';
+import { TagCategory } from 'src/tag-categories/tag-category.entity';
+import { CategoryTagCategory } from 'src/category-tag-categories/category-tag-category.entity';
+import { AddTagCategoryToCategoryDto } from './dto/request/add-tag-category-to-category.dto';
 
 @Injectable()
 export class CategoriesService {
   constructor(
     @InjectRepository(Category)
     private categoriesRepository: Repository<Category>,
+    @InjectRepository(TagCategory)
+    private tagCategoriesRepository: Repository<TagCategory>,
+    @InjectRepository(CategoryTagCategory)
+    private categoryTagCategoriesRepository: Repository<CategoryTagCategory>,
   ) {}
 
+  // #region category
   async createCategory(
     createCategoryDto: CreateCategoryDto,
   ): Promise<Category> {
@@ -223,4 +231,59 @@ export class CategoriesService {
 
     return this.categoriesRepository.findOneBy({ id });
   }
+  //#endregion
+
+  //#region tag category
+  async addTagCategoryToCategory({
+    id,
+    tagCategoryId,
+  }: AddTagCategoryToCategoryDto) {
+    const category: Category = await this.categoriesRepository.findOne({
+      where: {
+        id,
+      },
+      relations: {
+        categoryTagCategories: true,
+      },
+    });
+
+    if (!category) {
+      throw new NotFoundException(`Category with id ${id} not found`);
+    }
+
+    const tagCategory = await this.tagCategoriesRepository.findOneBy({
+      id: tagCategoryId,
+    });
+
+    if (!tagCategory) {
+      throw new NotFoundException(
+        `Tag category with id ${tagCategoryId} not found`,
+      );
+    }
+
+    const newCategoryTagCategory = this.categoryTagCategoriesRepository.create({
+      category,
+      tagCategory,
+    });
+
+    return this.categoryTagCategoriesRepository.save(newCategoryTagCategory);
+  }
+
+  async findAllTagCategoryByCategoryId(id: string) {
+    const category = await this.categoriesRepository.findOneBy({ id });
+
+    if (!category) {
+      throw new NotFoundException(`Category with id ${id} not found`);
+    }
+
+    return this.categoryTagCategoriesRepository.find({
+      where: {
+        category,
+      },
+      relations: {
+        tagCategory: true,
+      },
+    });
+  }
+  //#endregion
 }

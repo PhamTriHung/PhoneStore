@@ -17,6 +17,7 @@ import { DeleteManyCategoryDto } from './dto/request/delete-category.dto';
 import { UpdateCategoryDto } from './dto/request/update-product-type.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { FindCategoryDto } from './dto/request/find-category.dto';
+import { AddTagCategoryToCategoryDto } from './dto/request/add-tag-category-to-category.dto';
 
 @ApiTags('categories')
 @Controller('categories')
@@ -71,5 +72,22 @@ export class CategoriesController {
     @Body(ValidationPipe) updateCategoryDto: UpdateCategoryDto,
   ): Promise<Category> {
     return this.categoriesService.updateCategoryById(id, updateCategoryDto);
+  }
+
+  @Post(':id/tag-categories/:tagCategoryId')
+  addTagCategoryToCategory(
+    @Param(ValidationPipe)
+    addTagCategoryToCategoryDto: AddTagCategoryToCategoryDto,
+  ) {
+    return this.categoriesService.addTagCategoryToCategory(
+      addTagCategoryToCategoryDto,
+    );
+  }
+
+  @Get(':id/tag-categories/')
+  findAllTagCategoryByCategoryId(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+  ) {
+    return this.categoriesService.findAllTagCategoryByCategoryId(id);
   }
 }
