@@ -10,7 +10,11 @@ import { UpdateTagCategoryDto } from './dto/request/update-tag-category.dto';
 import { CreateTagCategoryDto } from './dto/request/create-tag-category.dto';
 import { Category } from 'src/categories/category.entity';
 import { CategoryTagCategory } from '../category-tag-categories/category-tag-category.entity';
-import { isDuplicate } from 'src/utils/database-utils';
+import { findEntityById, isDuplicate } from 'src/utils/database-utils';
+import { AddTagToTagCategoryDto } from './dto/request/add-tag-to-tag-category.dto';
+import { CategoryTagCategoryTag } from 'src/category-tag-category-tags/category-tag-category-tag.entity';
+import { Tag } from 'src/tags/tag.entity';
+import { DeleteTagFromTagCategoryDto } from './dto/request/delete-tag-from-tag-category.dto';
 
 @Injectable()
 export class TagCategoriesService {
@@ -21,6 +25,9 @@ export class TagCategoriesService {
     private categoriesRepository: Repository<Category>,
     @InjectRepository(CategoryTagCategory)
     private categoryTagCategoriesRepository: Repository<CategoryTagCategory>,
+    @InjectRepository(CategoryTagCategoryTag)
+    private categoryTagCategoryTagsRepository: Repository<CategoryTagCategoryTag>,
+    @InjectRepository(Tag) private tagsRepository: Repository<Tag>,
   ) {}
 
   async createTagCategory(
@@ -92,5 +99,66 @@ export class TagCategoriesService {
     await this.tagCategoryRepository.update({ id }, tagCategory);
 
     return this.tagCategoryRepository.findOneBy({ id });
+  }
+
+  async addTagToTagCategory({
+    tagId,
+    categoryTagCategoryId,
+  }: AddTagToTagCategoryDto) {
+    const tag = await findEntityById(this.tagsRepository, tagId);
+
+    const categoryTagCategory = await findEntityById(
+      this.categoryTagCategoriesRepository,
+      categoryTagCategoryId,
+    );
+
+    const newCategoryTagCategoryTag =
+      this.categoryTagCategoryTagsRepository.create({
+        tag,
+        categoryTagCategory,
+      });
+
+    return this.categoryTagCategoryTagsRepository.save(
+      newCategoryTagCategoryTag,
+    );
+  }
+
+  async deleteTagFromTagCategory({
+    tagId,
+    categoryTagCategoryId,
+  }: DeleteTagFromTagCategoryDto) {
+    const tag = await findEntityById(this.tagsRepository, tagId);
+
+    const categoryTagCategory = await findEntityById(
+      this.categoryTagCategoriesRepository,
+      categoryTagCategoryId,
+    );
+
+    try {
+      const categoryTagCategoryTag =
+        await this.categoryTagCategoryTagsRepository.findOneByOrFail({
+          tag,
+          categoryTagCategory,
+        });
+
+      return this.categoryTagCategoryTagsRepository.remove(
+        categoryTagCategoryTag,
+      );
+    } catch (error) {
+      throw new NotFoundException(
+        `The relation between tag with id ${tagId} tag category id ${categoryTagCategoryId} not found`,
+      );
+    }
+  }
+
+  async findAllTagFromTagCategory(id: string) {
+    const categoryTagCategory = await findEntityById(
+      this.categoryTagCategoriesRepository,
+      id,
+    );
+
+    return this.categoryTagCategoryTagsRepository.findBy({
+      categoryTagCategory,
+    });
   }
 }

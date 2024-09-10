@@ -18,6 +18,7 @@ import { UpdateCategoryDto } from './dto/request/update-product-type.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { FindCategoryDto } from './dto/request/find-category.dto';
 import { AddTagCategoryToCategoryDto } from './dto/request/add-tag-category-to-category.dto';
+import { DeleteTagCategoryFromCategoryDto } from './dto/request/delete-tag-category-from-category.dto';
 
 @ApiTags('categories')
 @Controller('categories')
@@ -89,5 +90,15 @@ export class CategoriesController {
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ) {
     return this.categoriesService.findAllTagCategoryByCategoryId(id);
+  }
+
+  @Delete(':id/tag-categories/:tagCagetoryId')
+  deleteTagCategoryFromCategoryById(
+    @Param(ValidationPipe)
+    deleteTagCategoryFromCategoryDto: DeleteTagCategoryFromCategoryDto,
+  ) {
+    return this.categoriesService.deleteTagCategoryFromCategoryById(
+      deleteTagCategoryFromCategoryDto,
+    );
   }
 }
