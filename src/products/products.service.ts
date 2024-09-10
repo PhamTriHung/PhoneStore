@@ -1,3 +1,4 @@
+import { AddTagToProductDto } from './dto/request/add-tag-to-product.dto';
 import { Product } from 'src/products/products.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateProductDto } from './dto/request/create-product.dto';
@@ -16,14 +17,16 @@ import {
 import { FilterProductDto } from './dto/request/filter-product.dto';
 import { UpdateProductDto } from './dto/request/update-product.dto';
 import { Category } from 'src/categories/category.entity';
-import { Tag } from 'src/tags/tag.entity';
 import { AttributeValue } from 'src/attributes/attribute-value.entity';
 import { Variant } from 'src/variants/variant.entity';
-import { CategoryTagCategory } from 'src/category-tag-categories/category-tag-category.entity';
 import { Review } from 'src/reviews/review.entity';
 import { RatingDistributionItem } from 'src/reviews/dto/response/rating-distribution.dto';
 import { ProductDto } from './dto/response/product.dto';
 import { CategoryTagCategoryTag } from 'src/category-tag-category-tags/category-tag-category-tag.entity';
+import { findEntityById } from 'src/utils/database-utils';
+import { DeleteTagFromProductDto } from './dto/request/delete-tag-from-product.dto';
+import { iif } from 'rxjs';
+import { ProductsController } from './products.controller';
 
 @Injectable()
 export class ProductsService {
@@ -31,12 +34,9 @@ export class ProductsService {
     @InjectRepository(Product) private productRepository: Repository<Product>,
     @InjectRepository(Category)
     private categoryRepository: Repository<Category>,
-    @InjectRepository(Tag) private tagRepository: Repository<Tag>,
     @InjectRepository(AttributeValue)
     private attributeValuesRepsitory: Repository<AttributeValue>,
     @InjectRepository(Variant) private variantRepository: Repository<Variant>,
-    @InjectRepository(CategoryTagCategory)
-    private categoryTagCategoriesRepository: Repository<CategoryTagCategory>,
     @InjectRepository(Review) private reviewsRepository: Repository<Review>,
     @InjectRepository(CategoryTagCategoryTag)
     private categoryTagCategoryTagsRepository: Repository<CategoryTagCategoryTag>,
@@ -62,7 +62,7 @@ export class ProductsService {
     }
 
     if (categoryTagCategoryTagIds && categoryTagCategoryTagIds.length > 0) {
-      newProduct.categoryTagCategoryTag =
+      newProduct.categoryTagCategoryTags =
         await this.categoryTagCategoryTagsRepository.findBy({
           id: In(categoryTagCategoryTagIds),
         });
@@ -82,9 +82,7 @@ export class ProductsService {
       lowestPrice,
       highestPrice,
       categoryId,
-      categoryTagCategoryIds,
       isMonopoly,
-      isNew,
       isDiscount,
       orderType,
     } = filterProductDto;
@@ -237,7 +235,7 @@ export class ProductsService {
     }
 
     if (categoryTagCategoryTagIds && categoryTagCategoryTagIds.length > 0) {
-      product.categoryTagCategoryTag =
+      product.categoryTagCategoryTags =
         await this.categoryTagCategoryTagsRepository.findBy({
           id: In(categoryTagCategoryTagIds),
         });
@@ -259,5 +257,65 @@ export class ProductsService {
         }),
       };
     });
+  }
+
+  async addTagToProduct({
+    categoryTagCategoryTagId,
+    productId,
+  }: AddTagToProductDto) {
+    const categoryTagCategoryTag = await findEntityById(
+      this.categoryTagCategoryTagsRepository,
+      categoryTagCategoryTagId,
+    );
+
+    const product = await this.productRepository.findOne({
+      where: {
+        id: productId,
+      },
+      relations: {
+        categoryTagCategoryTags: true,
+      },
+    });
+
+    product.categoryTagCategoryTags.push(categoryTagCategoryTag);
+
+    this.productRepository.save(product);
+  }
+
+  async deleteTagFromProduct({
+    categoryTagCategoryTagId,
+    productId,
+  }: DeleteTagFromProductDto) {
+    const product = await this.productRepository.findOne({
+      where: {
+        id: productId,
+      },
+      relations: {
+        categoryTagCategoryTags: true,
+      },
+    });
+
+    product.categoryTagCategoryTags = product.categoryTagCategoryTags.filter(
+      (categoryTagCategoryTag) => {
+        return !(categoryTagCategoryTag.id === categoryTagCategoryTagId);
+      },
+    );
+  }
+
+  async findAllTagOfProduct(id: string) {
+    const product = await this.productRepository.findOne({
+      where: { id },
+      relations: {
+        categoryTagCategoryTags: {
+          tag: true,
+        },
+      },
+    });
+
+    if (!product) {
+      throw new NotFoundException(`Product with this id ${id} not found`);
+    }
+
+    return product.categoryTagCategoryTags;
   }
 }

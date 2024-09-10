@@ -17,7 +17,6 @@ import { FilterProductDto } from './dto/request/filter-product.dto';
 import { UpdateProductDto } from './dto/request/update-product.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { FindBySlugDto } from './dto/request/find-by-slug.dto';
-import { AddTagsToProductDto } from './dto/request/add-tags-to-product.dto';
 import { ProductDto } from './dto/response/product.dto';
 
 @ApiTags('products')

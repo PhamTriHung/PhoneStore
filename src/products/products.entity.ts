@@ -61,7 +61,7 @@ export class Product {
 
   @ManyToMany(() => CategoryTagCategoryTag)
   @JoinTable()
-  categoryTagCategoryTag: CategoryTagCategoryTag[];
+  categoryTagCategoryTags: CategoryTagCategoryTag[];
 
   @ManyToMany(() => Coupon, (coupon) => coupon.products)
   @JoinTable()
