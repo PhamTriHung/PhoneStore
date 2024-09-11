@@ -28,7 +28,9 @@ export class Category {
   )
   categoryTagCategories: CategoryTagCategory[];
 
-  @ManyToOne(() => Category, (category) => category.childCategories)
+  @ManyToOne(() => Category, (category) => category.childCategories, {
+    onDelete: 'SET NULL',
+  })
   parentCategory: Category;
 
   @OneToMany(() => Category, (category) => category.parentCategory, {

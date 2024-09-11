@@ -8,11 +8,14 @@ import { In, Repository } from 'typeorm';
 import { Category } from './category.entity';
 import { CreateCategoryDto } from './dto/request/create-category.dto';
 import { UpdateCategoryDto } from './dto/request/update-product-type.dto';
-import { isDuplicate } from 'src/utils/database-utils';
+import { findEntityById, isDuplicate } from 'src/utils/database-utils';
 import { TagCategory } from 'src/tag-categories/tag-category.entity';
 import { CategoryTagCategory } from 'src/category-tag-categories/category-tag-category.entity';
 import { AddTagCategoryToCategoryDto } from './dto/request/add-tag-category-to-category.dto';
 import { DeleteTagCategoryFromCategoryDto } from './dto/request/delete-tag-category-from-category.dto';
+import { AddProductToCategoryDto } from './dto/request/add-product-to-category.dto';
+import { Product } from 'src/products/products.entity';
+import { DeleteProductFromCategoryDto } from './dto/request/delete-product-from-category.dto';
 
 @Injectable()
 export class CategoriesService {
@@ -23,6 +26,8 @@ export class CategoriesService {
     private tagCategoriesRepository: Repository<TagCategory>,
     @InjectRepository(CategoryTagCategory)
     private categoryTagCategoriesRepository: Repository<CategoryTagCategory>,
+
+    @InjectRepository(Product) private productsRepository: Repository<Product>,
   ) {}
 
   // #region category
@@ -32,25 +37,27 @@ export class CategoriesService {
     const { parentCategoryId, childCategoryIds, ...otherCategoryField } =
       createCategoryDto;
 
-    if (isDuplicate(this.categoriesRepository, 'name', otherCategoryField.name))
+    if (
+      await isDuplicate(
+        this.categoriesRepository,
+        'name',
+        otherCategoryField.name,
+      )
+    ) {
       throw new BadRequestException(
         `Category name ${otherCategoryField.name} dupplicated`,
       );
+    }
 
     const newCategory = this.categoriesRepository.create(otherCategoryField);
 
     if (parentCategoryId) {
-      const parentCategory = await this.categoriesRepository.findOneBy({
-        id: parentCategoryId,
-      });
+      const parentCategory = await findEntityById(
+        this.categoriesRepository,
+        parentCategoryId,
+      );
 
-      if (!parentCategory) {
-        throw new NotFoundException(
-          `Category with id ${parentCategory} not found`,
-        );
-      } else {
-        newCategory.parentCategory = parentCategory;
-      }
+      newCategory.parentCategory = parentCategory;
     }
 
     if (childCategoryIds && childCategoryIds.length > 0) {
@@ -78,20 +85,7 @@ export class CategoriesService {
   }
 
   async findAllCategory(): Promise<Category[]> {
-    const categories = await this.categoriesRepository.find({
-      relations: {
-        childCategories: true,
-        categoryTagCategories: {
-          tagCategory: true,
-          categoryTagCategoryTags: {
-            tag: true,
-          },
-        },
-        products: true,
-      },
-    });
-
-    return categories;
+    return this.categoriesRepository.find();
   }
 
   async findOneCategoryBySlug(slug: string) {
@@ -316,4 +310,48 @@ export class CategoriesService {
     return this.categoryTagCategoriesRepository.remove(categoryTagCategory);
   }
   //#endregion
+
+  async addProductToCategory({
+    productId,
+    categoryId,
+  }: AddProductToCategoryDto) {
+    const category = await this.categoriesRepository.findOne({
+      where: {
+        id: categoryId,
+      },
+      relations: {
+        products: true,
+      },
+    });
+
+    const product = await findEntityById(this.productsRepository, productId);
+
+    if (!category) {
+      throw new NotFoundException(`Category with id ${category} not found`);
+    } else {
+      category.products.push(product);
+    }
+
+    return this.categoriesRepository.save(category);
+  }
+
+  async deleteProductFromCategory({
+    categoryId,
+    productId,
+  }: DeleteProductFromCategoryDto) {
+    const category = await this.categoriesRepository.findOne({
+      where: {
+        id: categoryId,
+      },
+      relations: {
+        products: true,
+      },
+    });
+
+    category.products = category.products.filter(
+      (product) => product.id !== productId,
+    );
+
+    return this.categoriesRepository.save(category);
+  }
 }
