@@ -19,32 +19,23 @@ export class CartItemsService {
     return this.cartItemRepository.save(newCartItem);
   }
 
-  async deleteFromCart(
-    deleteFromCartDto: DeleteFromCartDto,
-  ): Promise<CartItem> {
+  async deleteFromCart(id: string): Promise<CartItem> {
     const cartItem = await this.cartItemRepository.findOne({
-      where: deleteFromCartDto,
+      where: { id },
     });
 
     if (!cartItem) {
-      throw new NotFoundException(
-        `Cart item with userId ${deleteFromCartDto.userId} and productId ${deleteFromCartDto.productId} not found`,
-      );
+      throw new NotFoundException(`Cart item with id ${id} not found`);
     } else {
       return this.cartItemRepository.remove(cartItem);
     }
   }
 
-  updateCart(updateCartDto: UpdateCartItemDto): Promise<CartItem> {
+  updateCart(id: string, updateCartDto: UpdateCartItemDto): Promise<CartItem> {
     const { userId, productId, ...updateField } = updateCartDto;
-    this.cartItemRepository.update({ userId, productId }, updateField);
+    this.cartItemRepository.update({ id }, updateField);
 
-    return this.cartItemRepository.findOne({ where: { userId, productId } });
-  }
-
-  async findCartItemByUserId(userId: string): Promise<CartItem[]> {
-    const cartItems = await this.cartItemRepository.find({ where: { userId } });
-    return cartItems;
+    return this.cartItemRepository.findOneBy({ id });
   }
 
   find(): Promise<CartItem[]> {

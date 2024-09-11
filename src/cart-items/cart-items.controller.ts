@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
   ParseUUIDPipe,
   Patch,
   Post,
@@ -30,27 +31,21 @@ export class CartItemsController {
 
   @Delete()
   deleteFromCart(
-    @Body(ValidationPipe) deleteFromCartDto: DeleteFromCartDto,
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ): Promise<CartItem> {
-    return this.cartItemService.deleteFromCart(deleteFromCartDto);
+    return this.cartItemService.deleteFromCart(id);
   }
 
   @Patch()
   updateCart(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body(ValidationPipe) updateCartItemDto: UpdateCartItemDto,
   ): Promise<CartItem> {
-    return this.cartItemService.updateCart(updateCartItemDto);
+    return this.cartItemService.updateCart(id, updateCartItemDto);
   }
 
   @Get()
   findAllCartItem() {
     return this.cartItemService.find();
-  }
-
-  @Get('search')
-  findCartItemByUserId(
-    @Query('userId', new ParseUUIDPipe({ version: '4' })) userId?: string,
-  ): Promise<CartItem[]> {
-    return this.cartItemService.findCartItemByUserId(userId);
   }
 }
