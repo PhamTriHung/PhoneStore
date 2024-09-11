@@ -32,7 +32,7 @@ export class CartItemsService {
   }
 
   updateCart(id: string, updateCartDto: UpdateCartItemDto): Promise<CartItem> {
-    const { userId, productId, ...updateField } = updateCartDto;
+    const { ...updateField } = updateCartDto;
     this.cartItemRepository.update({ id }, updateField);
 
     return this.cartItemRepository.findOneBy({ id });
