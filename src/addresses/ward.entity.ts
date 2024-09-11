@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { District } from './district.entity';
 import { Address } from './address.entity';
+import { Store } from 'src/stores/store.entity';
 
 @Entity()
 export class Ward {
@@ -18,6 +19,9 @@ export class Ward {
 
   @OneToMany(() => Address, (address) => address.ward)
   addresses: Address[];
+
+  @OneToMany(() => Store, (store) => store.ward)
+  stores: Store[];
 
   @ManyToOne(() => District, (district) => district.wards)
   district: District;

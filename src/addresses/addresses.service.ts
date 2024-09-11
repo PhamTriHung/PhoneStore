@@ -10,6 +10,9 @@ import { CreateDistrictDto } from './dto/create-district.dto';
 import { UpdateDistrictDto } from './dto/update-district.dto';
 import { CreateWardDto } from './dto/create-ward.dto';
 import { UpdateWardDto } from './dto/update-ward.dto';
+import { CreateAddressDto } from './dto/create-address.dto';
+import { findEntityById } from 'src/utils/database-utils';
+import { Address } from './address.entity';
 
 @Injectable()
 export class AddressesService {
@@ -18,6 +21,7 @@ export class AddressesService {
     @InjectRepository(District)
     private districtRepository: Repository<District>,
     @InjectRepository(Ward) private wardRepository: Repository<Ward>,
+    @InjectRepository(Address) private addressRepository: Repository<Address>,
   ) {}
 
   createCity(createCityDto: CreateCityDto) {
@@ -107,4 +111,20 @@ export class AddressesService {
   updateWardById(id: string, updateWardDto: UpdateWardDto) {
     return this.wardRepository.update({ id }, updateWardDto);
   }
+
+  async createAddress({ cityId, districtId, wardId }: CreateAddressDto) {
+    const city = await findEntityById(this.cityRepository, cityId);
+    const district = await findEntityById(this.districtRepository, districtId);
+    const ward = await findEntityById(this.wardRepository, wardId);
+
+    const newAddress = this.addressRepository.create({
+      city,
+      district,
+      ward,
+    });
+
+    return this.addressRepository.save(newAddress);
+  }
+
+  // addStoreToWard() {}
 }

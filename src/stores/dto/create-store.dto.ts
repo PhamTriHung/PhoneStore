@@ -3,6 +3,7 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  IsUUID,
   Matches,
   MaxLength,
   MinLength,
@@ -21,13 +22,6 @@ export class CreateStoreDto {
   name: string;
 
   @IsOptional()
-  @IsNotEmpty()
-  @IsString()
-  @MinLength(5)
-  @MaxLength(50)
-  @Matches(/^[a-zA-Z0-9\s-]+$/, {
-    message:
-      'Store address can only contain letters, numbers, spaces, and hyphens.',
-  })
-  address: string;
+  @IsUUID('4')
+  wardId?: string;
 }

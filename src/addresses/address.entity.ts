@@ -18,14 +18,11 @@ export class Address {
   @ManyToOne(() => Ward, (ward) => ward.addresses)
   ward: Ward;
 
-  @Column({ type: 'varchar', length: 50 })
-  address_line: string;
+  // @Column({ type: 'double' })
+  // longitude: number;
 
-  @Column({ type: 'double' })
-  longitude: number;
-
-  @Column({ type: 'double' })
-  latitude: number;
+  // @Column({ type: 'double' })
+  // latitude: number;
 
   @ManyToOne(() => User, (user) => user.addresses)
   user: User;

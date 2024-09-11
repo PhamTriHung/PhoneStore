@@ -4,15 +4,25 @@ import { In, Repository } from 'typeorm';
 import { Store } from './store.entity';
 import { CreateStoreDto } from './dto/create-store.dto';
 import { UpdateStoreDto } from './dto/update-store.dto';
+import { findEntityById } from 'src/utils/database-utils';
+import { Ward } from 'src/addresses/ward.entity';
 
 @Injectable()
 export class StoresService {
   constructor(
     @InjectRepository(Store) private storeRepository: Repository<Store>,
+    @InjectRepository(Ward) private wardRepository: Repository<Ward>,
   ) {}
 
-  create(createStoreDto: CreateStoreDto): Promise<Store> {
-    const newStore = this.storeRepository.create(createStoreDto);
+  async create(createStoreDto: CreateStoreDto): Promise<Store> {
+    const { wardId, ...otherField } = createStoreDto;
+    const newStore = this.storeRepository.create(otherField);
+
+    if (wardId) {
+      const ward = await findEntityById(this.wardRepository, wardId);
+      newStore.ward = ward;
+    }
+
     return this.storeRepository.save(newStore);
   }
 
@@ -33,13 +43,31 @@ export class StoresService {
     }
   }
 
-  update(id: string, updateStoreDto: UpdateStoreDto) {
-    return this.storeRepository.update({ id }, updateStoreDto);
+  async update(id: string, updateStoreDto: UpdateStoreDto) {
+    const store = await findEntityById(this.storeRepository, id);
+
+    const { wardId, ...otherField } = updateStoreDto;
+
+    if (wardId) {
+      const ward = await findEntityById(this.wardRepository, wardId);
+
+      store.ward = ward;
+    }
+
+    await this.storeRepository.update(
+      { id },
+      {
+        ...store,
+        ...otherField,
+      },
+    );
+
+    return await findEntityById(this.storeRepository, id);
   }
 
   async delete(id: string) {
-    const store = await this.findById(id);
-    return this.storeRepository.delete(id);
+    const store = await findEntityById(this.storeRepository, id);
+    return this.storeRepository.remove(store);
   }
 
   async deleteManyStoreById(ids: string[]) {
