@@ -6,12 +6,12 @@ export class CreateAttributeValueDto {
   @IsString()
   @IsNotEmpty()
   @Length(2, 50)
-  @Matches(/^[A-Za-z\s0-9'-\(\)+]+$/, {
+  @Matches(/^[\p{L}\s0-9'-\(\)+]+$/u, {
     message:
       'Attribute value can only contain letters, spaces, hyphens, and apostrophes.',
   })
   value: string;
 
   @IsUUID('4')
-  attributeId: string;
+  attributeId?: string;
 }
