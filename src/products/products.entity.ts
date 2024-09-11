@@ -20,11 +20,11 @@ export class Product {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'varchar', length: 50 })
-  slug: string;
-
-  @Column({ type: 'nvarchar', length: 50 })
+  @Column({ type: 'nvarchar', length: 50, unique: true })
   name: string;
+
+  @Column({ type: 'varchar', length: 50, unique: true })
+  slug: string;
 
   @Column({ type: 'nvarchar', length: 50, nullable: true })
   description: string;
@@ -50,10 +50,15 @@ export class Product {
   @Column({ type: 'int', default: 0 })
   numOfReview: number;
 
-  @OneToMany(() => Review, (review) => review.product, { cascade: true })
+  @OneToMany(() => Review, (review) => review.product, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   reviews: Review[];
 
-  @OneToMany(() => Variant, (variant) => variant.product, { cascade: true })
+  @OneToMany(() => Variant, (variant) => variant.product, {
+    cascade: true,
+  })
   variants: Variant[];
 
   @ManyToOne(() => Category, (category) => category.products)

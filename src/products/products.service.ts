@@ -2,7 +2,11 @@ import { AddTagToProductDto } from './dto/request/add-tag-to-product.dto';
 import { Product } from 'src/products/products.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateProductDto } from './dto/request/create-product.dto';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import {
   Between,
   FindOptionsOrder,
@@ -23,10 +27,8 @@ import { Review } from 'src/reviews/review.entity';
 import { RatingDistributionItem } from 'src/reviews/dto/response/rating-distribution.dto';
 import { ProductDto } from './dto/response/product.dto';
 import { CategoryTagCategoryTag } from 'src/category-tag-category-tags/category-tag-category-tag.entity';
-import { findEntityById } from 'src/utils/database-utils';
+import { findEntityById, isDuplicate } from 'src/utils/database-utils';
 import { DeleteTagFromProductDto } from './dto/request/delete-tag-from-product.dto';
-import { iif } from 'rxjs';
-import { ProductsController } from './products.controller';
 
 @Injectable()
 export class ProductsService {
@@ -50,6 +52,14 @@ export class ProductsService {
       productAttributeValueIds,
       ...product
     } = createProductDto;
+
+    if (await isDuplicate(this.productRepository, 'name', product.name)) {
+      throw new BadRequestException(`Product name ${product.name} dupplicated`);
+    }
+
+    if (await isDuplicate(this.productRepository, 'slug', product.slug)) {
+      throw new BadRequestException(`Product slug ${product.slug} dupplicated`);
+    }
 
     const newProduct = this.productRepository.create(product);
     const baseVariant = this.variantRepository.create({ name: product.name });
@@ -142,8 +152,9 @@ export class ProductsService {
         .createQueryBuilder('product')
         .leftJoinAndSelect('product.reviews', 'review')
         .leftJoinAndSelect('product.variants', 'variant')
-        .leftJoinAndSelect('variant.attributeValues', 'attributeValue')
-        .leftJoinAndSelect('attributeValue.attribute', 'attribute')
+        .leftJoinAndSelect('product.attributeValues', 'productAttributeValue')
+        .leftJoinAndSelect('variant.attributeValues', 'variantAttributeValue')
+        .leftJoinAndSelect('variantAttributeValue.attribute', 'attribute')
         .where('product.id = :id', { id })
         .orderBy('review.createDate', 'DESC')
         .getOne();
@@ -152,54 +163,54 @@ export class ProductsService {
         .createQueryBuilder('product')
         .leftJoinAndSelect('product.reviews', 'review')
         .leftJoinAndSelect('product.variants', 'variant')
-        .leftJoinAndSelect('variant.attributeValues', 'attributeValue')
-        .leftJoinAndSelect('attributeValue.attribute', 'attribute')
+        .leftJoinAndSelect('product.attributeValues', 'productAttributeValue')
+        .leftJoinAndSelect('variant.attributeValues', 'variantAttributeValue')
+        .leftJoinAndSelect('variantAttributeValue.attribute', 'attribute')
         .where('product.slug = :slug', { slug })
         .orderBy('review.createDate', 'DESC')
         .getOne();
     }
 
-    const totalReviewCount = product.reviews.length;
-
-    if (!id) {
-      id = product.id;
-    }
-
-    const ratingDistribution = await this.reviewsRepository
-      .createQueryBuilder('review')
-      .select('review.rating', 'rating')
-      .addSelect('CAST(COUNT(rating) AS INT)', 'count')
-      .groupBy('review.rating')
-      .orderBy('review.rating')
-      .where('review.productId = :id', { id })
-      .getRawMany();
-
-    const initRatingDistributionItems: RatingDistributionItem[] = Array.from(
-      { length: 5 },
-      (_, i) => {
-        return {
-          rating: (i + 1).toString(),
-          count: 0,
-          percentage: 0,
-        };
-      },
-    );
-
-    ratingDistribution.forEach(
-      (ratingDistributionItem: { count: string; rating: number }) => {
-        const { count, rating } = ratingDistributionItem;
-
-        initRatingDistributionItems[ratingDistributionItem.rating] = {
-          rating: rating.toString(),
-          count: parseInt(count),
-          percentage: Math.round(parseInt(count) / totalReviewCount) * 100,
-        };
-      },
-    );
-
     if (!product) {
       throw new NotFoundException(`Product with Id ${id} not found`);
     } else {
+      const totalReviewCount = product.reviews.length;
+
+      if (!id) {
+        id = product.id;
+      }
+
+      const ratingDistribution = await this.reviewsRepository
+        .createQueryBuilder('review')
+        .select('review.rating', 'rating')
+        .addSelect('CAST(COUNT(rating) AS INT)', 'count')
+        .groupBy('review.rating')
+        .orderBy('review.rating')
+        .where('review.productId = :id', { id })
+        .getRawMany();
+
+      const initRatingDistributionItems: RatingDistributionItem[] = Array.from(
+        { length: 5 },
+        (_, i) => {
+          return {
+            rating: (i + 1).toString(),
+            count: 0,
+            percentage: 0,
+          };
+        },
+      );
+
+      ratingDistribution.forEach(
+        (ratingDistributionItem: { count: string; rating: number }) => {
+          const { count, rating } = ratingDistributionItem;
+
+          initRatingDistributionItems[ratingDistributionItem.rating] = {
+            rating: rating.toString(),
+            count: parseInt(count),
+            percentage: Math.round(parseInt(count) / totalReviewCount) * 100,
+          };
+        },
+      );
       return {
         ...product,
         variants: this.processVariantAttributeArray(product.variants),
@@ -233,7 +244,16 @@ export class ProductsService {
   ): Promise<Product> {
     const { categoryId, categoryTagCategoryTagIds, ...updateField } =
       updateProductDto;
+
     const product = this.productRepository.create(updateField);
+
+    if (await isDuplicate(this.productRepository, 'name', product.name)) {
+      throw new BadRequestException(`Product name ${product.name} dupplicated`);
+    }
+
+    if (await isDuplicate(this.productRepository, 'slug', product.slug)) {
+      throw new BadRequestException(`Product slug ${product.slug} dupplicated`);
+    }
 
     if (categoryId) {
       product.category = await this.categoryRepository.findOne({
