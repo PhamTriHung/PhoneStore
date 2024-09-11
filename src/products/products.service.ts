@@ -46,7 +46,8 @@ export class ProductsService {
     const {
       categoryId,
       categoryTagCategoryTagIds,
-      attributeValueIds,
+      variantAttributeValueIds,
+      productAttributeValueIds,
       ...product
     } = createProductDto;
 
@@ -68,9 +69,15 @@ export class ProductsService {
         });
     }
 
-    if (attributeValueIds && attributeValueIds.length > 0) {
+    if (variantAttributeValueIds && variantAttributeValueIds.length > 0) {
       baseVariant.attributeValues = await this.attributeValuesRepsitory.findBy({
-        id: In(attributeValueIds),
+        id: In(variantAttributeValueIds),
+      });
+    }
+
+    if (productAttributeValueIds && productAttributeValueIds.length > 0) {
+      newProduct.attributeValues = await this.attributeValuesRepsitory.findBy({
+        id: In(productAttributeValueIds),
       });
     }
 

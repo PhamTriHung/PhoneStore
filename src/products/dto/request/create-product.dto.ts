@@ -1,5 +1,7 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import {
+  ArrayNotEmpty,
+  IsArray,
   IsBoolean,
   IsNotEmpty,
   IsNumber,
@@ -58,6 +60,14 @@ export class CreateProductDto {
   categoryTagCategoryTagIds?: string[];
 
   @IsOptional()
+  @IsArray()
+  @ArrayNotEmpty()
   @IsUUID(4, { each: true })
-  attributeValueIds?: string[];
+  variantAttributeValueIds?: string[];
+
+  @IsOptional()
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsUUID(4, { each: true })
+  productAttributeValueIds?: string[];
 }
