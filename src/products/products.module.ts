@@ -11,6 +11,7 @@ import { Variant } from 'src/variants/variant.entity';
 import { CategoryTagCategory } from 'src/category-tag-categories/category-tag-category.entity';
 import { Review } from 'src/reviews/review.entity';
 import { CategoryTagCategoryTag } from 'src/category-tag-category-tags/category-tag-category-tag.entity';
+import { User } from 'src/users/users.entity';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { CategoryTagCategoryTag } from 'src/category-tag-category-tags/category-
       CategoryTagCategory,
       CategoryTagCategoryTag,
       Review,
+      User,
     ]),
   ],
   providers: [ProductsService],

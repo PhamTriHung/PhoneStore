@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateProductDto } from './dto/request/create-product.dto';
 import {
   BadRequestException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -29,6 +30,12 @@ import { ProductDto } from './dto/response/product.dto';
 import { CategoryTagCategoryTag } from 'src/category-tag-category-tags/category-tag-category-tag.entity';
 import { findEntityById, isDuplicate } from 'src/utils/database-utils';
 import { DeleteTagFromProductDto } from './dto/request/delete-tag-from-product.dto';
+import { AddReviewToProductDto } from './dto/request/add-review-to-product.dto';
+import { User } from 'src/users/users.entity';
+import { Address } from 'src/addresses/address.entity';
+import { AddAttributeToProductDto } from './dto/request/add-attribute-to-product.dto';
+import { DeleteAttributeValueFromProduct } from './dto/request/delete-attribute-value-from-product.dto';
+import { AddVariantToProductDto } from './dto/request/add-variant-to-product.dto';
 
 @Injectable()
 export class ProductsService {
@@ -42,6 +49,7 @@ export class ProductsService {
     @InjectRepository(Review) private reviewsRepository: Repository<Review>,
     @InjectRepository(CategoryTagCategoryTag)
     private categoryTagCategoryTagsRepository: Repository<CategoryTagCategoryTag>,
+    @InjectRepository(User) private usersRepository: Repository<User>,
   ) {}
 
   async create(createProductDto: CreateProductDto): Promise<Product> {
@@ -344,5 +352,128 @@ export class ProductsService {
     }
 
     return product.categoryTagCategoryTags;
+  }
+
+  async addVariantToProduct(
+    productId: string,
+    { attributeValueIds }: AddVariantToProductDto,
+  ) {
+    const product = await this.productRepository.findOne({
+      where: {
+        id: productId,
+      },
+      relations: {
+        variants: true,
+      },
+    });
+
+    if (attributeValueIds && attributeValueIds.length > 0) {
+      const attributeValues = await this.attributeValuesRepsitory.findBy({
+        id: In(attributeValueIds),
+      });
+
+      const newVariant = this.variantRepository.create({
+        name: product.name,
+        attributeValues,
+      });
+
+      product.variants.push(newVariant);
+
+      return this.productRepository.save(product);
+    }
+  }
+
+  async addReviewToProduct(
+    productId: string,
+    addReviewToProductDto: AddReviewToProductDto,
+  ) {
+    const { userId } = addReviewToProductDto;
+
+    if (userId) {
+      const product = await this.productRepository.findOne({
+        where: {
+          id: productId,
+        },
+        relations: {
+          reviews: true,
+        },
+      });
+
+      const user = await this.usersRepository.findOneBy({
+        id: userId,
+      });
+
+      const newReview = this.reviewsRepository.create({
+        user,
+        product,
+        ...addReviewToProductDto,
+      });
+
+      product.reviews.push(newReview);
+
+      this.productRepository.save(product);
+    }
+  }
+
+  async addAttributeToProduct(
+    productId: string,
+    addAttributeToProductDto: AddAttributeToProductDto,
+  ) {
+    const product = await this.productRepository.findOne({
+      where: {
+        id: productId,
+      },
+      relations: {
+        attributeValues: true,
+      },
+    });
+
+    const attributeValues = await this.attributeValuesRepsitory.findBy({
+      id: In(addAttributeToProductDto.attributeValueIds),
+    });
+
+    product.attributeValues = attributeValues;
+
+    return this.productRepository.save(product);
+  }
+
+  async deleteAttributeFromProduct(
+    productId: string,
+    { attributeValueIds }: DeleteAttributeValueFromProduct,
+  ) {
+    const product = await this.productRepository.findOne({
+      where: { id: productId },
+      relations: { attributeValues: true },
+    });
+    const attributeValues = await this.attributeValuesRepsitory.findBy({
+      id: In(attributeValueIds),
+    });
+
+    if (!product) {
+      throw new NotFoundException(`Product with id ${productId} not found`);
+    }
+
+    if (attributeValues.length !== attributeValueIds.length) {
+      const foundIds = attributeValues.map(
+        (attributeValue) => attributeValue.id,
+      );
+      const notFoundIds = attributeValueIds.filter(
+        (attributeValueId) => !foundIds.includes(attributeValueId),
+      );
+
+      throw new NotFoundException(
+        `Attribute value with ids ${notFoundIds.join(', ')} not found`,
+      );
+    }
+
+    product.attributeValues = product.attributeValues.filter(
+      (attributeValue) => {
+        !attributeValues.some(
+          (attributeValue2) => attributeValue2.id === attributeValue.id,
+        );
+      },
+    );
+
+    this.productRepository.save(product);
   }
 }

@@ -18,16 +18,26 @@ import { UpdateProductDto } from './dto/request/update-product.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { FindBySlugDto } from './dto/request/find-by-slug.dto';
 import { ProductDto } from './dto/response/product.dto';
+import { AddVariantToProductDto } from './dto/request/add-variant-to-product.dto';
 
 @ApiTags('products')
 @Controller('products')
 export class ProductsController {
   constructor(private productService: ProductsService) {}
 
-  @Post() create(
+  @Post()
+  create(
     @Body(ValidationPipe) createProductDto: CreateProductDto,
   ): Promise<Product> {
     return this.productService.create(createProductDto);
+  }
+
+  @Post('id/variants')
+  addVariantToProduct(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+    @Body(ValidationPipe) addVariantToProductDto: AddVariantToProductDto,
+  ) {
+    return this.productService.addVariantToProduct(id, addVariantToProductDto);
   }
 
   @Get('/search')
