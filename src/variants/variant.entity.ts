@@ -23,7 +23,9 @@ export class Variant {
   @JoinTable()
   attributeValues: AttributeValue[];
 
-  @ManyToOne(() => Product, (product) => product.variants)
+  @ManyToOne(() => Product, (product) => product.variants, {
+    onDelete: 'CASCADE',
+  })
   product: Product;
 
   @OneToMany(() => ProductStore, (productStore) => productStore.variant)
