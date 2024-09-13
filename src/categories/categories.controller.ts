@@ -76,14 +76,16 @@ export class CategoriesController {
     return this.categoriesService.updateCategoryById(id, updateCategoryDto);
   }
 
-  @Post(':id/tag-categories/:tagCategoryId')
+  @Post(':id/tag-categories')
   addTagCategoryToCategory(
-    @Param(ValidationPipe)
-    addTagCategoryToCategoryDto: AddTagCategoryToCategoryDto,
+    @Param('id', new ParseUUIDPipe({ version: '4' })) categoryId: string,
+    @Body('tagCategoryId', new ParseUUIDPipe({ version: '4' }))
+    tagCategoryId: string,
   ) {
-    return this.categoriesService.addTagCategoryToCategory(
-      addTagCategoryToCategoryDto,
-    );
+    return this.categoriesService.addTagCategoryToCategory({
+      categoryId,
+      tagCategoryId,
+    });
   }
 
   @Get(':id/tag-categories/')
@@ -93,7 +95,7 @@ export class CategoriesController {
     return this.categoriesService.findAllTagCategoryByCategoryId(id);
   }
 
-  @Delete(':id/tag-categories/:tagCagetoryId')
+  @Delete(':categoryId/tag-categories/:tagCategoryId')
   deleteTagCategoryFromCategoryById(
     @Param(ValidationPipe)
     deleteTagCategoryFromCategoryDto: DeleteTagCategoryFromCategoryDto,

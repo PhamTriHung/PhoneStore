@@ -230,12 +230,12 @@ export class CategoriesService {
 
   //#region tag category
   async addTagCategoryToCategory({
-    id,
+    categoryId,
     tagCategoryId,
   }: AddTagCategoryToCategoryDto) {
     const category: Category = await this.categoriesRepository.findOne({
       where: {
-        id,
+        id: categoryId,
       },
       relations: {
         categoryTagCategories: true,
@@ -243,7 +243,7 @@ export class CategoriesService {
     });
 
     if (!category) {
-      throw new NotFoundException(`Category with id ${id} not found`);
+      throw new NotFoundException(`Category with id ${categoryId} not found`);
     }
 
     const tagCategory = await this.tagCategoriesRepository.findOneBy({
@@ -282,16 +282,18 @@ export class CategoriesService {
   }
 
   async deleteTagCategoryFromCategoryById({
-    id,
+    categoryId,
     tagCategoryId,
   }: DeleteTagCategoryFromCategoryDto) {
-    const category = await this.categoriesRepository.findOneBy({ id });
+    const category = await this.categoriesRepository.findOneBy({
+      id: categoryId,
+    });
 
     if (!category) {
-      throw new NotFoundException(`Category with id ${id} not found`);
+      throw new NotFoundException(`Category with id ${categoryId} not found`);
     }
 
-    const tagCategory = await this.categoryTagCategoriesRepository.findOneBy({
+    const tagCategory = await this.tagCategoriesRepository.findOneBy({
       id: tagCategoryId,
     });
 
@@ -307,7 +309,14 @@ export class CategoriesService {
         category,
       });
 
-    return this.categoryTagCategoriesRepository.remove(categoryTagCategory);
+    if (!categoryTagCategory) {
+      throw new NotFoundException(
+        `There are no connection between tag category with id ${tagCategory} and category with id ${categoryId}`,
+      );
+    }
+    await this.categoryTagCategoriesRepository.remove(categoryTagCategory);
+
+    return categoryTagCategory;
   }
   //#endregion
 

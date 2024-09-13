@@ -5,6 +5,9 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   ManyToMany,
+  Column,
+  Unique,
+  JoinColumn,
 } from 'typeorm';
 import { TagCategory } from '../tag-categories/tag-category.entity';
 import { Tag } from 'src/tags/tag.entity';
@@ -16,10 +19,17 @@ export class CategoryTagCategory {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  // @Column({ type: 'varchar' })
+  // categoryId: string;
+
+  // @Column({ type: 'varchar' })
+  // tagCategoryId: string;
+
   @ManyToOne(() => Category, (category) => category.categoryTagCategories, {
     cascade: true,
     onDelete: 'CASCADE',
   })
+  @JoinColumn({ name: 'categoryId' })
   category: Category;
 
   @ManyToOne(
@@ -27,6 +37,7 @@ export class CategoryTagCategory {
     (tagCategory) => tagCategory.categoryTagCategories,
     { onDelete: 'CASCADE' },
   )
+  @JoinColumn({ name: 'tagCategoryId' })
   tagCategory: TagCategory;
 
   @OneToMany(
