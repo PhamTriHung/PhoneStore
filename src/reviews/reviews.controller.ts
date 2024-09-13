@@ -13,18 +13,12 @@ import {
 } from '@nestjs/common';
 import { UpdateReviewDto } from './dto/request/update-review.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { CreateReviewDto } from './dto/request/create-review.dto';
 import { FilterReviewDto } from './dto/request/filter-review.dto';
 
 @ApiTags('reviews')
 @Controller('reviews')
 export class ReviewsController {
   constructor(private reviewsService: ReviewsService) {}
-
-  @Post()
-  createReview(@Body(ValidationPipe) createReviewDto: CreateReviewDto) {
-    return this.reviewsService.createReview(createReviewDto);
-  }
 
   @Get()
   findAllReview() {

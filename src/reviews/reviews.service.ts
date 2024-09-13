@@ -10,7 +10,6 @@ import { Product } from 'src/products/products.entity';
 import { User } from 'src/users/users.entity';
 import { UpdateReviewDto } from './dto/request/update-review.dto';
 import { log } from 'console';
-import { CreateReviewDto } from './dto/request/create-review.dto';
 import { FilterReviewDto } from './dto/request/filter-review.dto';
 
 @Injectable()
@@ -21,54 +20,22 @@ export class ReviewsService {
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
-  async createReview(createReviewDto: CreateReviewDto) {
-    const { productId, userId, ...review } = createReviewDto;
-
-    if (!productId || !userId) return;
-
-    const product = await this.productRepository.findOneBy({ id: productId });
-    const user = await this.userRepository.findOneBy({ id: userId });
-
-    if (!product)
-      throw new NotFoundException(`Product with id ${productId} not found`);
-
-    if (!user) throw new NotFoundException(`User with id ${userId} not found`);
-
-    const newReview = this.reviewRepository.create({
-      ...review,
-    });
-
-    newReview.user = user;
-    newReview.product = product;
-
-    await this.reviewRepository.save(newReview);
-
-    const reviewStatistic = await this.getReviewStatistics(productId);
-
-    product.numOfReview = reviewStatistic.numOfReview;
-    product.rating = reviewStatistic.rating;
-
-    await this.productRepository.update(productId, product);
-
-    return newReview;
-  }
-
   findAllReview() {
     return this.reviewRepository.find();
   }
 
   filterReview(filterReviewDto: FilterReviewDto) {
-    const { id, productId } = filterReviewDto;
+    const { id } = filterReviewDto;
     const filterReviewFindOptionsWhere: FindOptionsWhere<Review> = {};
 
     if (id) {
       filterReviewFindOptionsWhere.id = id;
     }
 
-    if (productId) {
-      const product = this.productRepository.create({ id: productId });
-      filterReviewFindOptionsWhere.product = product;
-    }
+    // if (productId) {
+    //   const product = this.productRepository.create({ id: productId });
+    //   filterReviewFindOptionsWhere.product = product;
+    // }
 
     return this.reviewRepository.findBy(filterReviewFindOptionsWhere);
   }
@@ -99,13 +66,13 @@ export class ReviewsService {
   }
 
   async updateReview(id: string, updateReviewDto: UpdateReviewDto) {
-    const { productId, userId, ...updateField } = updateReviewDto;
+    const { ...updateField } = updateReviewDto;
 
     const review = this.reviewRepository.create(updateField);
 
-    review.product = this.productRepository.create({ id: productId });
+    // review.product = this.productRepository.create({ id: productId });
 
-    review.user = this.userRepository.create({ id: userId });
+    // review.user = this.userRepository.create({ id: userId });
     await this.reviewRepository.update({ id }, review);
 
     return this.reviewRepository.findOneBy({ id });
