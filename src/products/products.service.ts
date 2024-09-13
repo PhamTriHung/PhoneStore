@@ -255,18 +255,27 @@ export class ProductsService {
 
     const product = this.productRepository.create(updateField);
 
-    if (await isDuplicate(this.productRepository, 'name', product.name)) {
+    if (
+      product.name &&
+      (await isDuplicate(this.productRepository, 'name', product.name))
+    ) {
       throw new BadRequestException(`Product name ${product.name} dupplicated`);
     }
 
-    if (await isDuplicate(this.productRepository, 'slug', product.slug)) {
+    if (
+      product.slug &&
+      (await isDuplicate(this.productRepository, 'slug', product.slug))
+    ) {
       throw new BadRequestException(`Product slug ${product.slug} dupplicated`);
     }
 
     if (categoryId) {
-      product.category = await this.categoryRepository.findOne({
-        where: { id: categoryId },
-      });
+      const category = await findEntityById(
+        this.categoryRepository,
+        categoryId,
+      );
+
+      product.category = category;
     }
 
     if (categoryTagCategoryTagIds && categoryTagCategoryTagIds.length > 0) {
@@ -367,20 +376,21 @@ export class ProductsService {
       },
     });
 
+    const newVariant = this.variantRepository.create({
+      name: product.name,
+    });
+
     if (attributeValueIds && attributeValueIds.length > 0) {
       const attributeValues = await this.attributeValuesRepsitory.findBy({
         id: In(attributeValueIds),
       });
 
-      const newVariant = this.variantRepository.create({
-        name: product.name,
-        attributeValues,
-      });
-
-      product.variants.push(newVariant);
-
-      return this.productRepository.save(product);
+      newVariant.attributeValues = attributeValues;
     }
+
+    product.variants.push(newVariant);
+
+    return this.productRepository.save(product);
   }
 
   async addReviewToProduct(
@@ -399,9 +409,17 @@ export class ProductsService {
         },
       });
 
+      if (!product) {
+        throw new NotFoundException(`Product with id ${productId} not found`);
+      }
+
       const user = await this.usersRepository.findOneBy({
         id: userId,
       });
+
+      if (!user) {
+        throw new NotFoundException(`User with id ${userId} not found`);
+      }
 
       const newReview = this.reviewsRepository.create({
         user,
@@ -411,7 +429,9 @@ export class ProductsService {
 
       product.reviews.push(newReview);
 
-      this.productRepository.save(product);
+      return this.productRepository.save(product);
+    } else {
+      throw new BadRequestException(`A review must come from one user`);
     }
   }
 

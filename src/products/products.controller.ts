@@ -19,6 +19,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { FindBySlugDto } from './dto/request/find-by-slug.dto';
 import { ProductDto } from './dto/response/product.dto';
 import { AddVariantToProductDto } from './dto/request/add-variant-to-product.dto';
+import { AddReviewToProductDto } from './dto/request/add-review-to-product.dto';
 
 @ApiTags('products')
 @Controller('products')
@@ -32,7 +33,7 @@ export class ProductsController {
     return this.productService.create(createProductDto);
   }
 
-  @Post('id/variants')
+  @Post(':id/variants')
   addVariantToProduct(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body(ValidationPipe) addVariantToProductDto: AddVariantToProductDto,
@@ -72,5 +73,16 @@ export class ProductsController {
   @Delete()
   deleteMany(@Body('ids') ids: string[]): Promise<Product[]> {
     return this.productService.deleteManyByIds(ids);
+  }
+
+  @Post(':productId/reviews')
+  addReviewToProduct(
+    @Param('productId', new ParseUUIDPipe({ version: '4' })) productId: string,
+    @Body(ValidationPipe) addReviewToProductDto: AddReviewToProductDto,
+  ) {
+    return this.productService.addReviewToProduct(
+      productId,
+      addReviewToProductDto,
+    );
   }
 }
