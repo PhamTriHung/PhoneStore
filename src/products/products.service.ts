@@ -303,10 +303,7 @@ export class ProductsService {
     });
   }
 
-  async addTagToProduct({
-    categoryTagCategoryTagId,
-    productId,
-  }: AddTagToProductDto) {
+  async addTagToProduct(categoryTagCategoryTagId, productId) {
     const categoryTagCategoryTag = await findEntityById(
       this.categoryTagCategoryTagsRepository,
       categoryTagCategoryTagId,
@@ -323,7 +320,7 @@ export class ProductsService {
 
     product.categoryTagCategoryTags.push(categoryTagCategoryTag);
 
-    this.productRepository.save(product);
+    return this.productRepository.save(product);
   }
 
   async deleteTagFromProduct({
@@ -437,7 +434,7 @@ export class ProductsService {
 
   async addAttributeToProduct(
     productId: string,
-    addAttributeToProductDto: AddAttributeToProductDto,
+    { attributeValueIds }: AddAttributeToProductDto,
   ) {
     const product = await this.productRepository.findOne({
       where: {
@@ -448,9 +445,26 @@ export class ProductsService {
       },
     });
 
+    if (!product) {
+      throw new NotFoundException(`Product with id ${productId} not found`);
+    }
+
     const attributeValues = await this.attributeValuesRepsitory.findBy({
-      id: In(addAttributeToProductDto.attributeValueIds),
+      id: In(attributeValueIds),
     });
+
+    if (attributeValues.length !== attributeValueIds.length) {
+      const foundIds = attributeValues.map(
+        (attributeValue) => attributeValue.id,
+      );
+      const notFoundIds = attributeValueIds.filter(
+        (attributeValueId) => !foundIds.includes(attributeValueId),
+      );
+
+      throw new NotFoundException(
+        `Attribute with ids ${notFoundIds.join(', ')} not found`,
+      );
+    }
 
     product.attributeValues = attributeValues;
 

@@ -20,6 +20,8 @@ import { FindBySlugDto } from './dto/request/find-by-slug.dto';
 import { ProductDto } from './dto/response/product.dto';
 import { AddVariantToProductDto } from './dto/request/add-variant-to-product.dto';
 import { AddReviewToProductDto } from './dto/request/add-review-to-product.dto';
+import { AddTagToProductDto } from './dto/request/add-tag-to-product.dto';
+import { AddAttributeToProductDto } from './dto/request/add-attribute-to-product.dto';
 
 @ApiTags('products')
 @Controller('products')
@@ -83,6 +85,29 @@ export class ProductsController {
     return this.productService.addReviewToProduct(
       productId,
       addReviewToProductDto,
+    );
+  }
+
+  @Post(':productId/tags')
+  addTagToProduct(
+    @Param('productId', new ParseUUIDPipe({ version: '4' })) productId: string,
+    @Body('categoryTagCategoryTagId', new ParseUUIDPipe({ version: '4' }))
+    categoryTagCategoryTagId: string,
+  ) {
+    return this.productService.addTagToProduct(
+      categoryTagCategoryTagId,
+      productId,
+    );
+  }
+
+  @Post(':productId/attributes')
+  addAttributeToProduct(
+    @Param('productId', new ParseUUIDPipe({ version: '4' })) productId: string,
+    @Body(ValidationPipe) addAttributeToProductDto: AddAttributeToProductDto,
+  ) {
+    return this.productService.addAttributeToProduct(
+      productId,
+      addAttributeToProductDto,
     );
   }
 }
